@@ -139,9 +139,9 @@ def make_polynomial(func):
     else:
         new_taylor_coeffs = []
         final_dict = defaultdict(list)
-        for power, coef in func.taylor_coeffs.items():
+        for power, coeff in func.taylor_coeffs.items():
             temp_dict = expand_binomial(func.point, power)
-            temp_dict.update((x, y * coef) for x, y in temp_dict.items())
+            temp_dict.update((x, y * coeff) for x, y in temp_dict.items())
             new_taylor_coeffs.append(temp_dict)
         for d in new_taylor_coeffs:
             for key, value in d.items():
