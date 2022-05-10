@@ -391,7 +391,7 @@ canvas.create_text(
     266.0,
     20.0,
     anchor="nw",
-    text="DNA Computing Function Calculator",
+    text="DNA Computing Function Designer",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 40 * -1)
 )
@@ -521,6 +521,15 @@ canvas.create_text(
     233.0,
     anchor="nw",
     text="Rearranged Esstimate:",
+    fill="#1F2C5E",
+    font=("BitterRoman ExtraBold", 24 * -1)
+)
+
+canvas.create_text(
+    27.0,
+    394.0,
+    anchor="nw",
+    text="Traced Value at Point:",
     fill="#1F2C5E",
     font=("BitterRoman ExtraBold", 24 * -1)
 )
