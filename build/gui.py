@@ -7,7 +7,7 @@ from pathlib import Path
 
 # from tkinter import *
 # Explicit imports to satisfy Flake8
-from tkinter import Tk, Canvas, Entry, Button, PhotoImage
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
 
 
 OUTPUT_PATH = Path(__file__).parent
@@ -518,9 +518,9 @@ canvas.create_text(
 
 canvas.create_text(
     27.0,
-    233.0,
+    235.0,
     anchor="nw",
-    text="Rearranged Esstimate:",
+    text="Rearranged Estimate:",
     fill="#1F2C5E",
     font=("BitterRoman ExtraBold", 24 * -1)
 )
@@ -541,6 +541,82 @@ canvas.create_text(
     text="Chemical Reaction Network (CRN):",
     fill="#1F2C5E",
     font=("BitterRoman ExtraBold", 24 * -1)
+)
+
+entry_image_5 = PhotoImage(
+    file=relative_to_assets("entry_5.png"))
+entry_bg_5 = canvas.create_image(
+    709.5,
+    269.0,
+    image=entry_image_5
+)
+entry_5 = Text(
+    bd=0,
+    bg="#C4C4C4",
+    highlightthickness=0
+)
+entry_5.place(
+    x=444.0,
+    y=121.0,
+    width=531.0,
+    height=294.0
+)
+
+entry_image_6 = PhotoImage(
+    file=relative_to_assets("entry_6.png"))
+entry_bg_6 = canvas.create_image(
+    223.5,
+    179.0,
+    image=entry_image_6
+)
+entry_6 = Entry(
+    bd=0,
+    bg="#C4C4C4",
+    highlightthickness=0
+)
+entry_6.place(
+    x=27.0,
+    y=143.0,
+    width=393.0,
+    height=70.0
+)
+
+entry_image_7 = PhotoImage(
+    file=relative_to_assets("entry_7.png"))
+entry_bg_7 = canvas.create_image(
+    223.5,
+    326.0,
+    image=entry_image_7
+)
+entry_7 = Entry(
+    bd=0,
+    bg="#C4C4C4",
+    highlightthickness=0
+)
+entry_7.place(
+    x=27.0,
+    y=290.0,
+    width=393.0,
+    height=70.0
+)
+
+entry_image_8 = PhotoImage(
+    file=relative_to_assets("entry_8.png"))
+entry_bg_8 = canvas.create_image(
+    350.0,
+    407.5,
+    image=entry_image_8
+)
+entry_8 = Entry(
+    bd=0,
+    bg="#C4C4C4",
+    highlightthickness=0
+)
+entry_8.place(
+    x=280.0,
+    y=391.0,
+    width=140.0,
+    height=31.0
 )
 window.resizable(False, False)
 window.mainloop()
