@@ -1,92 +1,13 @@
 from collections import defaultdict
-from enum import Enum
-from math import factorial, sin, exp, cos, log
+from math import factorial
 
 import matplotlib.pyplot as plt
 import networkx as nx
 from scipy.misc import derivative
 from scipy.special import comb
 
-
-class FuncTypes(Enum):
-    SINUSOIDAL = "Sinusoidal"
-    SINE = "Sin"
-    COSINE = "Cos"
-    EXPONENTIAL = "Exponential"
-    LOGARITHMIC = "Log"
-
-    def isIn(self):
-        if type(self) is str:
-            if (self == FuncTypes.SINUSOIDAL.value or
-                    self == FuncTypes.SINE.value or
-                    self == FuncTypes.COSINE.value or
-                    self == FuncTypes.EXPONENTIAL.value or
-                    self == FuncTypes.LOGARITHMIC.value):
-                return 1
-            else:
-                return 0
-        else:
-            if (self == FuncTypes.SINUSOIDAL or
-                    self == FuncTypes.SINE or
-                    self == FuncTypes.COSINE or
-                    self == FuncTypes.EXPONENTIAL or
-                    self == FuncTypes.LOGARITHMIC):
-                return 1
-            else:
-                return 0
-
-
-class GateTypes(Enum):
-    NAND = "Nand"
-    AND = "And"
-    BNAND = "Bipolar Nand"
-    BAND = "Bipolar And"
-    MUX = "MUX"
-
-    def isIn(self):
-        if type(self) is str:
-            if (self == GateTypes.NAND.value or
-                    self == GateTypes.AND.value or
-                    self == GateTypes.BNAND.value or
-                    self == GateTypes.BAND.value or
-                    self == GateTypes.MUX.value):
-                return 1
-            else:
-                return 0
-        else:
-            if (self == GateTypes.NAND or
-                    self == GateTypes.AND or
-                    self == GateTypes.BNAND or
-                    self == GateTypes.BAND or
-                    self == GateTypes.MUX):
-                return 1
-            else:
-                return 0
-
-
-class NotGateTypes(Enum):
-    INPUT = "Input"
-    OUTPUT = "Output"
-    CONSTANT = "Const"
-    INTERMEDIATE = "Intermediate"
-
-    def isIn(functype):
-        if type(functype) is str:
-            if (functype == NotGateTypes.INPUT.value or
-                    functype == NotGateTypes.OUTPUT.value or
-                    functype == NotGateTypes.CONSTANT.value or
-                    functype == NotGateTypes.INTERMEDIATE.value):
-                return 1
-            else:
-                return 0
-        else:
-            if (functype == NotGateTypes.INPUT or
-                    functype == NotGateTypes.OUTPUT or
-                    functype == NotGateTypes.CONSTANT or
-                    functype == NotGateTypes.INTERMEDIATE):
-                return 1
-            else:
-                return 0
+from build import GateTypes
+from build import NotGateTypes
 
 
 def make_taylor_coeffs(func):
@@ -394,7 +315,7 @@ def removeFrivolous(graph):
     # for node in gate_nodes:
     #    print(node[0] + " - " + node[1])
     #    print(list(graph.predecessors(node)))
-    #    print("="*100) 
+    #    print("="*100)
 
     return graph
 
@@ -427,7 +348,7 @@ def show_graph(func):
     nx.draw_networkx_labels(graph, pos)
     nx.draw_networkx_edges(graph, pos, edge_color='b', arrows=True)
 
-    plt.savefig(func.title+".png", format="PNG")
+    plt.savefig("result.png", format="PNG")
 
     plt.show()
 
@@ -476,105 +397,3 @@ def make_reaction(gate_type, input_substances, output_substances, gateName):
         print("GATE ERROR: Given Gate Type ", gate_type)
         return -1
     return reaction_list
-
-
-class Function():
-    def __init__(self, function, point, order, functype, title):
-        self.circuit = None
-        self.horner_coeffs = None
-        self.poli_coeffs = None
-        self.taylor_coeffs = None
-        self.function = function
-        self.point = point
-        self.order = order
-        self.functype = functype
-        self.title = title
-
-    def generateCoeffs(self):
-        print("-" * 100)
-        print("Taylor Coeffs")
-        print("")
-        self.taylor_coeffs = make_taylor_coeffs(self)
-        for index in self.taylor_coeffs:
-            print(index, ": ", self.taylor_coeffs[index])
-
-        print("-" * 100)
-        print("Polynomial Coeffs")
-        print("")
-        self.poli_coeffs = make_polynomial(self)
-        for index in self.poli_coeffs:
-            print(index, ": ", self.poli_coeffs[index])
-
-        print("-" * 100)
-        print("Horner Expansion Coeffs")
-        print("")
-        self.horner_coeffs = make_horner(self)
-        for index in self.horner_coeffs:
-            print(index, ": ", self.horner_coeffs[index])
-
-    def generateCircuit(self):
-        self.circuit = horner_to_circuit(self)
-        show_graph(self)
-
-    def generateReactions(self):
-        make_reactions(self.circuit)
-
-    def isSinusoidal(self):
-        if self.functype == FuncTypes.SINUSOIDAL:
-            return 1
-        elif self.functype == FuncTypes.SINE:
-            return 1
-        elif self.functype == FuncTypes.COSINE:
-            return 1
-        else:
-            return 0
-
-    def isExponential(self):
-        if self.functype == FuncTypes.EXPONENTIAL:
-            return 1
-        else:
-            return 0
-
-    def isLogarithmic(self):
-        if self.functype == FuncTypes.LOGARITHMIC:
-            return 1
-        else:
-            return 0
-
-
-# # See What it is like!
-
-# ## f1(x) = exp(-x)
-#    Function(lambda function, point, order, function type)
-f1 = Function(lambda x: exp(-x), 0, 6, FuncTypes.EXPONENTIAL, "e^(-x)")
-
-f1.generateCoeffs()
-print("")
-f1.generateCircuit()
-print("")
-f1.generateReactions()
-# print("")
-# print("Frivolous Gates")
-# removeFrivolous(f1.circuit)
-
-
-# ## f2(x) = sin(x)
-#    Function(lambda function, point, order, function type)
-f2 = Function(lambda x: sin(x), 0, 8, FuncTypes.SINE, "sin(x)")
-f2.generateCoeffs()
-f2.generateCircuit()
-f2.generateReactions()
-
-# ## f3 = log(1+x)
-#    Function(lambda function, point, order, function type)
-f3 = Function(lambda x: log(x + 1), 0, 5, FuncTypes.LOGARITHMIC, "log(x+1)")
-f3.generateCoeffs()
-f3.generateCircuit()
-f3.generateReactions()
-
-# ## f4 = cos(x)
-#    Function(lambda function, point, order, function type)
-f4 = Function(lambda x: cos(x), 0, 8, FuncTypes.COSINE, "cos(x)")
-f4.generateCoeffs()
-f4.generateCircuit()
-f4.generateReactions()
