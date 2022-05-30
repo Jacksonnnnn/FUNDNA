@@ -6,8 +6,140 @@ import networkx as nx
 from scipy.misc import derivative
 from scipy.special import comb
 
-from build import GateTypes
-from build import NotGateTypes
+from build.FuncTypes import FuncTypes
+from build.GateTypes import GateTypes
+from build.NotGateTypes import NotGateTypes
+
+
+def taylorToPolyStr(func):
+    polynomial = ""
+
+    for index in func.poli_coeffs:
+        exponent = index
+        coeff = round(float(func.poli_coeffs[index]), 4)
+
+        if exponent == 0:
+            polynomial = polynomial + str(coeff) + " + "
+            continue
+
+        if exponent == 1:
+            polynomial = polynomial + str(coeff) + "*" + func.variable + " + "
+            continue
+
+        polynomial = polynomial + str(coeff) + "*" + func.variable + "^(" + str(exponent) + ") + "
+
+    polynomial = polynomial[:-3]
+    return polynomial
+
+
+def taylorToPolyStrForceX(func):
+    polynomial = ""
+
+    for index in func.poli_coeffs:
+        exponent = index
+        coeff = round(float(func.poli_coeffs[index]), 4)
+
+        if exponent == 0:
+            polynomial = polynomial + str(coeff) + " + "
+            continue
+
+        if exponent == 1:
+            polynomial = polynomial + str(coeff) + "*x + "
+            continue
+
+        polynomial = polynomial + str(coeff) + "*x^(" + str(exponent) + ") + "
+
+    polynomial = polynomial[:-3]
+    return polynomial
+
+
+def hornerFunctionToStr(func):
+    horner = ""
+    coeffs = func.horner_coeffs
+    subConstant = 1
+
+    if func.functype == FuncTypes.SINUSOIDAL:
+        for index in coeffs:
+            if index == 0: #cos
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    subConstant = 2
+                    continue
+                horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+            if index == 1: #sin
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + func.variable + "("
+                    continue
+                horner = horner + str(round(coeffs[index], 4)) + " * " + func.variable + "("
+            else:
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + "1-" + func.variable + "^2"
+                else:
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable + "^2"
+
+                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                    horner = horner + "*("
+    else:
+        for index in coeffs:
+            if index == 0:
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    subConstant = 2
+                    continue
+                horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+            else:
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + "1-" + func.variable
+                else:
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable
+
+                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                    horner = horner + "*("
+
+    horner = horner + ")" * (len(coeffs) - subConstant)
+    return horner
+
+
+def hornerFunctionToStrForceX(func):
+    horner = ""
+    coeffs = func.horner_coeffs
+    subConstant = 1
+    if func.functype == FuncTypes.SINUSOIDAL:
+        for index in coeffs:
+            if index == 0: #cos
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    subConstant = 2
+                    continue
+                horner = horner + str(round(coeffs[index], 4)) + "*("
+            if index == 1: #sin
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + "x*("
+                    continue
+                horner = horner + str(round(coeffs[index], 4)) + " *x*("
+            else:
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + "1-x"
+                else:
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
+
+                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                    horner = horner + "*("
+    else:
+        for index in coeffs:
+            if index == 0:
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    subConstant = 2
+                    continue
+                horner = horner + str(round(coeffs[index], 4)) + "*("
+            else:
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + "1-x"
+                else:
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
+
+                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                    horner = horner + "*("
+
+    horner = horner + ")" * (len(coeffs) - subConstant)
+    return horner
 
 
 def make_taylor_coeffs(func):
@@ -348,18 +480,39 @@ def show_graph(func):
     nx.draw_networkx_labels(graph, pos)
     nx.draw_networkx_edges(graph, pos, edge_color='b', arrows=True)
 
-    plt.savefig("result.png", format="PNG")
+    plt.savefig("assets/result.png", format="PNG")
 
     plt.show()
 
 
 def make_reactions(graph):
+    reactionStr = ""
     for node in graph:
         if GateTypes.isIn(node[0]):
-            reaction = make_reaction(node[0], list(graph.predecessors(node)), list(graph.neighbors(node)), node[1])
+            gate_type = node[0]
+            input_substances = list(graph.predecessors(node))
+            output_substances = list(graph.neighbors(node))
+            gateName = node[1]
+
+            reactionStr = reactionStr + gateName + "(" + gate_type + ")\n" \
+                          + "Inputs: " + input_substances[0][1] + " " + input_substances[1][1] + "\n" \
+                          + "Output(s): "
+
+            for output in output_substances:
+                reactionStr = reactionStr + " " + output[1]
+
+            reactionStr = reactionStr + "\n\nReaction Table:\n"
+
+            reaction = make_reaction(gate_type, input_substances, output_substances, gateName)
+
             for r in reaction:
                 print(r)
+                reactionStr = reactionStr + r + "\n"
             print("-" * 100)
+
+            reactionStr = reactionStr + "-" * 85 + "\n"
+
+    return reactionStr
 
 
 def make_reaction(gate_type, input_substances, output_substances, gateName):

@@ -371,6 +371,38 @@ button_20.place(
     height=46.66668701171875
 )
 
+button_image_21 = PhotoImage(
+    file=relative_to_assets("button_21.png"))
+button_21 = Button(
+    image=button_image_21,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_21 clicked"),
+    relief="flat"
+)
+button_21.place(
+    x=388.0,
+    y=638.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+button_image_22 = PhotoImage(
+    file=relative_to_assets("button_22.png"))
+button_22 = Button(
+    image=button_image_22,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("button_22 clicked"),
+    relief="flat"
+)
+button_22.place(
+    x=66.0,
+    y=474.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
@@ -502,8 +534,8 @@ entry_4.place(
 image_image_3 = PhotoImage(
     file=relative_to_assets("image_3.png"))
 image_3 = canvas.create_image(
-    1200.875,
-    253.77777862548828,
+    1201.0,
+    254.0,
     image=image_image_3
 )
 
@@ -608,32 +640,32 @@ canvas.create_rectangle(
     fill="#000000",
     outline="")
 
-button_image_21 = PhotoImage(
-    file=relative_to_assets("button_21.png"))
-button_21 = Button(
-    image=button_image_21,
+button_image_23 = PhotoImage(
+    file=relative_to_assets("button_23.png"))
+button_23 = Button(
+    image=button_image_23,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_21 clicked"),
+    command=lambda: print("button_23 clicked"),
     relief="flat"
 )
-button_21.place(
+button_23.place(
     x=1133.0,
     y=431.0,
     width=267.0,
     height=38.0
 )
 
-button_image_22 = PhotoImage(
-    file=relative_to_assets("button_22.png"))
-button_22 = Button(
-    image=button_image_22,
+button_image_24 = PhotoImage(
+    file=relative_to_assets("button_24.png"))
+button_24 = Button(
+    image=button_image_24,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_22 clicked"),
+    command=lambda: print("button_24 clicked"),
     relief="flat"
 )
-button_22.place(
+button_24.place(
     x=27.0,
     y=643.0,
     width=167.0,

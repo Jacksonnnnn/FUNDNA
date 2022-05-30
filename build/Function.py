@@ -1,16 +1,20 @@
 from build.Util import *
 
 class Function:
-    def __init__(self, function, point, order, functype, title):
+    def __init__(self, function, point, order, functype, title, variable):
+        assert FuncTypes.isIn(functype)
+
         self.circuit = None
         self.horner_coeffs = None
         self.poli_coeffs = None
         self.taylor_coeffs = None
+        self.CRN = None
         self.function = function
         self.point = point
         self.order = order
         self.functype = functype
         self.title = title
+        self.variable = variable
 
     def generateCoeffs(self):
         print("-" * 100)
@@ -39,7 +43,7 @@ class Function:
         show_graph(self)
 
     def generateReactions(self):
-        make_reactions(self.circuit)
+        self.CRN = make_reactions(self.circuit)
 
     def isSinusoidal(self):
         if self.functype == FuncTypes.SINUSOIDAL:
