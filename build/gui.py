@@ -4,6 +4,8 @@ from pathlib import Path
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 
+from math import *
+
 import sympy
 import sympy as sp
 from PIL import Image, ImageTk
