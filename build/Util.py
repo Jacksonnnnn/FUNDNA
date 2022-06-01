@@ -274,8 +274,8 @@ def horner_to_circuit(func):
             if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # First grouping (innermost 1-jx^2, where j is coeff)
                 # AND x with itself (x^2)
                 AddBaseGate(graph, gateIndex, GateTypes.AND.value,  # graph, GIndex, GateType
-                            NotGateTypes.INPUT.value, "X",  # Value1 Type, Value1
-                            NotGateTypes.INPUT.value, "X ")  # Value2 Type, Value2
+                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
+                            NotGateTypes.INPUT.value, func.variable.upper() + " ")  # Value2 Type, Value2
                 xSquaredGate = gateIndex
                 gateIndex = gateIndex + 1
 
@@ -307,7 +307,7 @@ def horner_to_circuit(func):
                         AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
                                         # graph, prevGateType, prevGateIndex
                                         gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                        NotGateTypes.INPUT.value, "X")  # valType, value
+                                        NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
                         gateIndex = gateIndex + 1
 
                         # AND prev result with first coeff
@@ -329,7 +329,7 @@ def horner_to_circuit(func):
             if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # First grouping (innermost 1-jx, where j is coeff)
                 # NAND X and last coeff
                 AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
-                            NotGateTypes.INPUT.value, "X",  # Value1 Type, Value1
+                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
                             NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
                 gateIndex = gateIndex + 1
 
@@ -344,7 +344,7 @@ def horner_to_circuit(func):
                     # NAND prev result with X
                     AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
                                     gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.INPUT.value, "X")  # valType, value
+                                    NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
                     gateIndex = gateIndex + 1
 
                 else:  # Last grouping, where case 1: jx(...) is last group (i == 1), or case 2: j(1-kx(...)) is last
@@ -360,7 +360,7 @@ def horner_to_circuit(func):
                         # AND prev output with X
                         AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
                                         gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                        NotGateTypes.INPUT.value, "X")  # valType, value
+                                        NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
                         gateIndex = gateIndex + 1
 
                         if 0 not in list(coeffs.keys()):  # case 1
@@ -397,11 +397,11 @@ def horner_to_circuit(func):
 
     if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
         graph.add_edge((GateTypes.AND.value, "G" + str(gateIndex - 1)),
-                       (NotGateTypes.OUTPUT.value, "f(x)"))
+                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
         graph.add_edge((GateTypes.NAND.value, "G" + str(gateIndex - 1)),
-                       (NotGateTypes.OUTPUT.value, "f(x)"))
+                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     for node in gate_nodes:
         print(node[0] + " - " + node[1])
@@ -495,7 +495,7 @@ def make_reactions(graph):
             gateName = node[1]
 
             reactionStr = reactionStr + gateName + "(" + gate_type + ")\n" \
-                          + "Inputs: " + input_substances[0][1] + " " + input_substances[1][1] + "\n" \
+                          + "Inputs: " + input_substances[0][1] + ", " + input_substances[1][1] + "\n" \
                           + "Output(s): "
 
             for output in output_substances:
