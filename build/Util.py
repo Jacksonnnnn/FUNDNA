@@ -56,13 +56,11 @@ def taylorToPolyStrForceX(func):
 def hornerFunctionToStr(func):
     horner = ""
     coeffs = func.horner_coeffs
-    subConstant = 1
 
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
             if index == 0: #cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    subConstant = 2
                     continue
                 horner = horner + str(round(coeffs[index], 4)) + "*" + "("
             if index == 1: #sin
@@ -81,10 +79,18 @@ def hornerFunctionToStr(func):
     else:
         for index in coeffs:
             if index == 0:
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    subConstant = 2
-                    continue
                 horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+            if index == 1:
+                if horner == "":
+                    horner = horner + str(round(coeffs[index], 4)) + "*" + func.variable + "*" + "("
+                else:
+                    if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                        horner = horner + "1-" + func.variable
+                    else:
+                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable
+
+                    if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                        horner = horner + "*("
             else:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + "1-" + func.variable
@@ -94,19 +100,17 @@ def hornerFunctionToStr(func):
                 if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                     horner = horner + "*("
 
-    horner = horner + ")" * (len(coeffs) - subConstant)
+    horner = horner + ")" * (horner.count("("))
     return horner
 
 
 def hornerFunctionToStrForceX(func):
     horner = ""
     coeffs = func.horner_coeffs
-    subConstant = 1
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
             if index == 0: #cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    subConstant = 2
                     continue
                 horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1: #sin
@@ -125,10 +129,18 @@ def hornerFunctionToStrForceX(func):
     else:
         for index in coeffs:
             if index == 0:
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    subConstant = 2
-                    continue
                 horner = horner + str(round(coeffs[index], 4)) + "*("
+            if index == 1:
+                if horner == "":
+                    horner = horner + str(round(coeffs[index], 4)) + "*x*" + "("
+                else:
+                    if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                        horner = horner + "1-x"
+                    else:
+                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
+
+                    if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                        horner = horner + "*("
             else:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + "1-x"
@@ -138,7 +150,7 @@ def hornerFunctionToStrForceX(func):
                 if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                     horner = horner + "*("
 
-    horner = horner + ")" * (len(coeffs) - subConstant)
+    horner = horner + ")" * (horner.count("("))
     return horner
 
 
@@ -348,7 +360,7 @@ def horner_to_circuit(func):
                     gateIndex = gateIndex + 1
 
                 else:  # Last grouping, where case 1: jx(...) is last group (i == 1), or case 2: j(1-kx(...)) is last
-                    # group (i == 0)
+                    # group (i == 1)
                     if index == 1:
                         # AND prev result with next coeff
                         AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,

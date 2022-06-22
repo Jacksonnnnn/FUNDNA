@@ -105,6 +105,7 @@ def calculate():
 
     x = "x"
     expr = "$\displaystyle " + sympy.latex(sympify(Util.taylorToPolyStr(function))) + "$"
+    print(expr)
 
     # This creates a PNG file and saves there the output of sympy.preview
     bg_color = "{196, 196, 196}"
@@ -126,7 +127,11 @@ def calculate():
 
     # convert horner polynomial coeff dictionary to expression - set label (entry_7)
     x = "x"
+    print("!" * 50)
+    print(Util.hornerFunctionToStr(function))
+    print("!" * 50)
     expr = "$\displaystyle " + sympy.latex(sympify(Util.hornerFunctionToStr(function))) + "$"
+    print(expr)
 
     # This creates a PNG file and saves there the output of sympy.preview
     bg_color = "{196, 196, 196}"
@@ -218,6 +223,12 @@ def insertButton(button):
 
 
 window = Tk()
+
+favicon = PhotoImage(file=relative_to_assets("UK logo-white.png"))
+
+# Setting icon of master window
+window.iconphoto(True, favicon)
+window.title("UK DNA Function Designer")
 
 window.geometry("1400x700")
 window.configure(bg="#DCDDDE")
