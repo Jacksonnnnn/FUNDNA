@@ -59,11 +59,11 @@ def hornerFunctionToStr(func):
 
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
-            if index == 0: #cos
+            if index == 0:  # cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     continue
                 horner = horner + str(round(coeffs[index], 4)) + "*" + "("
-            if index == 1: #sin
+            if index == 1:  # sin
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + func.variable + "("
                     continue
@@ -109,11 +109,11 @@ def hornerFunctionToStrForceX(func):
     coeffs = func.horner_coeffs
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
-            if index == 0: #cos
+            if index == 0:  # cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     continue
                 horner = horner + str(round(coeffs[index], 4)) + "*("
-            if index == 1: #sin
+            if index == 1:  # sin
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + "x*("
                     continue
@@ -210,6 +210,35 @@ def make_horner(func):
             horner_coeffs[index] = -func.horner_coeffs[index] / func.horner_coeffs[prev_index]
         prev_index = index
     return horner_coeffs
+
+
+def makeDoubleNAND(func):
+    func.doubleNAND_coeffs = ignore_small_coeffs(func.poli_coeffs)
+    coeffs = {}
+    tempList = list(func.doubleNAND_coeffs)
+    tempListKeys = list(func.doubleNAND_coeffs.keys())
+
+    for index in enumerate(func.doubleNAND_coeffs):
+        if index == 0:
+            coeffs[index] = (1 - func.doubleNAND_coeffs[index])
+        if index == tempListKeys[-1]:
+            total = 0
+            for indexj in enumerate(func.doubleNAND_coeffs):
+                total = total + func.doubleNAND_coeffs[indexj]
+            total = total - tempList[-1]
+            coeffs[index] = (func.doubleNAND_coeffs[index]) / (1 - total)
+        else:
+            total = 0
+            for indexj in enumerate(func.doubleNAND_coeffs):
+                if index > indexj:
+                    total = total + func.doubleNAND_coeffs[indexj]
+            coeffs[index] = (1 - total - func.doubleNAND_coeffs[index]) / (1 - total)
+
+    return coeffs
+
+
+def doubleNAND_to_circuit(func):
+    pass
 
 
 def AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2):
@@ -424,6 +453,8 @@ def horner_to_circuit(func):
 
 
 def removeFrivolous(graph):
+    # If Gate is AND 1 with something, remove gate, connect the previous with the next.
+    # AND 1 with another value is redundant, so it costs more for no reason
     pass
     gate_nodes = []
 
@@ -436,24 +467,16 @@ def removeFrivolous(graph):
     for node in graph.nodes():
         if GateTypes.isIn(node[0]):
             if node[0] is GateTypes.AND.value:  # is an AND Gate
-                if list(graph.predecessors(node))[0][
-                    0] is NotGateTypes.CONSTANT.value:  # the first gate input is a constant
+                if list(graph.predecessors(node))[0][0] is NotGateTypes.CONSTANT.value:  # the first gate input is a constant
                     print(list(graph.predecessors(node)))
 
-                    if (float(list(graph.predecessors(node))[0][1]) <= 1.0001 or
-                            float(list(graph.predecessors(node))[0][
-                                      1]) >= 0.9998):  # Can be removed (AND 1 and another number)
+                    if float(list(graph.predecessors(node))[0][1]) == 1.0:  # Can be removed (AND 1 and another number)
+                        nx.relabel_nodes(graph)  # nx.relabel_nodes(graph, mapping)
 
-                        nx.relabel_nodes()  # nx.relabel_nodes(graph, mapping)
-
-                elif (list(graph.predecessors(node))[1][
-                          0] is NotGateTypes.CONSTANT.value):  # the second gate input is a constant
+                elif list(graph.predecessors(node))[1][0] is NotGateTypes.CONSTANT.value:  # the second gate input is a constant
                     print(list(graph.predecessors(node)))
 
-                    if (float(list(graph.predecessors(node))[1][1]) <= 1.0001 or
-                            float(list(graph.predecessors(node))[1][
-                                      1]) >= 0.9998):  # Can be removed (AND another number and 1)
-
+                    if float(list(graph.predecessors(node))[1][1]) <= 1.0:  # Can be removed (AND another number and 1)
                         nx.relabel_nodes()  # nx.relabel_nodes(graph, mapping)
 
     # for node in gate_nodes:

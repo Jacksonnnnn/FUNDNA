@@ -12,6 +12,7 @@ from PIL import Image, ImageTk
 from sympy import sympify
 
 from build import FuncTypes, Util
+from build.RearrangeType import RearrangeType
 from build.Function import Function
 
 OUTPUT_PATH = Path(__file__).parent
@@ -19,13 +20,10 @@ ASSETS_PATH = OUTPUT_PATH / Path("./assets")
 
 variable = "x"
 point = 0
-power = 7
-trace = 0
+power = 6
 functionStr = "exp(-x)"
 lExpress = ""
 lFunc = None
-taylorSeries = ""
-rearrangedEq = ""
 
 
 def relative_to_assets(path: str) -> Path:
@@ -53,33 +51,30 @@ def updateVariables():
     lFunc = eval(lExpress)
 
     print("-=( + Updated Variables (Local) + )=-")
-    print(functionStr)
-    print(variable)
-    print(point)
-    print(power)
-    print(lExpress)
+    print("Function String: " + functionStr)
+    print("Variable Selected: " + variable)
+    print("Around Point: " + point.__str__())
+    print("Degree Est.: " + power.__str__())
+    print("Lambda Expression: " + lExpress)
     print("-----------")
 
 
 def calculate():
     global image_3
-    global taylorSeries
-    global trace
-    global rearrangedEq
     global lFunc
 
     # Update Variables
     updateVariables()
 
     print("-=( + Updated Variables (Global) + )=-")
-    print(functionStr)
-    print(variable)
-    print(functionStr.__contains__(variable))
-    print(point)
-    print(power)
-    print(lExpress)
-    print(lFunc)
-    print("-----------")
+    print("Function String: " + functionStr)
+    print("Variable Selected: " + variable)
+    print("Contains Variable: " + functionStr.__contains__(variable).__str__())
+    print("Around Point: " + point.__str__())
+    print("Degree Est.: " + power.__str__())
+    print("Lambda Expression: " + lExpress)
+    print("Lambda Function" + lFunc.__str__())
+    print("-" * 100)
 
     # Convert to Function Parameter Types
     funcType = FuncTypes.FuncTypes.SINUSOIDAL
@@ -93,82 +88,81 @@ def calculate():
     function = Function(lFunc, point, power, funcType, functionStr, variable)
              # Function(lambda function, point, order, type, title, variable)
 
-    print(function.functype)
+    print("Function Type: " + function.functype.__str__())
 
     # Generate Function Results
     function.generateCoeffs()
-    function.generateCircuit()
-    function.generateReactions()
+    if function.rearrangeType != RearrangeType.UNKNOWN:
+        function.generateCircuit()
+        function.generateReactions()
 
-    # Set Labels
-    # convert taylor polynomial coeff dictionary to expression - set label (entry_6)
+        # Set Labels
+        # convert taylor polynomial coeff dictionary to expression - set label (entry_6)
+        x = "x"
+        expr = "$\displaystyle " + sympy.latex(sympify(function.taylorString)) + "$"
 
-    x = "x"
-    expr = "$\displaystyle " + sympy.latex(sympify(Util.taylorToPolyStr(function))) + "$"
-    print(expr)
+        # This creates a PNG file and saves there the output of sympy.preview
+        bg_color = "{196, 196, 196}"
+        sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
+                                               r"\usepackage{pagecolor}"
+                                               r"\definecolor{background}{RGB}" + bg_color +
+                                               r"\pagecolor{background}"
+                                               r"\begin{document}",
+                   viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
+        # Open the image as if it were a file. This works only for .ps!
+        img = Image.open(relative_to_assets("taylor.png"))
+        # See note at the bottom
+        img.load()
+        img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
+        photo = ImageTk.PhotoImage(img)
+        entry_6.config(image=photo)
+        entry_6.image = photo
 
-    # This creates a PNG file and saves there the output of sympy.preview
-    bg_color = "{196, 196, 196}"
-    text_color = "{31, 44, 94}"
-    sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
-                                           r"\usepackage{pagecolor}"
-                                           r"\definecolor{background}{RGB}" + bg_color +
-                                           r"\pagecolor{background}"
-                                           r"\begin{document}",
-               viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
-    # Open the image as if it were a file. This works only for .ps!
-    img = Image.open(relative_to_assets("taylor.png"))
-    # See note at the bottom
-    img.load()
-    img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
-    photo = ImageTk.PhotoImage(img)
-    entry_6.config(image=photo)
-    entry_6.image = photo
+        # convert rearranged polynomial coeff dictionary to expression - set label (entry_7)
+        x = "x"
+        expr = "$\displaystyle " + sympy.latex(sympify(function.rearrangeString)) + "$"
 
-    # convert horner polynomial coeff dictionary to expression - set label (entry_7)
-    x = "x"
-    print("!" * 50)
-    print(Util.hornerFunctionToStr(function))
-    print("!" * 50)
-    expr = "$\displaystyle " + sympy.latex(sympify(Util.hornerFunctionToStr(function))) + "$"
-    print(expr)
+        # This creates a PNG file and saves there the output of sympy.preview
+        bg_color = "{196, 196, 196}"
+        sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
+                                               r"\usepackage{pagecolor}"
+                                               r"\definecolor{background}{RGB}" + bg_color +
+                                               r"\pagecolor{background}"
+                                               r"\begin{document}",
+                   viewer="file", filename=relative_to_assets("rearranged.png"), dvioptions=["-D 1200"])
+        # Open the image as if it were a file. This works only for .ps!
+        img = Image.open(relative_to_assets("rearranged.png"))
+        # See note at the bottom
+        img.load()
+        img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
+        photo = ImageTk.PhotoImage(img)
+        entry_7.config(image=photo)
+        entry_7.image = photo
 
-    # This creates a PNG file and saves there the output of sympy.preview
-    bg_color = "{196, 196, 196}"
-    text_color = "{31, 44, 94}"
-    sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
-                                           r"\usepackage{pagecolor}"
-                                           r"\definecolor{background}{RGB}" + bg_color +
-                                           r"\pagecolor{background}"
-                                           r"\begin{document}",
-               viewer="file", filename=relative_to_assets("rearranged.png"), dvioptions=["-D 1200"])
-    # Open the image as if it were a file. This works only for .ps!
-    img = Image.open(relative_to_assets("rearranged.png"))
-    # See note at the bottom
-    img.load()
-    img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
-    photo = ImageTk.PhotoImage(img)
-    entry_7.config(image=photo)
-    entry_7.image = photo
+        # trace equation - set label (entry_8)
+        function.generateTrace()
+        entry_8.delete(0, END)
+        entry_8.insert(INSERT, str(function.traceValue))
 
-    # trace equation - set label (entry_8)
-    x = point
-    traceStr = Util.hornerFunctionToStrForceX(function)
-    print(traceStr)
-    trace = eval(traceStr)
-    entry_8.delete(0, END)
-    entry_8.insert(INSERT, str(trace))
+        # generate crn - set label (entry_5)
+        entry_5.delete('1.0', END)
+        entry_5.insert(INSERT, function.CRN)
 
-    # generate crn - set label (entry_5)
-    entry_5.delete('1.0', END)
-    entry_5.insert(INSERT, function.CRN)
+        # Update Circuit Diagram
+        img = Image.open(relative_to_assets("result.png"))
+        img = img.resize((398, 354))
+        img.save(relative_to_assets("result.png"), "PNG")
 
-    # Update Circuit Diagram
-    img = Image.open(relative_to_assets("result.png"))
-    img = img.resize((398, 354))
-    img.save(relative_to_assets("result.png"), "PNG")
+        image_image_3.configure(file=relative_to_assets("result.png"), width=398, height=354)
 
-    image_image_3.configure(file=relative_to_assets("result.png"), width=398, height=354)
+    else:
+        entry_5.delete('1.0', END)
+        entry_5.insert(INSERT, "Function Type Not Supported!\n" +
+                               "Function: " + function.title + "\n" +
+                               "Around Point: " + function.point.__str__() + "\n" +
+                               "Degree Estimation: " + function.order.__str__() + "\n" +
+                               "Taylor Series: \n" +
+                               function.taylorString)
 
 def clearEq():
     entry_4.delete(0, END)
