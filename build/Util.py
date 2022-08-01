@@ -300,6 +300,7 @@ def horner_to_circuit(func):
     graph = nx.DiGraph()
     gateIndex = 1
     coeffs = func.horner_coeffs
+    isLastGateNand = 0
 
     transCoeffs = reversed(coeffs)
 
@@ -390,7 +391,7 @@ def horner_to_circuit(func):
 
                 else:  # Last grouping, where case 1: jx(...) is last group (i == 1), or case 2: j(1-kx(...)) is last
                     # group (i == 1)
-                    if index == 1:
+                    if 0 not in list(coeffs.keys()): # case 1 - jx(...)
                         # AND prev result with next coeff
                         AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
                                         # graph, prevGateType, prevGateIndex
@@ -402,28 +403,23 @@ def horner_to_circuit(func):
                         AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
                                         gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
                                         NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
-                        gateIndex = gateIndex + 1
 
-                        if 0 not in list(coeffs.keys()):  # case 1
-                            break
-
-                    else:  # case 2
-                        # AND prev result with next coeff
-                        temp_gate_nodes = []
-
-                        for node in graph.nodes():
-                            for gate in GateTypes:
-                                if node[0] == gate.value:
-                                    temp_gate_nodes.append(node)
-
-                        if temp_gate_nodes[(len(temp_gate_nodes) - 1)][0] == GateTypes.AND.value:
-                            AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,
+                    else: # case 2 - j(1-kx(...))
+                        if index == 1:
+                            # AND prev result with next coeff
+                            AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
                                             # graph, prevGateType, prevGateIndex
                                             gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
                                             NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
                             gateIndex = gateIndex + 1
 
-                        elif temp_gate_nodes[(len(temp_gate_nodes) - 1)][0] == GateTypes.NAND.value:
+                            # NAND prev result with X
+                            AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                            gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                            NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
+                            gateIndex = gateIndex + 1
+                        else: # index == 0
+                            # AND prev result with next coeff
                             AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
                                             # graph, prevGateType, prevGateIndex
                                             gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
