@@ -91,7 +91,7 @@ def hornerFunctionToStr(func):
 
                     if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                         horner = horner + "*("
-            else:
+            if index != 1 and index != 0:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + "1-" + func.variable
                 else:
