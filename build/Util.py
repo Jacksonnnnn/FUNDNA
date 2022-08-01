@@ -215,24 +215,24 @@ def make_horner(func):
 def makeDoubleNAND(func):
     func.doubleNAND_coeffs = ignore_small_coeffs(func.poli_coeffs)
     coeffs = {}
-    tempList = list(func.doubleNAND_coeffs)
+    tempList = list(func.doubleNAND_coeffs.values())
     tempListKeys = list(func.doubleNAND_coeffs.keys())
 
-    for index in enumerate(func.doubleNAND_coeffs):
-        if index == 0:
+    for index in func.doubleNAND_coeffs:
+        if index == 0: #first coeff
             coeffs[index] = (1 - func.doubleNAND_coeffs[index])
-        if index == tempListKeys[-1]:
+        if index == tempListKeys[-1]: #last in coeffs
             total = 0
-            for indexj in enumerate(func.doubleNAND_coeffs):
+            for indexj in func.doubleNAND_coeffs:
                 total = total + func.doubleNAND_coeffs[indexj]
             total = total - tempList[-1]
             coeffs[index] = (func.doubleNAND_coeffs[index]) / (1 - total)
         else:
             total = 0
-            for indexj in enumerate(func.doubleNAND_coeffs):
+            for indexj in func.doubleNAND_coeffs:
                 if index > indexj:
                     total = total + func.doubleNAND_coeffs[indexj]
-            coeffs[index] = (1 - total - func.doubleNAND_coeffs[index]) / (1 - total)
+            coeffs[index] = (1 - (total + func.doubleNAND_coeffs[index])) / (1 - total)
 
     return coeffs
 
