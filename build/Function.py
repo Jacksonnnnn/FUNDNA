@@ -39,7 +39,7 @@ class Function:
         for index in self.poli_coeffs:
             print(index, ": ", self.poli_coeffs[index])
 
-        self.taylorString = taylorToPolyStr(self)
+        self.taylorString = taylorToPolyStr(self, 0)
         print("Taylor Polynomial String: " + self.taylorString)
 
         self.rearrangeType = self.determineRearrangement()
@@ -48,9 +48,10 @@ class Function:
             print("-" * 100)
             print("Double NAND Expansion Coeffs")
             print("")
-            self.doubleNAND_coeffs = makeDoubleNAND(self)
+            self.doubleNAND_coeffs = make_doubleNAND(self)
             for index in self.doubleNAND_coeffs:
                 print(index, ": ", self.doubleNAND_coeffs[index])
+            self.rearrangeString = doubleNANDFunctionToStr(self, 0)
             print("Rearrangement String: " + self.rearrangeString)
         if self.rearrangeType == RearrangeType.HORNER:
             print("-" * 100)
@@ -59,7 +60,7 @@ class Function:
             self.horner_coeffs = make_horner(self)
             for index in self.horner_coeffs:
                 print(index, ": ", self.horner_coeffs[index])
-            self.rearrangeString = hornerFunctionToStr(self)
+            self.rearrangeString = hornerFunctionToStr(self, 0)
             print("Rearrangement String" + self.rearrangeString)
 
     def determineRearrangement(self):
@@ -95,12 +96,10 @@ class Function:
 
             if abs(lastValue) < round(abs(self.poli_coeffs[index]), 4):
                 decreasingCoeffs = 0
-                print(abs(lastValue), "is less than", round(abs(self.poli_coeffs[index]), 4))
                 continue
 
             if abs(lastValue) > round(abs(self.poli_coeffs[index]), 4):
                 lastValue = round(abs(self.poli_coeffs[index]), 4)
-                print(abs(lastValue), "is greater than", round(abs(self.poli_coeffs[index]), 4))
                 continue
 
             if abs(lastValue) == round(abs(self.poli_coeffs[index]), 4):
@@ -138,12 +137,6 @@ class Function:
             print("-" * 100)
             return RearrangeType.UNKNOWN
 
-    def findNextNonZeroPoliValue(current):
-        for i in self.poli_coeffs:
-            if current > i:
-                if self.poli_coeffs[i] != 0:
-                    return self.poli_coeffs[i]
-
     def generateCircuit(self):
         if self.rearrangeType == RearrangeType.DOUBLE_NAND:
             self.circuit = doubleNAND_to_circuit(self)
@@ -162,7 +155,7 @@ class Function:
         if self.rearrangeType == RearrangeType.DOUBLE_NAND:
             pass
         if self.rearrangeType == RearrangeType.HORNER:
-            self.traceString = hornerFunctionToStrForceX(self)
+            self.traceString = hornerFunctionToStr(self, 1)
             x = self.point
             self.traceValue = eval(self.traceString)
 

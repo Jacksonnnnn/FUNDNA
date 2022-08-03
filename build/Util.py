@@ -11,8 +11,12 @@ from build.GateTypes import GateTypes
 from build.NotGateTypes import NotGateTypes
 
 
-def taylorToPolyStr(func):
+def taylorToPolyStr(func, forceX):
     polynomial = ""
+    if forceX:
+        variable = "x"
+    else:
+        variable = func.variable
 
     for index in func.poli_coeffs:
         exponent = index
@@ -23,39 +27,27 @@ def taylorToPolyStr(func):
             continue
 
         if exponent == 1:
-            polynomial = polynomial + str(coeff) + "*" + func.variable + " + "
+            polynomial = polynomial + str(coeff) + "*" + variable + " + "
             continue
 
-        polynomial = polynomial + str(coeff) + "*" + func.variable + "^(" + str(exponent) + ") + "
+        polynomial = polynomial + str(coeff) + "*" + variable + "^(" + str(exponent) + ") + "
 
     polynomial = polynomial[:-3]
     return polynomial
 
 
-def taylorToPolyStrForceX(func):
-    polynomial = ""
+def doubleNANDFunctionToStr(func, forceX):
 
-    for index in func.poli_coeffs:
-        exponent = index
-        coeff = round(float(func.poli_coeffs[index]), 4)
-
-        if exponent == 0:
-            polynomial = polynomial + str(coeff) + " + "
-            continue
-
-        if exponent == 1:
-            polynomial = polynomial + str(coeff) + "*x + "
-            continue
-
-        polynomial = polynomial + str(coeff) + "*x^(" + str(exponent) + ") + "
-
-    polynomial = polynomial[:-3]
-    return polynomial
+    pass
 
 
-def hornerFunctionToStr(func):
+def hornerFunctionToStr(func, forceX):
     horner = ""
     coeffs = func.horner_coeffs
+    if forceX:
+        variable = "x"
+    else:
+        variable = func.variable
 
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
@@ -65,14 +57,14 @@ def hornerFunctionToStr(func):
                 horner = horner + str(round(coeffs[index], 4)) + "*" + "("
             if index == 1:  # sin
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + func.variable + "("
+                    horner = horner + variable + "("
                     continue
-                horner = horner + str(round(coeffs[index], 4)) + " * " + func.variable + "("
+                horner = horner + str(round(coeffs[index], 4)) + " * " + variable + "("
             else:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-" + func.variable + "^2"
+                    horner = horner + "1-" + variable + "^2"
                 else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable + "^2"
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable + "^2"
 
                 if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                     horner = horner + "*("
@@ -82,70 +74,20 @@ def hornerFunctionToStr(func):
                 horner = horner + str(round(coeffs[index], 4)) + "*" + "("
             if index == 1:
                 if horner == "":
-                    horner = horner + str(round(coeffs[index], 4)) + "*" + func.variable + "*" + "("
+                    horner = horner + str(round(coeffs[index], 4)) + "*" + variable + "*" + "("
                 else:
                     if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                        horner = horner + "1-" + func.variable
+                        horner = horner + "1-" + variable
                     else:
-                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable
+                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable
 
                     if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                         horner = horner + "*("
             if index != 1 and index != 0:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-" + func.variable
+                    horner = horner + "1-" + variable
                 else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable
-
-                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                    horner = horner + "*("
-
-    horner = horner + ")" * (horner.count("("))
-    return horner
-
-
-def hornerFunctionToStrForceX(func):
-    horner = ""
-    coeffs = func.horner_coeffs
-    if func.functype == FuncTypes.SINUSOIDAL:
-        for index in coeffs:
-            if index == 0:  # cos
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    continue
-                horner = horner + str(round(coeffs[index], 4)) + "*("
-            if index == 1:  # sin
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "x*("
-                    continue
-                horner = horner + str(round(coeffs[index], 4)) + " *x*("
-            else:
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-x"
-                else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
-
-                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                    horner = horner + "*("
-    else:
-        for index in coeffs:
-            if index == 0:
-                horner = horner + str(round(coeffs[index], 4)) + "*("
-            if index == 1:
-                if horner == "":
-                    horner = horner + str(round(coeffs[index], 4)) + "*x*" + "("
-                else:
-                    if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                        horner = horner + "1-x"
-                    else:
-                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
-
-                    if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                        horner = horner + "*("
-            if index != 1 and index != 2:
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-x"
-                else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable
 
                 if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                     horner = horner + "*("
@@ -212,7 +154,7 @@ def make_horner(func):
     return horner_coeffs
 
 
-def makeDoubleNAND(func):
+def make_doubleNAND(func):
     func.doubleNAND_coeffs = ignore_small_coeffs(func.poli_coeffs)
     coeffs = {}
     tempList = list(func.doubleNAND_coeffs.values())
