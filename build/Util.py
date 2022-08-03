@@ -179,10 +179,6 @@ def make_doubleNAND(func):
     return coeffs
 
 
-def doubleNAND_to_circuit(func):
-    pass
-
-
 def AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2):
     assert gateType in [GateTypes.NAND.value,
                         GateTypes.BNAND.value,
@@ -238,16 +234,78 @@ def AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, 
     return graph
 
 
+def doubleNAND_to_circuit(func):
+    graph = nx.DiGraph()
+    gateIndex = 1
+    coeffs = func.doubleNAND_coeffs  # starts with 0 (innermost coeff)
+
+    transCoeffs = reversed(coeffs)  # starts with last coeff (outermost coeff)
+
+    # Ways to create a gate:
+    #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
+    #           AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value)
+    #
+
+    if func.isSinusoidal():  # uses x^2
+        pass
+    else:  # only uses x
+        for index in coeffs:
+            if index == 0:  # innermost
+                # NAND coeff i==0 with x
+                AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
+                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
+                            NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
+                gateIndex = gateIndex + 1
+            else:
+                if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # outermost
+
+                    # NAND coeff i==n with prev result, finish
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+
+                else:  # middle section
+
+                    # NAND coeff with prev result
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                    gateIndex = gateIndex + 1
+
+                    # NAND x with prev result
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
+                    gateIndex = gateIndex + 1
+        gate_nodes = []
+
+        for node in graph.nodes():
+            if GateTypes.isIn(node[0]):
+                gate_nodes.append(node)
+
+        if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
+            graph.add_edge((GateTypes.AND.value, "G" + str(gateIndex - 1)),
+                           (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+
+        elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
+            graph.add_edge((GateTypes.NAND.value, "G" + str(gateIndex - 1)),
+                           (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+
+        for node in gate_nodes:
+            print(node[0] + " - " + node[1])
+            print(list(graph.predecessors(node)))
+            print("=" * 100)
+        return graph
+
 def horner_to_circuit(func):
     graph = nx.DiGraph()
     gateIndex = 1
     coeffs = func.horner_coeffs
-    isLastGateNand = 0
 
     transCoeffs = reversed(coeffs)
 
     # Ways to create a gate:
-    #           AddGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
+    #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
     #           AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value)
     #
 
