@@ -6,7 +6,8 @@ This project uses DNA as logic gates to create a Chemical Reaction Network (CRN)
 
 ## Important Information
 #### Background
-Read the scholarly article here: https://www.nature.com/articles/s41598-018-26709-6
+Basis and Horner's Expansion Scholarly Article: https://www.nature.com/articles/s41598-018-26709-6 \
+Double-NAND Expansion Scholarly Article DOI: http://dx.doi.org/10.1145/3060403.3060410
 
 ### About the Project
 #### Project Lead
