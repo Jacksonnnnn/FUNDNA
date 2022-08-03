@@ -37,8 +37,27 @@ def taylorToPolyStr(func, forceX):
 
 
 def doubleNANDFunctionToStr(func, forceX):
+    doubleNand = ""
+    coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+    if forceX:
+        variable = "x"
+    else:
+        variable = func.variable
 
-    pass
+    if func.functype == FuncTypes.SINUSOIDAL:
+        pass
+    else:
+        for index in coeffs:
+            if index == list(coeffs.keys())[0]:
+                doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*("
+            else:
+                if index == list(coeffs.keys())[-1]:
+                    doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*" + variable
+                else:
+                    doubleNand = doubleNand + "1-" + variable + "*(1-" + str(round(coeffs[index], 4)) + "*("
+
+    doubleNand = doubleNand + ")" * (doubleNand.count("("))
+    return doubleNand
 
 
 def hornerFunctionToStr(func, forceX):
@@ -71,10 +90,10 @@ def hornerFunctionToStr(func, forceX):
     else:
         for index in coeffs:
             if index == 0:
-                horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+                horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1:
                 if horner == "":
-                    horner = horner + str(round(coeffs[index], 4)) + "*" + variable + "*" + "("
+                    horner = horner + str(round(coeffs[index], 4)) + "*" + variable + "*("
                 else:
                     if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                         horner = horner + "1-" + variable
