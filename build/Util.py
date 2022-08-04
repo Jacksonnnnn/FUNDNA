@@ -11,8 +11,12 @@ from build.GateTypes import GateTypes
 from build.NotGateTypes import NotGateTypes
 
 
-def taylorToPolyStr(func):
+def taylorToPolyStr(func, forceX):
     polynomial = ""
+    if forceX:
+        variable = "x"
+    else:
+        variable = func.variable
 
     for index in func.poli_coeffs:
         exponent = index
@@ -23,129 +27,98 @@ def taylorToPolyStr(func):
             continue
 
         if exponent == 1:
-            polynomial = polynomial + str(coeff) + "*" + func.variable + " + "
+            polynomial = polynomial + str(coeff) + "*" + variable + " + "
             continue
 
-        polynomial = polynomial + str(coeff) + "*" + func.variable + "^(" + str(exponent) + ") + "
+        polynomial = polynomial + str(coeff) + "*" + variable + "^(" + str(exponent) + ") + "
 
     polynomial = polynomial[:-3]
     return polynomial
 
 
-def taylorToPolyStrForceX(func):
-    polynomial = ""
+def doubleNANDFunctionToStr(func, forceX):
+    doubleNand = ""
+    coeffs = func.doubleNAND_coeffs
+    if forceX:
+        variable = "x"
+    else:
+        variable = func.variable
 
-    for index in func.poli_coeffs:
-        exponent = index
-        coeff = round(float(func.poli_coeffs[index]), 4)
+    if func.functype == FuncTypes.SINUSOIDAL:
+        for index in coeffs:
+            if not coeffs.keys().__contains__(0):
+                if index % 2 == 0:  # even exponents
+                    if index == list(coeffs.keys())[0]:  # outermost
+                        doubleNand = doubleNand + variable + "^2*(1-" + str(round(coeffs[index], 4))
+                    elif index == list(coeffs.keys())[-1]:  # innermost
+                        doubleNand = doubleNand + "*(1-" + str(round(coeffs[index], 4)) + "*" + variable + "^2"
+                    else:  # inner
+                        doubleNand = doubleNand + "*(1-" + variable + "^2*(1-" + str(round(coeffs[index], 4))
+                else:  # odd exponents
+                    print("TODO FEATURE ERROR!!!")
+    else:
+        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
 
-        if exponent == 0:
-            polynomial = polynomial + str(coeff) + " + "
-            continue
+        for index in coeffs:
+            if index == list(coeffs.keys())[0]:
+                doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*("
+            else:
+                if index == list(coeffs.keys())[-1]:
+                    doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*" + variable
+                else:
+                    doubleNand = doubleNand + "1-" + variable + "*(1-" + str(round(coeffs[index], 4)) + "*("
 
-        if exponent == 1:
-            polynomial = polynomial + str(coeff) + "*x + "
-            continue
-
-        polynomial = polynomial + str(coeff) + "*x^(" + str(exponent) + ") + "
-
-    polynomial = polynomial[:-3]
-    return polynomial
+    doubleNand = doubleNand + ")" * (doubleNand.count("("))
+    return doubleNand
 
 
-def hornerFunctionToStr(func):
+def hornerFunctionToStr(func, forceX):
     horner = ""
     coeffs = func.horner_coeffs
+    if forceX:
+        variable = "x"
+    else:
+        variable = func.variable
 
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
             if index == 0:  # cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     continue
-                horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+                horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1:  # sin
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + func.variable + "("
+                    horner = horner + variable + "*("
                     continue
-                horner = horner + str(round(coeffs[index], 4)) + " * " + func.variable + "("
+                horner = horner + str(round(coeffs[index], 4)) + " * " + variable + "*("
             else:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-" + func.variable + "^2"
+                    horner = horner + "1-" + variable + "^2"
                 else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable + "^2"
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable + "^2"
 
                 if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                     horner = horner + "*("
     else:
         for index in coeffs:
             if index == 0:
-                horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+                horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1:
                 if horner == "":
-                    horner = horner + str(round(coeffs[index], 4)) + "*" + func.variable + "*" + "("
+                    horner = horner + str(round(coeffs[index], 4)) + "*" + variable + "*("
                 else:
                     if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                        horner = horner + "1-" + func.variable
+                        horner = horner + "1-" + variable
                     else:
-                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable
+                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable
 
                     if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                         horner = horner + "*("
             if index != 1 and index != 0:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-" + func.variable
+                    horner = horner + "1-" + variable
                 else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + func.variable
-
-                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                    horner = horner + "*("
-
-    horner = horner + ")" * (horner.count("("))
-    return horner
-
-
-def hornerFunctionToStrForceX(func):
-    horner = ""
-    coeffs = func.horner_coeffs
-    if func.functype == FuncTypes.SINUSOIDAL:
-        for index in coeffs:
-            if index == 0:  # cos
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    continue
-                horner = horner + str(round(coeffs[index], 4)) + "*("
-            if index == 1:  # sin
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "x*("
-                    continue
-                horner = horner + str(round(coeffs[index], 4)) + " *x*("
-            else:
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-x"
-                else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
-
-                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                    horner = horner + "*("
-    else:
-        for index in coeffs:
-            if index == 0:
-                horner = horner + str(round(coeffs[index], 4)) + "*("
-            if index == 1:
-                if horner == "":
-                    horner = horner + str(round(coeffs[index], 4)) + "*x*" + "("
-                else:
-                    if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                        horner = horner + "1-x"
-                    else:
-                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
-
-                    if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                        horner = horner + "*("
-            if index != 1 and index != 2:
-                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + "1-x"
-                else:
-                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*x"
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable
 
                 if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
                     horner = horner + "*("
@@ -212,33 +185,29 @@ def make_horner(func):
     return horner_coeffs
 
 
-def makeDoubleNAND(func):
+def make_doubleNAND(func):
     func.doubleNAND_coeffs = ignore_small_coeffs(func.poli_coeffs)
     coeffs = {}
-    tempList = list(func.doubleNAND_coeffs)
+    tempList = list(func.doubleNAND_coeffs.values())
     tempListKeys = list(func.doubleNAND_coeffs.keys())
 
-    for index in enumerate(func.doubleNAND_coeffs):
-        if index == 0:
+    for index in func.doubleNAND_coeffs:
+        if index == 0:  # first coeff
             coeffs[index] = (1 - func.doubleNAND_coeffs[index])
-        if index == tempListKeys[-1]:
+        if index == tempListKeys[-1]:  # last in coeffs
             total = 0
-            for indexj in enumerate(func.doubleNAND_coeffs):
+            for indexj in func.doubleNAND_coeffs:
                 total = total + func.doubleNAND_coeffs[indexj]
             total = total - tempList[-1]
             coeffs[index] = (func.doubleNAND_coeffs[index]) / (1 - total)
         else:
             total = 0
-            for indexj in enumerate(func.doubleNAND_coeffs):
+            for indexj in func.doubleNAND_coeffs:
                 if index > indexj:
                     total = total + func.doubleNAND_coeffs[indexj]
-            coeffs[index] = (1 - total - func.doubleNAND_coeffs[index]) / (1 - total)
+            coeffs[index] = (1 - (total + func.doubleNAND_coeffs[index])) / (1 - total)
 
     return coeffs
-
-
-def doubleNAND_to_circuit(func):
-    pass
 
 
 def AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2):
@@ -296,16 +265,119 @@ def AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, 
     return graph
 
 
+def doubleNAND_to_circuit(func):
+    graph = nx.DiGraph()
+    gateIndex = 1
+    coeffs = func.doubleNAND_coeffs  # starts with 0 (innermost coeff)
+
+    transCoeffs = reversed(coeffs)  # starts with last coeff (outermost coeff)
+
+    # Ways to create a gate:
+    #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
+    #           AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value)
+    #
+
+    if func.isSinusoidal():  # uses x^2
+        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+        xSquaredGate = 0
+        for index in coeffs:
+            if index == list(coeffs.keys())[0]:  # innermost
+                # AND x with itself (x^2)
+                AddBaseGate(graph, gateIndex, GateTypes.AND.value,  # graph, GIndex, GateType
+                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
+                            NotGateTypes.INPUT.value, func.variable.upper() + " ")  # Value2 Type, Value2
+                xSquaredGate = gateIndex
+                gateIndex = gateIndex + 1
+
+                # NAND prev result with coeff
+                AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                gateIndex = gateIndex + 1
+            else:
+                if index == list(coeffs.keys())[-1]:  # outermost
+                    # NAND prev result with coeff
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                    gateIndex = gateIndex + 1
+
+                    # AND prev result with x^2, finish
+                    AddGateFromGate(graph, GateTypes.AND.value, xSquaredGate,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
+                                    GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
+                else:  # inner (minus innermost)
+                    # NAND prev result with coeff
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                    gateIndex = gateIndex + 1
+
+                    # NAND pev result with x^2
+                    AddGateFromGate(graph, GateTypes.AND.value, xSquaredGate,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
+                    gateIndex = gateIndex + 1
+
+    else:  # only uses x
+        for index in coeffs:
+            if index == 0:  # innermost
+                # NAND coeff i==0 with x
+                AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
+                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
+                            NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
+                gateIndex = gateIndex + 1
+            else:
+                if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # outermost
+
+                    # NAND coeff i==n with prev result, finish
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+
+                else:  # middle section
+
+                    # NAND coeff with prev result
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                    gateIndex = gateIndex + 1
+
+                    # NAND x with prev result
+                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                    NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
+                    gateIndex = gateIndex + 1
+    gate_nodes = []
+
+    for node in graph.nodes():
+        if GateTypes.isIn(node[0]):
+            gate_nodes.append(node)
+
+    if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
+        graph.add_edge((GateTypes.AND.value, "G" + str(len(gate_nodes))),
+                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+
+    elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
+        graph.add_edge((GateTypes.NAND.value, "G" + str(len(gate_nodes))),
+                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+
+    for node in gate_nodes:
+        print(node[0] + " - " + node[1])
+        print(list(graph.predecessors(node)))
+        print("=" * 100)
+    return graph
+
+
 def horner_to_circuit(func):
     graph = nx.DiGraph()
     gateIndex = 1
     coeffs = func.horner_coeffs
-    isLastGateNand = 0
 
     transCoeffs = reversed(coeffs)
 
     # Ways to create a gate:
-    #           AddGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
+    #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
     #           AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value)
     #
 
@@ -391,7 +463,7 @@ def horner_to_circuit(func):
 
                 else:  # Last grouping, where case 1: jx(...) is last group (i == 1), or case 2: j(1-kx(...)) is last
                     # group (i == 1)
-                    if 0 not in list(coeffs.keys()): # case 1 - jx(...)
+                    if 0 not in list(coeffs.keys()):  # case 1 - jx(...)
                         # AND prev result with next coeff
                         AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
                                         # graph, prevGateType, prevGateIndex
@@ -404,7 +476,7 @@ def horner_to_circuit(func):
                                         gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
                                         NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
 
-                    else: # case 2 - j(1-kx(...))
+                    else:  # case 2 - j(1-kx(...))
                         if index == 1:
                             # AND prev result with next coeff
                             AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
@@ -414,11 +486,12 @@ def horner_to_circuit(func):
                             gateIndex = gateIndex + 1
 
                             # NAND prev result with X
-                            AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                            AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,
+                                            # graph, prevGateType, prevGateIndex
                                             gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
                                             NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
                             gateIndex = gateIndex + 1
-                        else: # index == 0
+                        else:  # index == 0
                             # AND prev result with next coeff
                             AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,
                                             # graph, prevGateType, prevGateIndex
@@ -433,11 +506,11 @@ def horner_to_circuit(func):
             gate_nodes.append(node)
 
     if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
-        graph.add_edge((GateTypes.AND.value, "G" + str(gateIndex - 1)),
+        graph.add_edge((GateTypes.AND.value, "G" + str(len(gate_nodes))),
                        (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
-        graph.add_edge((GateTypes.NAND.value, "G" + str(gateIndex - 1)),
+        graph.add_edge((GateTypes.NAND.value, "G" + str(len(gate_nodes))),
                        (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     for node in gate_nodes:
@@ -463,13 +536,15 @@ def removeFrivolous(graph):
     for node in graph.nodes():
         if GateTypes.isIn(node[0]):
             if node[0] is GateTypes.AND.value:  # is an AND Gate
-                if list(graph.predecessors(node))[0][0] is NotGateTypes.CONSTANT.value:  # the first gate input is a constant
+                if list(graph.predecessors(node))[0][
+                    0] is NotGateTypes.CONSTANT.value:  # the first gate input is a constant
                     print(list(graph.predecessors(node)))
 
                     if float(list(graph.predecessors(node))[0][1]) == 1.0:  # Can be removed (AND 1 and another number)
                         nx.relabel_nodes(graph)  # nx.relabel_nodes(graph, mapping)
 
-                elif list(graph.predecessors(node))[1][0] is NotGateTypes.CONSTANT.value:  # the second gate input is a constant
+                elif list(graph.predecessors(node))[1][
+                    0] is NotGateTypes.CONSTANT.value:  # the second gate input is a constant
                     print(list(graph.predecessors(node)))
 
                     if float(list(graph.predecessors(node))[1][1]) <= 1.0:  # Can be removed (AND another number and 1)
