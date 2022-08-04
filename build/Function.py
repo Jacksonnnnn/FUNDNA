@@ -199,3 +199,9 @@ class Function:
             return 1
         else:
             return 0
+
+    def isPolynomial(self):
+        if self.functype == FuncTypes.POLYNOMIAL:
+            return 1
+        else:
+            return 0

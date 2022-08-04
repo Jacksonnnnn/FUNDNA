@@ -83,8 +83,21 @@ def calculate():
         funcType = FuncTypes.FuncTypes.LOGARITHMIC
     if functionStr.__contains__("exp"):
         funcType = FuncTypes.FuncTypes.EXPONENTIAL
-    if functionStr.__contains__("sin") or functionStr.__contains__("cos"):
+    if functionStr.__contains__("sin") or \
+            functionStr.__contains__("cos") or \
+            functionStr.__contains__("tan") or \
+            functionStr.__contains__("csc") or \
+            functionStr.__contains__("cot") or \
+            functionStr.__contains__("sec") or \
+            functionStr.__contains__("cosh") or \
+            functionStr.__contains__("sinh") or \
+            functionStr.__contains__("csch") or \
+            functionStr.__contains__("coth") or \
+            functionStr.__contains__("sech") or \
+            functionStr.__contains__("tanh"):
         funcType = FuncTypes.FuncTypes.SINUSOIDAL
+    else:
+        funcType = FuncTypes.FuncTypes.POLYNOMIAL
 
     function = Function(lFunc, point, power, funcType, functionStr, variable)
              # Function(lambda function, point, order, type, title, variable)
@@ -162,7 +175,7 @@ def calculate():
                                "Function: " + function.title + "\n" +
                                "Around Point: " + function.point.__str__() + "\n" +
                                "Degree Estimation: " + function.order.__str__() + "\n" +
-                               "Taylor Series: \n" +
+                               "Maclaurin Series: \n" +
                                function.taylorString)
 
 def clearEq():
@@ -173,48 +186,37 @@ def insertVar():
     entry_4.insert(INSERT, variable)
 
 def insertButton(button):
-    if button == FuncTypes.FuncTypes.SINE:
-        entry_4.insert(INSERT, "sin()")
-        entry_4.icursor(entry_4.index(INSERT) - 1) # move cursor back 1
-    if button == FuncTypes.FuncTypes.COSINE:
-        entry_4.insert(INSERT, "cos()")
-        entry_4.icursor(entry_4.index(INSERT) - 1) # move cursor back 1
-    if button == FuncTypes.FuncTypes.EXPONENTIAL:
-        entry_4.insert(INSERT, "exp()")
-        entry_4.icursor(entry_4.index(INSERT) - 1) # move cursor back 1
-    if button == FuncTypes.FuncTypes.LOGARITHMIC:
-        entry_4.insert(INSERT, "log()")
-        entry_4.icursor(entry_4.index(INSERT) - 1) # move cursor back 1
-
     if button == 0:
         entry_4.insert(INSERT, "0")
-    if button == 1:
+    elif button == 1:
         entry_4.insert(INSERT, "1")
-    if button == 2:
+    elif button == 2:
         entry_4.insert(INSERT, "2")
-    if button == 3:
+    elif button == 3:
         entry_4.insert(INSERT, "3")
-    if button == 4:
+    elif button == 4:
         entry_4.insert(INSERT, "4")
-    if button == 5:
+    elif button == 5:
         entry_4.insert(INSERT, "5")
-    if button == 6:
+    elif button == 6:
         entry_4.insert(INSERT, "6")
-    if button == 7:
+    elif button == 7:
         entry_4.insert(INSERT, "7")
-    if button == 8:
+    elif button == 8:
         entry_4.insert(INSERT, "8")
-    if button == 9:
+    elif button == 9:
         entry_4.insert(INSERT, "9")
-
-    if button == "/":
+    elif button == "/":
         entry_4.insert(INSERT, "/")
-    if button == "*":
+    elif button == "*":
         entry_4.insert(INSERT, "*")
-    if button == "-":
+    elif button == "-":
         entry_4.insert(INSERT, "-")
-    if button == "+":
+    elif button == "+":
         entry_4.insert(INSERT, "+")
+    else:
+        entry_4.insert(INSERT, button)
+        entry_4.icursor(entry_4.index(INSERT) - 1) # move cursor back 1
 
 
 window = Tk()
@@ -517,7 +519,7 @@ button_16 = Button(
     image=button_image_16,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(FuncTypes.FuncTypes.EXPONENTIAL),
+    command=lambda: insertButton("exp()"),
     relief="flat"
 )
 button_16.place(
@@ -534,7 +536,7 @@ button_17 = Button(
     image=button_image_17,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(FuncTypes.FuncTypes.LOGARITHMIC),
+    command=lambda: insertButton("log()"),
     relief="flat"
 )
 button_17.place(
@@ -551,7 +553,7 @@ button_18 = Button(
     image=button_image_18,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_18 (tangent) clicked"),
+    command=lambda: insertButton("tan()"),
     relief="flat"
 )
 button_18.place(
@@ -568,7 +570,7 @@ button_19 = Button(
     image=button_image_19,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(FuncTypes.FuncTypes.COSINE),
+    command=lambda: insertButton("cos()"),
     relief="flat"
 )
 button_19.place(
@@ -585,12 +587,164 @@ button_20 = Button(
     image=button_image_20,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(FuncTypes.FuncTypes.SINE),
+    command=lambda: insertButton("sin()"),
     relief="flat"
 )
 button_20.place(
     x=386.75,
     y=474.4444580078125,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# sec()
+button_image_21 = PhotoImage(
+    file=relative_to_assets("button_21.png"))
+button_21 = Button(
+    image=button_image_21,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("sec()"),
+    relief="flat"
+)
+button_21.place(
+    x=387.0,
+    y=529.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# sech()
+button_image_22 = PhotoImage(
+    file=relative_to_assets("button_22.png"))
+button_22 = Button(
+    image=button_image_22,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("sech()"),
+    relief="flat"
+)
+button_22.place(
+    x=387.0,
+    y=583.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# csc()
+button_image_23 = PhotoImage(
+    file=relative_to_assets("button_23.png"))
+button_23 = Button(
+    image=button_image_23,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("csc()"),
+    relief="flat"
+)
+button_23.place(
+    x=513.0,
+    y=529.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# csch()
+button_image_24 = PhotoImage(
+    file=relative_to_assets("button_24.png"))
+button_24 = Button(
+    image=button_image_24,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("csch()"),
+    relief="flat"
+)
+button_24.place(
+    x=513.0,
+    y=583.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# coth()
+button_image_25 = PhotoImage(
+    file=relative_to_assets("button_25.png"))
+button_25 = Button(
+    image=button_image_25,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("coth()"),
+    relief="flat"
+)
+button_25.place(
+    x=643.0,
+    y=583.0,
+    width=112.875,
+    height=46.66668701171875
+)
+# tanh()
+button_image_26 = PhotoImage(
+    file=relative_to_assets("button_26.png"))
+button_26 = Button(
+    image=button_image_26,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("tanh()"),
+    relief="flat"
+)
+button_26.place(
+    x=774.0,
+    y=583.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# cot()
+button_image_27 = PhotoImage(
+    file=relative_to_assets("button_27.png"))
+button_27 = Button(
+    image=button_image_27,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("cot()"),
+    relief="flat"
+)
+button_27.place(
+    x=643.0,
+    y=529.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# sinh()
+button_image_28 = PhotoImage(
+    file=relative_to_assets("button_28.png"))
+button_28 = Button(
+    image=button_image_28,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("sinh()"),
+    relief="flat"
+)
+button_28.place(
+    x=774.0,
+    y=529.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# cosh()
+button_image_29 = PhotoImage(
+    file=relative_to_assets("button_29.png"))
+button_29 = Button(
+    image=button_image_29,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("cosh()"),
+    relief="flat"
+)
+button_29.place(
+    x=904.0,
+    y=529.0,
     width=112.875,
     height=46.66668701171875
 )
@@ -674,7 +828,7 @@ entry_1.place(
     width=56.875,
     height=20.5555419921875
 )
-entry_1.insert(0, "7")
+entry_1.insert(0, "6")
 
 # Point Estimation Text Box
 entry_image_2 = PhotoImage(
@@ -757,12 +911,12 @@ image_3 = canvas.create_image(
     image=image_image_3
 )
 
-# Generated Taylor Series Output Label
+# Generated Maclaurin Series Output Label
 canvas.create_text(
     27.0,
     90.0,
     anchor="nw",
-    text="Taylor Series:",
+    text="Maclaurin Series:",
     fill="#1F2C5E",
     font=("BitterRoman ExtraBold", 24 * -1)
 )
@@ -826,7 +980,7 @@ entry_5.place(
 )
 entry_5.insert(INSERT, "Enter a function in the calculator!")
 
-# Taylor Series Output Area
+# Maclaurin Series Output Area
 entry_image_6 = PhotoImage(
     file=relative_to_assets("entry_6.png"))
 
@@ -901,16 +1055,16 @@ entry_8.place(
 #entry_8.insert(0, "test1")
 
 # Calculate Button
-button_image_21 = PhotoImage(
-    file=relative_to_assets("button_21.png"))
-button_21 = Button(
-    image=button_image_21,
+button_image_32 = PhotoImage(
+    file=relative_to_assets("button_32.png"))
+button_32 = Button(
+    image=button_image_32,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: calculate(),
     relief="flat"
 )
-button_21.place(
+button_32.place(
     x=1133.0,
     y=431.0,
     width=267.0,
@@ -918,32 +1072,32 @@ button_21.place(
 )
 
 # Update user variables (variable, point, power) Input Area
-button_image_22 = PhotoImage(
-    file=relative_to_assets("button_22.png"))
-button_22 = Button(
-    image=button_image_22,
+button_image_33 = PhotoImage(
+    file=relative_to_assets("button_33.png"))
+button_33 = Button(
+    image=button_image_33,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: updateVariables(),
     relief="flat"
 )
-button_22.place(
+button_33.place(
     x=27.0,
     y=643.0,
     width=167.0,
     height=38.0
 )
 # Variable Button
-button_image_23 = PhotoImage(
-    file=relative_to_assets("button_23.png"))
-button_23 = Button(
-    image=button_image_23,
+button_image_30 = PhotoImage(
+    file=relative_to_assets("button_30.png"))
+button_30 = Button(
+    image=button_image_30,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: insertVar(),
     relief="flat"
 )
-button_23.place(
+button_30.place(
     x=388.0,
     y=638.0,
     width=112.875,
@@ -951,16 +1105,16 @@ button_23.place(
 )
 
 # Clear Button
-button_image_24 = PhotoImage(
-    file=relative_to_assets("button_24.png"))
-button_24 = Button(
-    image=button_image_24,
+button_image_31 = PhotoImage(
+    file=relative_to_assets("button_31.png"))
+button_31 = Button(
+    image=button_image_31,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: clearEq(),
     relief="flat"
 )
-button_24.place(
+button_31.place(
     x=66.0,
     y=474.0,
     width=112.875,
