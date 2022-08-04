@@ -47,14 +47,14 @@ def doubleNANDFunctionToStr(func, forceX):
     if func.functype == FuncTypes.SINUSOIDAL:
         for index in coeffs:
             if not coeffs.keys().__contains__(0):
-                if index % 2 == 0: # even exponents
-                    if index == list(coeffs.keys())[0]:
-                        doubleNand = doubleNand + variable + "^2*(1-" + str(round(coeffs[index], 4)) + "*("
-                    elif index == list(coeffs.keys())[1]:
-                        doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + variable + "^2"
-                    else:
-                        doubleNand = doubleNand + "1-" + variable + "^2*(1-" + str(round(coeffs[index], 4)) + "*("
-                else: # odd exponents
+                if index % 2 == 0:  # even exponents
+                    if index == list(coeffs.keys())[0]:  # outermost
+                        doubleNand = doubleNand + variable + "^2*(1-" + str(round(coeffs[index], 4))
+                    elif index == list(coeffs.keys())[-1]:  # innermost
+                        doubleNand = doubleNand + "*(1-" + str(round(coeffs[index], 4)) + variable + "^2"
+                    else:  # inner
+                        doubleNand = doubleNand + "*(1-" + variable + "^2*(1-" + str(round(coeffs[index], 4))
+                else:  # odd exponents
                     print("TODO FEATURE ERROR!!!")
     else:
         coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
@@ -278,7 +278,9 @@ def doubleNAND_to_circuit(func):
     #
 
     if func.isSinusoidal():  # uses x^2
-        pass
+        xSquaredGate = 0
+        for index in coeffs:
+            pass
     else:  # only uses x
         for index in coeffs:
             if index == 0:  # innermost
