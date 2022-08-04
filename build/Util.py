@@ -354,11 +354,12 @@ def doubleNAND_to_circuit(func):
         if GateTypes.isIn(node[0]):
             gate_nodes.append(node)
 
-    if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
-        graph.add_edge((GateTypes.NAND.value, "G" + str(gateIndex)),
-                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
     if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
-        graph.add_edge((GateTypes.AND.value, "G" + str(gateIndex)),
+        graph.add_edge((GateTypes.AND.value, "G" + str(len(gate_nodes))),
+                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+
+    elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
+        graph.add_edge((GateTypes.NAND.value, "G" + str(len(gate_nodes))),
                        (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     for node in gate_nodes:
