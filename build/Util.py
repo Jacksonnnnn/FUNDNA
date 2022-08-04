@@ -38,15 +38,27 @@ def taylorToPolyStr(func, forceX):
 
 def doubleNANDFunctionToStr(func, forceX):
     doubleNand = ""
-    coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+    coeffs = func.doubleNAND_coeffs
     if forceX:
         variable = "x"
     else:
         variable = func.variable
 
     if func.functype == FuncTypes.SINUSOIDAL:
-        pass
+        for index in coeffs:
+            if not coeffs.keys().__contains__(0):
+                if index % 2 == 0: # even exponents
+                    if index == list(coeffs.keys())[0]:
+                        doubleNand = doubleNand + variable + "^2*(1-" + str(round(coeffs[index], 4)) + "*("
+                    elif index == list(coeffs.keys())[1]:
+                        doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + variable + "^2"
+                    else:
+                        doubleNand = doubleNand + "1-" + variable + "^2*(1-" + str(round(coeffs[index], 4)) + "*("
+                else: # odd exponents
+                    print("TODO FEATURE ERROR!!!")
     else:
+        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+
         for index in coeffs:
             if index == list(coeffs.keys())[0]:
                 doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*("
@@ -73,12 +85,12 @@ def hornerFunctionToStr(func, forceX):
             if index == 0:  # cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     continue
-                horner = horner + str(round(coeffs[index], 4)) + "*" + "("
+                horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1:  # sin
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                    horner = horner + variable + "("
+                    horner = horner + variable + "*("
                     continue
-                horner = horner + str(round(coeffs[index], 4)) + " * " + variable + "("
+                horner = horner + str(round(coeffs[index], 4)) + " * " + variable + "*("
             else:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + "1-" + variable + "^2"
@@ -448,11 +460,11 @@ def horner_to_circuit(func):
             gate_nodes.append(node)
 
     if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
-        graph.add_edge((GateTypes.AND.value, "G" + str(gateIndex - 1)),
+        graph.add_edge((GateTypes.AND.value, "G" + str(len(gate_nodes))),
                        (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
-        graph.add_edge((GateTypes.NAND.value, "G" + str(gateIndex - 1)),
+        graph.add_edge((GateTypes.NAND.value, "G" + str(len(gate_nodes))),
                        (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     for node in gate_nodes:

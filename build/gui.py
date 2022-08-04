@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 
 from math import *
+from mpmath import *
 
 import sympy
 import sympy as sp

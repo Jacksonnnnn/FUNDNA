@@ -15,7 +15,7 @@ class Function:
         self.rearrangeString = None
         self.CRN = None
         self.traceString = None
-        self.traceValue = None
+        self.traceValue = 0.0
         self.rearrangeType = None
         self.function = function
         self.point = point
@@ -66,60 +66,78 @@ class Function:
     def determineRearrangement(self):
         # HORNER:      alternating signs, coeff decreases as power increases
         # DOUBLE NAND: 0 <= coeffs <= infinity, 0 <= sum <= 1
-        alternatingSign = 1
+        fixedPoliCoeffs = ignore_small_coeffs(self.poli_coeffs)
+        alternatingSign = -1
         decreasingCoeffs = 1
         allPositive = 1
         poli_total = 0.0
 
-        for index in self.poli_coeffs:
+        print("-" * 100)
+
+        # total coefficients
+        for index in fixedPoliCoeffs:
+            poli_total = poli_total + fixedPoliCoeffs[index]
+
+        # determine if coeffs are all positive
+        for index in fixedPoliCoeffs:
             if allPositive == 0:
                 break
 
-            poli_total = poli_total + self.poli_coeffs[index]
-
-            if self.poli_coeffs[index] > 0:
+            if fixedPoliCoeffs[index] > 0 or fixedPoliCoeffs[index] == 0:
                 allPositive = 1
             else:
                 allPositive = 0
 
+        # Determine if decreasing coefficients
         lastValue = 0
-        for index in self.poli_coeffs:
+        for index in fixedPoliCoeffs:
             if decreasingCoeffs == 0:
                 break
 
-            if self.poli_coeffs[index] == 0:
+            if fixedPoliCoeffs[index] == 0:
                 continue
 
             if lastValue == 0:
-                lastValue = round(abs(self.poli_coeffs[index]), 4)
+                lastValue = round(abs(fixedPoliCoeffs[index]), 4)
                 continue
 
-            if abs(lastValue) < round(abs(self.poli_coeffs[index]), 4):
+            if abs(lastValue) < round(abs(fixedPoliCoeffs[index]), 4):
                 decreasingCoeffs = 0
                 continue
 
-            if abs(lastValue) > round(abs(self.poli_coeffs[index]), 4):
-                lastValue = round(abs(self.poli_coeffs[index]), 4)
+            if abs(lastValue) > round(abs(fixedPoliCoeffs[index]), 4):
+                lastValue = round(abs(fixedPoliCoeffs[index]), 4)
                 continue
 
-            if abs(lastValue) == round(abs(self.poli_coeffs[index]), 4):
+            if abs(lastValue) == round(abs(fixedPoliCoeffs[index]), 4):
                 continue
 
-        lastValue = 0
-        for index in self.poli_coeffs:
-            if alternatingSign == 0:
-                break
-            if self.poli_coeffs[index] != 0:
-                if self.poli_coeffs[index] < 0 < lastValue or self.poli_coeffs[index] > 0 > lastValue:
-                    alternatingSign = 1
-                    lastValue = self.poli_coeffs[index]
-                if lastValue == 0:
-                    continue
-                else:
-                    alternatingSign = 0
+        # Determine if Alternating Signs
+        if allPositive == 0:
+            lastValue = 0
+            for index in fixedPoliCoeffs:
+                if alternatingSign == 0:
+                    break
+                if fixedPoliCoeffs[index] != 0:
+                    if fixedPoliCoeffs[index] < 0:
+                        print(str(fixedPoliCoeffs[index]) + " is NEG")
+                        if lastValue == -1:
+                            alternatingSign = 0
+                        else:
+                            lastValue = -1
+                    elif self.poli_coeffs[index] > 0:
+                        print(str(fixedPoliCoeffs[index]) + " is POS")
+                        if lastValue == 1:
+                            alternatingSign = 0
+                        else:
+                            lastValue = 1
+                    else:
+                        print(str(fixedPoliCoeffs[index]) + " is ZERO, IGNORING")
+                        continue
+            if alternatingSign != 0:
+                alternatingSign = 1
 
-        print("-" * 100)
-        print("Alternating: " + alternatingSign.__str__())
+        print("\nAlternating: " + alternatingSign.__str__())
         print("Decreasing: " + decreasingCoeffs.__str__())
         print("Coeff Sum: " + poli_total.__str__())
         print("All Positive: " + allPositive.__str__())
@@ -153,11 +171,12 @@ class Function:
 
     def generateTrace(self):
         if self.rearrangeType == RearrangeType.DOUBLE_NAND:
-            pass
+            self.traceString = doubleNANDFunctionToStr(self, 1)
         if self.rearrangeType == RearrangeType.HORNER:
             self.traceString = hornerFunctionToStr(self, 1)
-            x = self.point
-            self.traceValue = eval(self.traceString)
+
+        x = self.point
+        self.traceValue = eval(self.traceString.replace("^", "**"))
 
     def isSinusoidal(self):
         if self.functype == FuncTypes.SINUSOIDAL:
