@@ -227,13 +227,13 @@ favicon = PhotoImage(file=relative_to_assets("UK logo-white.png"))
 window.iconphoto(True, favicon)
 window.title("UK DNA Function Designer")
 
-window.geometry("1400x700")
+window.geometry("1400x750")
 window.configure(bg="#DCDDDE")
 
 canvas = Canvas(
     window,
     bg="#DCDDDE",
-    height=700,
+    height=750,
     width=1400,
     bd=0,
     highlightthickness=0,
@@ -247,6 +247,14 @@ canvas.create_rectangle(
     1400.0,
     77.77777862548828,
     fill="#1F2C5E",
+    outline="")
+
+canvas.create_rectangle(
+    0.0,
+    700.0,
+    1400.0,
+    751.0,
+    fill="#1E2B5E",
     outline="")
 
 canvas.create_rectangle(
@@ -753,8 +761,8 @@ button_29.place(
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(
-    116.375,
-    48.55555725097656,
+    114.0,
+    47.0,
     image=image_image_1
 )
 
@@ -767,12 +775,21 @@ image_2 = canvas.create_image(
     image=image_image_2
 )
 
+#nsf logo
+image_image_4 = PhotoImage(
+    file=relative_to_assets("image_4.png"))
+image_4 = canvas.create_image(
+    266.0,
+    726.0,
+    image=image_image_4
+)
+
 # main text
 canvas.create_text(
     266.0,
     20.0,
     anchor="nw",
-    text="DNA Computing Function Designer",
+    text="FUNDNA",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 40 * -1)
 )
@@ -1119,6 +1136,16 @@ button_31.place(
     y=474.0,
     width=112.875,
     height=46.66668701171875
+)
+
+# Supporting Statement
+canvas.create_text(
+    296.0,
+    715.0,
+    anchor="nw",
+    text="This project is supported by the National Science Foundation (NSF) and the University of Kentucky.",
+    fill="#FFFFFF",
+    font=("Caladea Regular", 20 * -1)
 )
 window.resizable(True, True)
 window.mainloop()
