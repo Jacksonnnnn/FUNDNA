@@ -1,7 +1,16 @@
-[UK Logo]: https://i.gyazo.com/962a0a13ee9d910deacdea456f514f85.png "University of Kentucky College of Engineering Logo"
+[UK Logo]: https://i.gyazo.com/962a0a13ee9d910deacdea456f514f85.png  "University of Kentucky College of Engineering Logo"
+[NSF Logo]: https://i.gyazo.com/3611ee71a841be6b38765f68212c2577.png "National Science Foundation (NSF) Logo"
 
+<!--- 
 ![alt-text][UK Logo]
-# Function to Chemical Reaction Network
+--->
+<!--- 
+![alt-text][NSF Logo]
+--->
+<img src="https://i.gyazo.com/962a0a13ee9d910deacdea456f514f85.png" height=100px alt="University of Kentucky College of Engineering Logo">
+<img src="https://i.gyazo.com/3611ee71a841be6b38765f68212c2577.png" height=100px alt="National Science Foundation (NSF) Logo">
+
+# FUNDNA
 This project uses DNA as logic gates to create a Chemical Reaction Network (CRN) that allows us to compute values of different mathematical functions.
 
 ## Important Information
@@ -16,6 +25,9 @@ Double-NAND Expansion Scholarly Article DOI: http://dx.doi.org/10.1145/3060403.3
 > Department of Electrical and Computer Engineering \
 > Director of Computing with Unconventional Technologies (CUT) Lab \
 > University of Kentucky | http://salehi.engr.uky.edu/
+
+#### Affiliation
+> This project is supported by the National Science Foundation (NSF) and the University of Kentucky's College of Engineering.
 
 #### Descrption
 When we hear about computation and information processing the first thing that comes to our minds is man-made electronic processing systems. However, computation is not a man-made phenomenon and, in fact, the most powerful information processing systems have been provided by nature. For example, complex circuits within cells
@@ -34,11 +46,11 @@ Further, we work on encoding and storing information by DNA molecules as they ha
 In this GitHub Repository, there are several python files that are able to be executed to assist in generating Chemical Reaction Networks for a given function. Though functions are limited at the program's current state, it is a very useful tool for cross-checking any calculations.
 
 #### Documentatin and Wiki Links:
-[Wiki](https://github.com/Jacksonnnnn/dna-computing/wiki) \
-[Installation](https://github.com/Jacksonnnnn/dna-computing/wiki/Software-Installation) \
-[Use and Important Notes](https://github.com/Jacksonnnnn/dna-computing/wiki/Software-Usage-and-Notes) \
-[Contributing to the Project](https://github.com/Jacksonnnnn/dna-computing/wiki/Contributing-to-the-Project) \
-[Program Documentation](https://github.com/Jacksonnnnn/dna-computing/wiki/Program-Documentation)
+[Wiki](https://github.com/Jacksonnnnn/FUNDNA/wiki) \
+[Installation](https://github.com/Jacksonnnnn/FUNDNA/wiki/Software-Installation) \
+[Use and Important Notes](https://github.com/Jacksonnnnn/FUNDNA/wiki/Software-Usage-and-Notes) \
+[Contributing to the Project](https://github.com/Jacksonnnnn/FUNDNA/wiki/Contributing-to-the-Project) \
+[Program Documentation](https://github.com/Jacksonnnnn/FUNDNA/wiki/Program-Documentation)
 
 #### Contributing to the Project
 If you would like to contribute to this project, please reach out to Dr. Salehi with information provided in the link to his website above. Feel free to contribute by creating pull requests describing your changes and why and the GitHub Repo Admin will handle all requests!
