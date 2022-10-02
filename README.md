@@ -7,8 +7,7 @@
 <!--- 
 ![alt-text][NSF Logo]
 --->
-<img src="https://i.gyazo.com/962a0a13ee9d910deacdea456f514f85.png" height=100px alt="University of Kentucky College of Engineering Logo">
-<img src="https://i.gyazo.com/3611ee71a841be6b38765f68212c2577.png" height=100px alt="National Science Foundation (NSF) Logo">
+<img src="https://i.gyazo.com/962a0a13ee9d910deacdea456f514f85.png" height=100px alt="University of Kentucky College of Engineering Logo"> <img src="https://i.gyazo.com/3611ee71a841be6b38765f68212c2577.png" height=100px alt="National Science Foundation (NSF) Logo">
 
 # FUNDNA
 This project uses DNA as logic gates to create a Chemical Reaction Network (CRN) that allows us to compute values of different mathematical functions.
