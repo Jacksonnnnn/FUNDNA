@@ -25,7 +25,7 @@ Double-NAND Expansion Scholarly Article DOI: http://dx.doi.org/10.1145/3060403.3
 > Director of Computing with Unconventional Technologies (CUT) Lab \
 > University of Kentucky | http://salehi.engr.uky.edu/
 #### Affiliation
-> Note
+> **Note**
 > This project is supported by the National Science Foundation (NSF) and the University of Kentucky's College of Engineering.
 #### Descrption
 When we hear about computation and information processing the first thing that comes to our minds is man-made electronic processing systems. However, computation is not a man-made phenomenon and, in fact, the most powerful information processing systems have been provided by nature. For example, complex circuits within cells
