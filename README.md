@@ -43,11 +43,11 @@ Further, we work on encoding and storing information by DNA molecules as they ha
 In this GitHub Repository, there are several python files that are able to be executed to assist in generating Chemical Reaction Networks for a given function. Though functions are limited at the program's current state, it is a very useful tool for cross-checking any calculations.
 
 #### Documentatin and Wiki Links:
-[Wiki](https://github.com/Jacksonnnnn/FUNDNA/wiki) \
-[Installation](https://github.com/Jacksonnnnn/FUNDNA/wiki/Software-Installation) \
-[Use and Important Notes](https://github.com/Jacksonnnnn/FUNDNA/wiki/Software-Usage-and-Notes) \
-[Contributing to the Project](https://github.com/Jacksonnnnn/FUNDNA/wiki/Contributing-to-the-Project) \
-[Program Documentation](https://github.com/Jacksonnnnn/FUNDNA/wiki/Program-Documentation)
+[Wiki](https://github.com/CUT-Labs/FUNDNA/wiki) \
+[Installation](https://github.com/CUT-Labs/FUNDNA/wiki/Software-Installation) \
+[Use and Important Notes](https://github.com/CUT-Labs/FUNDNA/wiki/Software-Usage-and-Notes) \
+[Contributing to the Project](https://github.com/CUT-Labs/FUNDNA/wiki/Contributing-to-the-Project) \
+[Program Documentation](https://github.com/CUT-Labs/FUNDNA/wiki/Program-Documentation)
 
 #### Contributing to the Project
 If you would like to contribute to this project, please reach out to Dr. Salehi with information provided in the link to his website above. Feel free to contribute by creating pull requests describing your changes and why and the GitHub Repo Admin will handle all requests!
