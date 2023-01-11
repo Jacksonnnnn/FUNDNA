@@ -246,7 +246,7 @@ canvas.create_rectangle(
     0.0,
     1400.0,
     77.77777862548828,
-    fill="#1F2C5E",
+    fill="#1B365D",
     outline="")
 
 canvas.create_rectangle(
@@ -254,7 +254,7 @@ canvas.create_rectangle(
     700.0,
     1400.0,
     751.0,
-    fill="#1E2B5E",
+    fill="#4D567C",
     outline="")
 
 canvas.create_rectangle(
@@ -262,7 +262,7 @@ canvas.create_rectangle(
     466.6666564941406,
     1400.0,
     700.0,
-    fill="#1F2C5E",
+    fill="#1B365D",
     outline="")
 
 # +
@@ -784,16 +784,6 @@ image_4 = canvas.create_image(
     image=image_image_4
 )
 
-# main text
-canvas.create_text(
-    266.0,
-    20.0,
-    anchor="nw",
-    text="FUNDNA",
-    fill="#FFFFFF",
-    font=("BitterRoman ExtraBold", 40 * -1)
-)
-
 # Bottom Text 1 - Variable
 canvas.create_text(
     30.625,
@@ -1146,6 +1136,14 @@ canvas.create_text(
     text="This project is supported by the National Science Foundation (NSF) and the University of Kentucky.",
     fill="#FFFFFF",
     font=("Caladea Regular", 20 * -1)
+)
+
+image_image_5 = PhotoImage(
+    file=relative_to_assets("image_5.png"))
+image_5 = canvas.create_image(
+    420.0,
+    38.0,
+    image=image_image_5
 )
 window.resizable(True, True)
 window.mainloop()
