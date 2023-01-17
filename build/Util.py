@@ -57,8 +57,6 @@ def doubleNANDFunctionToStr(func, forceX):
                 else:  # odd exponents
                     print("TODO FEATURE ERROR!!!")
     else:
-        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
-
         for index in coeffs:
             if index == list(coeffs.keys())[0]:
                 doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*("
@@ -206,7 +204,6 @@ def make_doubleNAND(func):
                 if index > indexj:
                     total = total + func.doubleNAND_coeffs[indexj]
             coeffs[index] = (1 - (total + func.doubleNAND_coeffs[index])) / (1 - total)
-
     return coeffs
 
 
@@ -268,9 +265,6 @@ def AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, 
 def doubleNAND_to_circuit(func):
     graph = nx.DiGraph()
     gateIndex = 1
-    coeffs = func.doubleNAND_coeffs  # starts with 0 (innermost coeff)
-
-    transCoeffs = reversed(coeffs)  # starts with last coeff (outermost coeff)
 
     # Ways to create a gate:
     #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
@@ -318,25 +312,24 @@ def doubleNAND_to_circuit(func):
                                     gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
                                     GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
                     gateIndex = gateIndex + 1
-
     else:  # only uses x
+        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+        print(coeffs)
+
         for index in coeffs:
-            if index == 0:  # innermost
-                # NAND coeff i==0 with x
-                AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
-                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
-                            NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
-                gateIndex = gateIndex + 1
+            if index == 0:  # outermost
+                # NAND coeff i==n with prev result, finish
+                AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
+                                gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
+                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
             else:
-                if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # outermost
-
-                    # NAND coeff i==n with prev result, finish
-                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-
+                if list(coeffs.keys())[0] == index:  # innermost
+                    # NAND coeff i==0 with x
+                    AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
+                                NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
+                                NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
+                    gateIndex = gateIndex + 1
                 else:  # middle section
-
                     # NAND coeff with prev result
                     AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
                                     gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
