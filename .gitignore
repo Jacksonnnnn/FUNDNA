@@ -1,3 +1,5 @@
 /build-updates/
 /build/dist/
 /build/build
+FUNDNA --debug.spec
+FUNDNA.spec
