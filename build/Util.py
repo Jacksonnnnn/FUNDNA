@@ -6,9 +6,9 @@ import networkx as nx
 from scipy.misc import derivative
 from scipy.special import comb
 
-from build.FuncTypes import FuncTypes
-from build.GateTypes import GateTypes
-from build.NotGateTypes import NotGateTypes
+from FuncTypes import FuncTypes
+from GateTypes import GateTypes
+from NotGateTypes import NotGateTypes
 
 
 def taylorToPolyStr(func, forceX):

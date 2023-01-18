@@ -1,5 +1,6 @@
-from build.Util import *
-from build.RearrangeType import RearrangeType
+from Util import *
+from FuncTypes import FuncTypes
+from RearrangeType import RearrangeType
 
 
 class Function:
