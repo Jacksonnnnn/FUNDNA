@@ -50,7 +50,7 @@ def updateVariables():
     functionStr = entry_4.get()
     variable = entry_3.get()
     point = int(entry_2.get())
-    power = int(entry_1.get())
+    power = int(entry_1.get()) + 1
     lExpress = "lambda " + variable + ": " + functionStr
     # lambda x: sin(x)
     lFunc = eval(lExpress)
@@ -839,7 +839,7 @@ entry_1.place(
     width=56.875,
     height=20.5555419921875
 )
-entry_1.insert(0, "6")
+entry_1.insert(0, "5")
 
 # Point Estimation Text Box
 entry_image_2 = PhotoImage(
