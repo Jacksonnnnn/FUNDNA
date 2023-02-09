@@ -595,7 +595,7 @@ def make_reactions(graph):
 
             reactionStr = reactionStr + gateName + "(" + gate_type + ")\n" \
                           + "Inputs: " + input_substances[0][1] + ", " + input_substances[1][1] + "\n" \
-                          + "Output(s): "
+                          + "Output(s) To: "
 
             for output in output_substances:
                 reactionStr = reactionStr + " " + output[1]
@@ -629,7 +629,7 @@ def make_reaction(gate_type, input_substances, output_substances, gateName):
 
     a = input_substances[0][1]
     b = input_substances[1][1]
-    c = output_substances[0][1]
+    c = gateName
 
     if gate_type == GateTypes.AND.value:
         reaction_list = [
