@@ -21,7 +21,7 @@ finally:
     from Function import *
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path("./assets")
+ASSETS_PATH = OUTPUT_PATH / Path("assets")
 
 variable = "x"
 point = 0
@@ -126,9 +126,9 @@ def calculate():
                                                r"\definecolor{background}{RGB}" + bg_color +
                                                r"\pagecolor{background}"
                                                r"\begin{document}",
-                   viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
+                   viewer="file", filename="assets/taylor.png", dvioptions=["-D 1200"])
         # Open the image as if it were a file. This works only for .ps!
-        img = Image.open(relative_to_assets("taylor.png"))
+        img = Image.open("assets/taylor.png")
         # See note at the bottom
         img.load()
         img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
@@ -147,9 +147,9 @@ def calculate():
                                                r"\definecolor{background}{RGB}" + bg_color +
                                                r"\pagecolor{background}"
                                                r"\begin{document}",
-                   viewer="file", filename=relative_to_assets("rearranged.png"), dvioptions=["-D 1200"])
+                   viewer="file", filename="assets/rearranged.png", dvioptions=["-D 1200"])
         # Open the image as if it were a file. This works only for .ps!
-        img = Image.open(relative_to_assets("rearranged.png"))
+        img = Image.open("assets/rearranged.png")
         # See note at the bottom
         img.load()
         img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
@@ -167,11 +167,12 @@ def calculate():
         entry_5.insert(INSERT, function.CRN)
 
         # Update Circuit Diagram
-        img = Image.open(relative_to_assets("result.png"))
+        img = Image.open("assets/result.png")
         img = img.resize((398, 354))
-        img.save(relative_to_assets("result.png"), "PNG")
+        photo = ImageTk.PhotoImage(img)
 
-        image_image_3.configure(file=relative_to_assets("result.png"), width=398, height=354)
+        image_3_updater.config(image=photo)
+        image_3_updater.image = photo
 
     else:
         entry_5.delete('1.0', END)
@@ -913,13 +914,19 @@ entry_4.place(
 entry_4.insert(0, "exp(-x)")
 
 # graph picture
-image_image_3 = PhotoImage(
-    file=relative_to_assets("image_3.png"))
-
-image_3 = canvas.create_image(
-    1200.875,
-    253.77777862548828,
-    image=image_image_3
+image_3_updater = Label(
+    bd=0,
+    bg="#fff",
+    highlightthickness=0,
+    #    state="disabled",
+    justify="center",
+    font=("BitterRoman ExtraBold", 15)
+)
+image_3_updater.place(
+    x=1002,
+    y=78,
+    width=398.0,
+    height=354.0
 )
 
 # Generated Maclaurin Series Output Label
