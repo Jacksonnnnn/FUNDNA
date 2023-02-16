@@ -104,7 +104,7 @@ def calculate():
         funcType = FuncTypes.POLYNOMIAL
 
     function = Function(lFunc, point, power, funcType, functionStr, variable)
-             # Function(lambda function, point, order, type, title, variable)
+    # Function(lambda function, point, order, type, title, variable)
 
     print("Function Type: " + function.functype.__str__())
 
@@ -137,25 +137,29 @@ def calculate():
         entry_6.image = photo
 
         # convert rearranged polynomial coeff dictionary to expression - set label (entry_7)
-        x = "x"
-        expr = "$\displaystyle " + sympy.latex(sympify(function.rearrangeString)) + "$"
+        #exec(variable + " = sympy.symbols('" + variable + "')")
+        #expr = "$\displaystyle " + sympy.latex(eval(function.rearrangeString)) + "$"  # sympify(function.rearrangeString, strict=True)
+
+        #print(expr)
 
         # This creates a PNG file and saves there the output of sympy.preview
-        bg_color = "{196, 196, 196}"
-        sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
-                                               r"\usepackage{pagecolor}"
-                                               r"\definecolor{background}{RGB}" + bg_color +
-                                               r"\pagecolor{background}"
-                                               r"\begin{document}",
-                   viewer="file", filename="assets/rearranged.png", dvioptions=["-D 1200"])
+        #bg_color = "{196, 196, 196}"
+        #sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
+        #                                       r"\usepackage{pagecolor}"
+        #                                       r"\definecolor{background}{RGB}" + bg_color +
+        #                                       r"\pagecolor{background}"
+        #                                       r"\begin{document}",
+        #           viewer="file", filename="assets/rearranged.png", dvioptions=["-D 1200"])
         # Open the image as if it were a file. This works only for .ps!
-        img = Image.open("assets/rearranged.png")
+        #img = Image.open("assets/rearranged.png")
         # See note at the bottom
-        img.load()
-        img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
-        photo = ImageTk.PhotoImage(img)
-        entry_7.config(image=photo)
-        entry_7.image = photo
+        #img.load()
+        #img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
+        #photo = ImageTk.PhotoImage(img)
+        #entry_7.config(image=photo)
+        #entry_7.image = photo
+        entry_7.delete(0, END)
+        entry_7.insert(INSERT, function.rearrangeString)
 
         # trace equation - set label (entry_8)
         function.generateTrace()
@@ -177,18 +181,21 @@ def calculate():
     else:
         entry_5.delete('1.0', END)
         entry_5.insert(INSERT, "Function Type Not Supported!\n" +
-                               "Function: " + function.title + "\n" +
-                               "Around Point: " + function.point.__str__() + "\n" +
-                               "Degree Estimation: " + function.order.__str__() + "\n" +
-                               "Maclaurin Series: \n" +
-                               function.taylorString)
+                       "Function: " + function.title + "\n" +
+                       "Around Point: " + function.point.__str__() + "\n" +
+                       "Degree Estimation: " + function.order.__str__() + "\n" +
+                       "Maclaurin Series: \n" +
+                       function.taylorString)
+
 
 def clearEq():
     entry_4.delete(0, END)
 
+
 def insertVar():
     global variable
     entry_4.insert(INSERT, variable)
+
 
 def insertButton(button):
     if button == 0:
@@ -221,7 +228,7 @@ def insertButton(button):
         entry_4.insert(INSERT, "+")
     else:
         entry_4.insert(INSERT, button)
-        entry_4.icursor(entry_4.index(INSERT) - 1) # move cursor back 1
+        entry_4.icursor(entry_4.index(INSERT) - 1)  # move cursor back 1
 
 
 window = Tk()
@@ -780,7 +787,7 @@ image_2 = canvas.create_image(
     image=image_image_2
 )
 
-#nsf logo
+# nsf logo
 image_image_4 = PhotoImage(
     file=relative_to_assets("image_4.png"))
 image_4 = canvas.create_image(
@@ -1032,13 +1039,22 @@ entry_bg_7 = canvas.create_image(
     326.0,
     image=entry_image_7
 )
-entry_7 = Label(
+#entry_7 = Label(
+#    bd=0,
+#    bg="#C4C4C4",
+#    highlightthickness=0,
+#    #    state="disabled",
+#    justify="center",
+#    font=("BitterRoman ExtraBold", 15)
+#)
+entry_7 = Entry(
     bd=0,
     bg="#C4C4C4",
-    highlightthickness=0,
-    #    state="disabled",
+    disabledbackground="#c4c4c4",
+    disabledforeground="#1F2C5E",
+    #state="disabled",
     justify="center",
-    font=("BitterRoman ExtraBold", 15)
+    font=("BitterRoman ExtraBold", 12)
 )
 entry_7.place(
     x=27.0,
@@ -1070,7 +1086,7 @@ entry_8.place(
     width=140.0,
     height=31.0
 )
-#entry_8.insert(0, "test1")
+# entry_8.insert(0, "test1")
 
 # Calculate Button
 button_image_32 = PhotoImage(
