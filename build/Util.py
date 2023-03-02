@@ -58,12 +58,12 @@ def doubleNANDFunctionToStr(func, forceX):
                     print("TODO FEATURE ERROR!!!")
     else:
         for index in coeffs:
-            if index == list(coeffs.keys())[0]:
+            if index == list(coeffs.keys())[0]:  # outermost
                 doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*("
             else:
-                if index == list(coeffs.keys())[-1]:
+                if index == list(coeffs.keys())[-1]:  # innermost
                     doubleNand = doubleNand + "1-" + str(round(coeffs[index], 4)) + "*" + variable
-                else:
+                else:  # inner
                     doubleNand = doubleNand + "1-" + variable + "*(1-" + str(round(coeffs[index], 4)) + "*("
 
     doubleNand = doubleNand + ")" * (doubleNand.count("("))
@@ -100,7 +100,10 @@ def hornerFunctionToStr(func, forceX):
     else:
         for index in coeffs:
             if index == 0:
-                horner = horner + str(round(coeffs[index], 4)) + "*("
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    continue
+                else:
+                    horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1:
                 if horner == "":
                     horner = horner + str(round(coeffs[index], 4)) + "*" + variable + "*("
