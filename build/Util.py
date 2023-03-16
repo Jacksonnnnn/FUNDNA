@@ -78,7 +78,7 @@ def hornerFunctionToStr(func, forceX):
     else:
         variable = func.variable
 
-    if func.functype == FuncTypes.SINUSOIDAL:
+    if func.isSinusoidal():
         for index in coeffs:
             if index == 0:  # cos
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
@@ -105,16 +105,13 @@ def hornerFunctionToStr(func, forceX):
                 else:
                     horner = horner + str(round(coeffs[index], 4)) + "*("
             if index == 1:
-                if horner == "":
-                    horner = horner + str(round(coeffs[index], 4)) + "*" + variable + "*("
+                if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
+                    horner = horner + "1-" + variable
                 else:
-                    if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
-                        horner = horner + "1-" + variable
-                    else:
-                        horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable
+                    horner = horner + "1-" + str(round(coeffs[index], 4)) + "*" + variable
 
-                    if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
-                        horner = horner + "*("
+                if list(coeffs.keys())[(len(coeffs) - 1)] != index:  # not last coeff, series continues
+                    horner = horner + "*("
             if index != 1 and index != 0:
                 if 0.998 <= float(round(coeffs[index], 4)) <= 1.001:
                     horner = horner + "1-" + variable
@@ -401,7 +398,7 @@ def horner_to_circuit(func):
             else:
                 if index != 1 and index != 0:  # In between groupings (next few 1-jx^2, where j is coeff)
                     # AND prev result (gIndex - 2) with x^2 value (xSquaredGate yields index)
-                    AddGateFromGate(graph, previousGate, xSquaredGate,  # graph, prevGateType, prevGateIndex
+                    AddGateFromGate(graph, GateTypes.AND.value, xSquaredGate,  # graph, prevGateType, prevGateIndex
                                     gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
                                     GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
                     gateIndex = gateIndex + 1
@@ -435,7 +432,7 @@ def horner_to_circuit(func):
                     else:  # case 2, index == 0, last term, cos(x)
                         # AND prev result with first coeff
                         if not FrivelousNumber(coeffs[index]):
-                            AddGateFromGate(graph, previousGate, gateIndex - 1, # graph, prevGateType, prevGateIndex
+                            AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
                                             gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
                                             NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
                             gateIndex = gateIndex + 1
@@ -521,12 +518,13 @@ def horner_to_circuit(func):
         if GateTypes.isIn(node[0]):
             gate_nodes.append(node)
 
-    if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
-        graph.add_edge((GateTypes.AND.value, "G" + str(len(gate_nodes))),
-                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+    numGates = len(gate_nodes)
 
-    elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
-        graph.add_edge((GateTypes.NAND.value, "G" + str(len(gate_nodes))),
+    if gate_nodes[(numGates - 1)][0] == GateTypes.AND.value:
+        graph.add_edge((GateTypes.AND.value, "G" + str(numGates)),
+                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+    elif gate_nodes[(numGates - 1)][0] == GateTypes.NAND.value:
+        graph.add_edge((GateTypes.NAND.value, "G" + str(numGates)),
                        (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
 
     for node in gate_nodes:
