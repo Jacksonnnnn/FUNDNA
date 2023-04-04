@@ -176,7 +176,7 @@ class Function:
         if self.rearrangeType == RearrangeType.HORNER:
             self.traceString = hornerFunctionToStr(self, 1)
 
-        x = self.point
+        x = 0
         self.traceValue = eval(self.traceString.replace("^", "**"))
 
     def isSinusoidal(self):

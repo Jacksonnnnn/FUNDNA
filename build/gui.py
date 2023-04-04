@@ -808,17 +808,17 @@ canvas.create_text(
 
 # Bottom Text 2 - Point Estimation
 canvas.create_text(
-    27.125,
+    30.625,
     571.6666870117188,
     anchor="nw",
-    text="Point Est:",
+    text="Center:",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 20 * -1)
 )
 
 # Bottom Text 3 - Degree of Rounding
 canvas.create_text(
-    44.625,
+    30.625,
     607.4444580078125,
     anchor="nw",
     text="Degree:",
@@ -961,7 +961,7 @@ canvas.create_text(
     27.0,
     394.0,
     anchor="nw",
-    text="Traced Value at Point:",
+    text="Traced Value at Zero:",
     fill="#1F2C5E",
     font=("BitterRoman ExtraBold", 24 * -1)
 )
