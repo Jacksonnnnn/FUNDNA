@@ -8,22 +8,43 @@ class GateTypes(Enum):
     BAND = "Bipolar And"
     MUX = "MUX"
 
-    def isIn(self):
-        if type(self) is str:
-            if (self == GateTypes.NAND.value or
-                    self == GateTypes.AND.value or
-                    self == GateTypes.BNAND.value or
-                    self == GateTypes.BAND.value or
-                    self == GateTypes.MUX.value):
+    def isIn(gatetype):
+        if type(gatetype) is str:
+            if (gatetype == GateTypes.NAND.value or
+                    gatetype == GateTypes.AND.value or
+                    gatetype == GateTypes.BNAND.value or
+                    gatetype == GateTypes.BAND.value or
+                    gatetype == GateTypes.MUX.value):
                 return 1
             else:
                 return 0
         else:
-            if (self == GateTypes.NAND or
-                    self == GateTypes.AND or
-                    self == GateTypes.BNAND or
-                    self == GateTypes.BAND or
-                    self == GateTypes.MUX):
+            if (gatetype == GateTypes.NAND or
+                    gatetype == GateTypes.AND or
+                    gatetype == GateTypes.BNAND or
+                    gatetype == GateTypes.BAND or
+                    gatetype == GateTypes.MUX):
                 return 1
             else:
                 return 0
+
+    def isInEnum(gatetype):
+        if (gatetype == GateTypes.NAND or
+                gatetype == GateTypes.AND or
+                gatetype == GateTypes.BNAND or
+                gatetype == GateTypes.BAND or
+                gatetype == GateTypes.MUX):
+            return 1
+        else:
+            return 0
+
+    def isInValue(gatetype):
+        if type(gatetype) is str:
+            if (gatetype == GateTypes.NAND.value or
+                    gatetype == GateTypes.AND.value or
+                    gatetype == GateTypes.BNAND.value or
+                    gatetype == GateTypes.BAND.value or
+                    gatetype == GateTypes.MUX.value):
+                return 1
+        else:
+            return 0

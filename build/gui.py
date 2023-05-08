@@ -47,7 +47,7 @@ def updateVariables():
     global lExpress
     global lFunc
 
-    functionStr = entry_4.get()
+    functionStr = entry_4.get().replace("^", "**")
     variable = entry_3.get()
     point = int(entry_2.get())
     power = int(entry_1.get()) + 1
@@ -171,7 +171,7 @@ def calculate():
         entry_5.insert(INSERT, function.CRN)
 
         # Update Circuit Diagram
-        img = Image.open("assets/result.png")
+        img = Image.open("assets/result_new.svg")
         img = img.resize((398, 354))
         photo = ImageTk.PhotoImage(img)
 

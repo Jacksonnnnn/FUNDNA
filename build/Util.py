@@ -10,6 +10,11 @@ from FuncTypes import FuncTypes
 from GateTypes import GateTypes
 from NotGateTypes import NotGateTypes
 
+from Gate import Gate, PrintGateInfo
+
+import schemdraw
+from schemdraw import logic
+
 
 def taylorToPolyStr(func, forceX):
     polynomial = ""
@@ -207,332 +212,311 @@ def make_doubleNAND(func):
     return coeffs
 
 
-def AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2):
-    assert gateType in [GateTypes.NAND.value,
-                        GateTypes.BNAND.value,
-                        GateTypes.AND.value,
-                        GateTypes.BAND.value,
-                        GateTypes.MUX.value]
+def AddBaseGate(drawing, gateIndex, gateType, in1, in1Type, in2, in2Type, isXsquared):
+    gateWrapper = Gate(gateType, in1, in1Type, in2, in2Type, None, None, gateIndex, True, isXsquared)
 
-    # add check to ignore unnecessary AND gate
-    # if ((gateType == GateTypes.AND.value and (value1 <= 1+1e-4 and value1 >= 1-1e-4)
-    #    or gateType == GateTypes.AND.value and (value2 <= 1+1e-4 and value2 >= 1-1e-4)) and gateIndex != 1):
-    #    gateIndex = gateIndex - 1
-    #    return graph
+    if type(in1) is not str:
+        in1 = str(round(in1, 4))
 
-    if type(value1) is not str:
-        graph.add_edge((val1Type, str(round(value1, 4))),
-                       (gateType, "G" + str(gateIndex)))
-    else:
-        graph.add_edge((val1Type, value1),
-                       (gateType, "G" + str(gateIndex)))
+    if type(in2) is not str:
+        in2 = str(round(in2, 4))
 
-    if type(value2) is not str:
-        graph.add_edge((val2Type, str(round(value2, 4))),
-                       (gateType, "G" + str(gateIndex)))
-    else:
-        graph.add_edge((val2Type, value2),
-                       (gateType, "G" + str(gateIndex)))
+    with drawing as d:
+        if gateType == GateTypes.NAND:
+            d += (gate := logic.Nand().label(in1, 'in1').label(in2, 'in2')).right()
+            d += gate.label("G" + str(gateIndex), 'center')
+        if gateType == GateTypes.AND:
+            d += (gate := logic.And().label(in1, 'in1').label(in2, 'in2')).right()
+            d += gate.label("G" + str(gateIndex), 'center')
 
-    return graph
+    gateWrapper.gate = gate
+
+    return d, gateWrapper
 
 
-def AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value):
-    assert gateType in [GateTypes.NAND.value,
-                        GateTypes.BNAND.value,
-                        GateTypes.AND.value,
-                        GateTypes.BAND.value,
-                        GateTypes.MUX.value]
+def AddGateFromGate(drawing, gates, baseGate, gateType, gateIndex, inValue, inType, out, outType, connectBaseOut, connectBaseIn2):
+    gateWrapper = Gate(gateType, None, None, inValue, inType, out, outType, gateIndex, False, False)
 
-    # add check to ignore unnecessary AND gate
-    # if (valType == NotGateTypes.CONSTANT.value):
-    #    if (gateType == GateTypes.AND.value and (float(value) <= 1.0001 and float(value) >= 0.9998)):
-    #        newGateIndex = newGateIndex - 1
-    #        return graph
-    # else:
-    graph.add_edge((prevGateType, "G" + str(prevGateIndex)),
-                   (gateType, "G" + str(newGateIndex)))
-    if type(value) is not str:
-        graph.add_edge((valType, str(round(value, 4))),
-                       (gateType, "G" + str(newGateIndex)))
-    else:
-        graph.add_edge((valType, value),
-                       (gateType, "G" + str(newGateIndex)))
+    prevGate = gates[-1].gate
+    base = baseGate.gate
 
-    return graph
+    if type(inValue) is not str and inValue is not None:
+        inValue = str(round(inValue, 4))
+
+    with drawing as d:
+        if not connectBaseOut and not connectBaseIn2:
+            if gateType == GateTypes.NAND:
+                d += (gate := logic.Nand().at(prevGate.out).anchor('in2').right().label(inValue, 'in1', ofst=(0, 0.5)))
+                d += gate.label("G" + str(gateIndex), 'center')
+            if gateType == GateTypes.AND:
+                d += (gate := logic.And().at(prevGate.out).anchor('in2').right().label(inValue, 'in1', ofst=(0, 0.5)))
+                d += gate.label("G" + str(gateIndex), 'center')
+        if connectBaseIn2:
+            if gateType == GateTypes.NAND:
+                d += (gate := logic.Nand().at(prevGate.out).right().anchor('in1'))
+                d += gate.label("G" + str(gateIndex), 'center')
+            if gateType == GateTypes.AND:
+                d += (gate := logic.And().at(prevGate.out).right().anchor('in1'))
+                d += gate.label("G" + str(gateIndex), 'center')
+
+            d += logic.Wire('n', k=-0.5).at(base.in2).to(gate.in2)
+        if connectBaseOut:
+            if gateType == GateTypes.NAND:
+                d += (gate := logic.Nand().at(prevGate.out).right().anchor('in1'))
+                d += gate.label("G" + str(gateIndex), 'center')
+            if gateType == GateTypes.AND:
+                d += (gate := logic.And().at(prevGate.out).right().anchor('in1'))
+                d += gate.label("G" + str(gateIndex), 'center')
+
+            d += logic.Wire('n', k=-0.5).at(base.out).to(gate.in2)
+
+            for g in gates:
+                if g.index is baseGate.index:
+                    g.outputs.append("G" + str(gateIndex))
+                    g.outputTypes.append(gateType)
+
+    gateWrapper.input1 = "G" + str(gates[-1].index)
+    gateWrapper.input1Type = gates[-1].gateType
+
+    gates[-1].outputs.append("G" + str(gateIndex))
+    gates[-1].outputTypes.append(gateType)
+
+    if connectBaseOut or connectBaseIn2:
+        for g in gates:
+            if g.index is baseGate.index:
+                gateWrapper.input2 = "G" + str(g.index)
+                gateWrapper.input2Type = g.gateType
+
+    gateWrapper.gate = gate
+
+    gates.append(gateWrapper)
+
+    return drawing, gates
 
 
 def doubleNAND_to_circuit(func):
-    graph = nx.DiGraph()
     gateIndex = 1
+    gates = []
+    variable = func.variable.upper()
+    output = '$f(' + variable + ')$'
 
-    # Ways to create a gate:
-    #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
-    #           AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value)
-    #
+    with schemdraw.Drawing() as drawing:
+        if func.isSinusoidal():  # uses x^2
+            coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+            xSquaredGate = None
+            for index in coeffs:
+                if index == list(coeffs.keys())[0]:  # innermost
+                    # AND x with itself (x^2)
+                    drawing, prevGate = AddBaseGate(drawing, gateIndex, GateTypes.AND,                # new gate info
+                                                        variable, NotGateTypes.INPUT,        # in1 info
+                                                        variable, NotGateTypes.INPUT, True)  # in2 info
+                    gates.append(prevGate)
+                    xSquaredGate = prevGate
+                    gateIndex = gateIndex + 1
 
-    if func.isSinusoidal():  # uses x^2
-        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
-        xSquaredGate = 0
-        for index in coeffs:
-            if index == list(coeffs.keys())[0]:  # innermost
-                # AND x with itself (x^2)
-                AddBaseGate(graph, gateIndex, GateTypes.AND.value,  # graph, GIndex, GateType
-                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
-                            NotGateTypes.INPUT.value, func.variable.upper() + " ")  # Value2 Type, Value2
-                xSquaredGate = gateIndex
-                gateIndex = gateIndex + 1
-
-                # NAND prev result with coeff
-                AddGateFromGate(graph, GateTypes.AND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-                gateIndex = gateIndex + 1
-            else:
-                if index == list(coeffs.keys())[-1]:  # outermost
                     # NAND prev result with coeff
-                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                    drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                        coeffs[index], NotGateTypes.CONSTANT,
+                                                        None, None, False, False)
                     gateIndex = gateIndex + 1
+                else:
+                    if index == list(coeffs.keys())[-1]:  # outermost
+                        # NAND prev result with coeff
+                        drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                            coeffs[index], NotGateTypes.CONSTANT,
+                                                            None, None, False, False)
+                        gateIndex = gateIndex + 1
 
-                    # AND prev result with x^2, finish
-                    AddGateFromGate(graph, GateTypes.AND.value, xSquaredGate,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                    GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
-                else:  # inner (minus innermost)
-                    # NAND prev result with coeff
-                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-                    gateIndex = gateIndex + 1
+                        # AND prev result with x^2, finish
+                        drawing, gates = AddGateFromGate(drawing, gates, xSquaredGate, GateTypes.AND, gateIndex,
+                                                            None, None,
+                                                            None, None, True, False)
 
-                    # NAND pev result with x^2
-                    AddGateFromGate(graph, GateTypes.AND.value, xSquaredGate,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
-                    gateIndex = gateIndex + 1
-    else:  # only uses x
-        coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
-        print(coeffs)
+                    else:  # inner (minus innermost)
+                        # NAND prev result with coeff
+                        drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                            coeffs[index], NotGateTypes.CONSTANT,
+                                                            None, None, False, False)
+                        gateIndex = gateIndex + 1
 
-        for index in coeffs:
-            if index == 0:  # outermost
-                # NAND coeff i==n with prev result, finish
-                AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-            else:
-                if list(coeffs.keys())[0] == index:  # innermost
-                    # NAND coeff i==0 with x
-                    AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
-                                NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
-                                NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
-                    gateIndex = gateIndex + 1
-                else:  # middle section
-                    # NAND coeff with prev result
-                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-                    gateIndex = gateIndex + 1
+                        # NAND pev result with x^2
+                        drawing, gates = AddGateFromGate(drawing, gates, xSquaredGate, GateTypes.NAND, gateIndex,
+                                                            None, None,
+                                                            None, None, True, False)
+                        gateIndex = gateIndex + 1
+        else:  # only uses x
+            coeffs = dict(reversed(list(func.doubleNAND_coeffs.items())))
+            print(coeffs)
 
-                    # NAND x with prev result
-                    AddGateFromGate(graph, GateTypes.NAND.value, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
-                    gateIndex = gateIndex + 1
-    gate_nodes = []
+            for index in coeffs:
+                if index == 0:  # outermost
+                    # NAND coeff i==n with prev result, finish
+                    drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                        coeffs[index], NotGateTypes.CONSTANT,
+                                                        None, None, False, False)
+                else:
+                    if list(coeffs.keys())[0] == index:  # innermost
+                        # NAND coeff i==0 with x
+                        drawing, prevGate = AddBaseGate(drawing, gateIndex, GateTypes.NAND,
+                                                        coeffs[index], NotGateTypes.CONSTANT,
+                                                        variable, NotGateTypes.INPUT,
+                                                        False)
+                        gates.append(prevGate)
+                        gateIndex = gateIndex + 1
+                    else:  # middle section
+                        # NAND coeff with prev result
+                        drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                            coeffs[index], NotGateTypes.CONSTANT,
+                                                            None, None, False, False)
+                        gateIndex = gateIndex + 1
 
-    for node in graph.nodes():
-        if GateTypes.isIn(node[0]):
-            gate_nodes.append(node)
+                        # NAND x with prev result
+                        drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                            None, None,
+                                                            None, None, False, True)
+                        gateIndex = gateIndex + 1
 
-    if gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.AND.value:
-        graph.add_edge((GateTypes.AND.value, "G" + str(len(gate_nodes))),
-                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
+    drawing += gates[-1].gate.label(output, 'out')
+    gates[-1].outputs.append("f(x)")
+    gates[-1].outputTypes.append(NotGateTypes.OUTPUT)
 
-    elif gate_nodes[(len(gate_nodes) - 1)][0] == GateTypes.NAND.value:
-        graph.add_edge((GateTypes.NAND.value, "G" + str(len(gate_nodes))),
-                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
-
-    for node in gate_nodes:
-        print(node[0] + " - " + node[1])
-        print(list(graph.predecessors(node)))
-        print("=" * 100)
-    return graph
-
+    return drawing, gates
 
 def horner_to_circuit(func):
-    graph = nx.DiGraph()
     gateIndex = 1
-    previousGate = ""
+    gates = []
+    variable = func.variable.upper()
+    output = '$f(' + variable + ')$'
     coeffs = func.horner_coeffs
 
     transCoeffs = reversed(coeffs)
 
-    # Ways to create a gate:
-    #           AddBaseGate(graph, gateIndex, gateType, val1Type, value1, val2Type, value2)
-    #           AddGateFromGate(graph, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value)
-    #
-
-    if func.isSinusoidal():  # only uses x^2
-        numX = 1
-        xSquaredGate = 0
-        for index in transCoeffs:
-            if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # First grouping (innermost 1-jx^2, where j is coeff)
-                # AND x with itself (x^2)
-                AddBaseGate(graph, gateIndex, GateTypes.AND.value,  # graph, GIndex, GateType
-                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
-                            NotGateTypes.INPUT.value, func.variable.upper() + " ")  # Value2 Type, Value2
-                xSquaredGate = gateIndex
-                gateIndex = gateIndex + 1
-                previousGate = GateTypes.AND.value
-
-                # NAND prev result with next coeff last coefficient
-                AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-                gateIndex = gateIndex + 1
-                previousGate = GateTypes.NAND.value
-
-            else:
-                if index != 1 and index != 0:  # In between groupings (next few 1-jx^2, where j is coeff)
-                    # AND prev result (gIndex - 2) with x^2 value (xSquaredGate yields index)
-                    AddGateFromGate(graph, GateTypes.AND.value, xSquaredGate,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                    GateTypes.NAND.value, "G" + str(gateIndex - 1))  # valType, value
+    with schemdraw.Drawing() as drawing:
+        if func.isSinusoidal():  # only uses x^2
+            xSquaredGate = None
+            for index in transCoeffs:
+                if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # First grouping (innermost 1-jx^2, where j is coeff)
+                    # AND x with itself (x^2)
+                    drawing, prevGate = AddBaseGate(drawing, gateIndex, GateTypes.AND,
+                                                    variable, NotGateTypes.INPUT,
+                                                    variable, NotGateTypes.INPUT, True)
+                    xSquaredGate = prevGate
+                    gates.append(prevGate)
                     gateIndex = gateIndex + 1
-                    previousGate = GateTypes.AND.value
 
-                    # NAND prev result with next coeff
-                    AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                    # NAND prev result with next coeff last coefficient
+                    drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                        coeffs[index], NotGateTypes.CONSTANT,
+                                                        None, None, False, False)
                     gateIndex = gateIndex + 1
-                    previousGate = GateTypes.NAND.value
 
-                else:  # last grouping where case 1: jx(1-kx^2(...)) is last group (i == 1), or case 2: 1-jx^2(...)
-                    # is last group (i == 0)
-                    if index == 1:  # case 1, last term, sin(x)
-                        # AND prev result with X
-                        AddGateFromGate(graph, previousGate, gateIndex - 1, # graph, prevGateType, prevGateIndex
-                                        gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                        NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
+                else:
+                    if index != 1 and index != 0:  # In between groupings (next few 1-jx^2, where j is coeff)
+                        # AND prev result (gIndex - 2) with x^2 value
+                        drawing, gates = AddGateFromGate(drawing, gates, xSquaredGate, GateTypes.AND, gateIndex,
+                                                            None, None,
+                                                            None, None, True, False)
                         gateIndex = gateIndex + 1
-                        previousGate = GateTypes.AND.value
 
-                        # AND prev result with first coeff
-                        if not FrivelousNumber(coeffs[index]):
-                            AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                            gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                            NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-                            gateIndex = gateIndex + 1
-                            previousGate = GateTypes.AND.value
-
-                    else:  # case 2, index == 0, last term, cos(x)
-                        # AND prev result with first coeff
-                        if not FrivelousNumber(coeffs[index]):
-                            AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                            gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                            NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
-                            gateIndex = gateIndex + 1
-                            previousGate = GateTypes.AND.value
-
-    else:  # only uses x^1
-        for index in transCoeffs:
-            if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # First grouping (innermost 1-jx, where j is coeff)
-                # NAND X and last coeff
-                AddBaseGate(graph, gateIndex, GateTypes.NAND.value,  # graph, GIndex, GateType
-                            NotGateTypes.INPUT.value, func.variable.upper(),  # Value1 Type, Value1
-                            NotGateTypes.CONSTANT.value, coeffs[index])  # Value2 Type, Value2
-                gateIndex = gateIndex + 1
-                previousGate = GateTypes.NAND.value
-
-            else:
-                if index != 1 and index != 0:  # In between groupings (next few 1-jx, where j is coeff)
-                    if not FrivelousNumber(coeffs[index]):
-                        # AND prev result with next coeff
-                        AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                        gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                        NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                        # NAND prev result with next coeff
+                        drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                            coeffs[index], NotGateTypes.CONSTANT,
+                                                            None, None, False, False)
                         gateIndex = gateIndex + 1
-                        previousGate = GateTypes.AND.value
 
-                    # NAND prev result with X
-                    AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                    gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                    NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
+                    else:  # last grouping where case 1: jx(1-kx^2(...)) is last group (i == 1), or case 2: 1-jx^2(...)
+                        # is last group (i == 0)
+                        if index == 1:  # case 1, last term, sin(x)
+                            # AND prev result with X
+                            drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                None, None,
+                                                                None, None, False, True)
+                            gateIndex = gateIndex + 1
+
+                            # AND prev result with first coeff
+                            if not FrivelousNumber(coeffs[index]):
+                                drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                    coeffs[index], NotGateTypes.CONSTANT,
+                                                                    None, None, False, False)
+                                gateIndex = gateIndex + 1
+
+                        else:  # case 2, index == 0, last term, cos(x)
+                            # AND prev result with first coeff
+                            if not FrivelousNumber(coeffs[index]):
+                                drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                    coeffs[index], NotGateTypes.CONSTANT,
+                                                                    None, None, False, False)
+                                gateIndex = gateIndex + 1
+
+        else:  # only uses x^1
+            for index in transCoeffs:
+                if list(coeffs.keys())[(len(coeffs) - 1)] == index:  # First grouping (innermost 1-jx, where j is coeff)
+                    # NAND X and last coeff
+                    drawing, prevGate = AddBaseGate(drawing, gateIndex, GateTypes.NAND,
+                                                    coeffs[index], NotGateTypes.CONSTANT,
+                                                    variable, NotGateTypes.INPUT, False)
+                    gates.append(prevGate)
                     gateIndex = gateIndex + 1
-                    previousGate = GateTypes.NAND.value
 
-                else:  # Last grouping, where case 1: jx(...) is last group (i == 1), or case 2: j(1-kx(...)) is last
-                    # group (i == 1)
-                    if 0 not in list(coeffs.keys()):  # case 1 - jx(...)
+                else:
+                    if index != 1 and index != 0:  # In between groupings (next few 1-jx, where j is coeff)
                         if not FrivelousNumber(coeffs[index]):
                             # AND prev result with next coeff
-                            AddGateFromGate(graph, previousGate, gateIndex - 1,
-                                            # graph, prevGateType, prevGateIndex
-                                            gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                            NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                            drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                coeffs[index], NotGateTypes.CONSTANT,
+                                                                None, None, False, False)
                             gateIndex = gateIndex + 1
-                            previousGate = GateTypes.AND.value
 
-                        # AND prev output with X
-                        AddGateFromGate(graph, previousGate, gateIndex - 1,  # graph, prevGateType, prevGateIndex
-                                        gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                        NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
-                        previousGate = GateTypes.AND.value
+                        # NAND prev result with X
+                        drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                            None, None,
+                                                            None, None, False, True)
+                        gateIndex = gateIndex + 1
 
-                    else:  # case 2 - j(1-kx(...))
-                        if index == 1:
+                    else:  # Last grouping, where case 1: jx(...) is last group (i == 1), or case 2: j(1-kx(...)) is last
+                        # group (i == 1)
+                        if 0 not in list(coeffs.keys()):  # case 1 - jx(...)
                             if not FrivelousNumber(coeffs[index]):
                                 # AND prev result with next coeff
-                                AddGateFromGate(graph, previousGate, gateIndex - 1,
-                                                # graph, prevGateType, prevGateIndex
-                                                gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                                drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                    coeffs[index], NotGateTypes.CONSTANT,
+                                                                    None, None, False, False)
                                 gateIndex = gateIndex + 1
-                                previousGate = GateTypes.AND.value
 
-                            # NAND prev result with X
-                            AddGateFromGate(graph, previousGate, gateIndex - 1,
-                                            # graph, prevGateType, prevGateIndex
-                                            gateIndex, GateTypes.NAND.value,  # newGateIndex, gateType
-                                            NotGateTypes.INPUT.value, func.variable.upper())  # valType, value
-                            gateIndex = gateIndex + 1
-                            previousGate = GateTypes.NAND.value
+                            # AND prev output with X
+                            drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                None, None,
+                                                                None, None, False, True)
 
-                        else:  # index == 0
-                            if not FrivelousNumber(coeffs[index]):
-                                # AND prev result with next coeff
-                                AddGateFromGate(graph, previousGate, gateIndex - 1,
-                                                # graph, prevGateType, prevGateIndex
-                                                gateIndex, GateTypes.AND.value,  # newGateIndex, gateType
-                                                NotGateTypes.CONSTANT.value, coeffs[index])  # valType, value
+                        else:  # case 2 - j(1-kx(...))
+                            if index == 1:
+                                if not FrivelousNumber(coeffs[index]):
+                                    # AND prev result with next coeff
+                                    drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                        coeffs[index], NotGateTypes.CONSTANT,
+                                                                        None, None, False, False)
+                                    prevGate = gates[-1]
+                                    gateIndex = gateIndex + 1
+
+                                # NAND prev result with X
+                                drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.NAND, gateIndex,
+                                                                    None, None,
+                                                                    None, None, False, True)
                                 gateIndex = gateIndex + 1
-                                previousGate = GateTypes.AND.value
 
-    gate_nodes = []
+                            else:  # index == 0
+                                if not FrivelousNumber(coeffs[index]):
+                                    # AND prev result with next coeff
+                                    drawing, gates = AddGateFromGate(drawing, gates, gates[0], GateTypes.AND, gateIndex,
+                                                                        coeffs[index], NotGateTypes.CONSTANT,
+                                                                        None, None, False, False)
+                                    gateIndex = gateIndex + 1
 
-    for node in graph.nodes():
-        if GateTypes.isIn(node[0]):
-            gate_nodes.append(node)
+    drawing += gates[-1].gate.label(output, 'out')
+    gates[-1].outputs.append("f(x)")
+    gates[-1].outputTypes.append(NotGateTypes.OUTPUT)
 
-    numGates = len(gate_nodes)
-
-    if gate_nodes[(numGates - 1)][0] == GateTypes.AND.value:
-        graph.add_edge((GateTypes.AND.value, "G" + str(numGates)),
-                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
-    elif gate_nodes[(numGates - 1)][0] == GateTypes.NAND.value:
-        graph.add_edge((GateTypes.NAND.value, "G" + str(numGates)),
-                       (NotGateTypes.OUTPUT.value, "f(" + func.variable + ")"))
-
-    for node in gate_nodes:
-        print(node[0] + " - " + node[1])
-        print(list(graph.predecessors(node)))
-        print("=" * 100)
-
-    return graph
+    return drawing, gates
 
 
 def FrivelousNumber(number):
@@ -542,40 +526,15 @@ def FrivelousNumber(number):
         return False
 
 
-def show_graph(func):
+def show_circuit(func):
+    func.circuit.save("assets/result_new.svg")
+    for gate in func.circuitGates:
+        PrintGateInfo(gate)
+    # func.circuit.draw()
+
+
+def make_reactions(func):
     graph = func.circuit
-    plt.figure(figsize=(10, 10))
-    pos = nx.spring_layout(graph)
-
-    color_map = []
-    temp = 0
-    for node in graph.nodes():
-
-        if GateTypes.isIn(node[0]):
-            color_map.append("orange")
-            temp = 1
-
-        if NotGateTypes.isIn(node[0]):
-            color_map.append("yellow")
-            temp = 1
-
-        if temp == 0:
-            color_map.append("red")
-        else:
-            temp = 0
-
-    plt.title(func.title)
-
-    nx.draw_networkx_nodes(graph, pos, node_color=color_map)
-    nx.draw_networkx_labels(graph, pos)
-    nx.draw_networkx_edges(graph, pos, edge_color='b', arrows=True)
-
-    plt.savefig("assets/result.png", format="PNG")
-
-    plt.show()
-
-
-def make_reactions(graph):
     reactionStr = ""
     for node in graph:
         if GateTypes.isIn(node[0]):

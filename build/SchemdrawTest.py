@@ -1,6 +1,7 @@
 import schemdraw
 from schemdraw import logic
 from schemdraw.parsing import logicparse
+from Gate import Gate
 
 # with logicparse('(a and b) and (y nand x)', outlabel='$f(x)$') as d:
 #    d.save('my_circuit.svg')
@@ -22,61 +23,80 @@ with schemdraw.Drawing() as d:
     d += g3.label('G3', 'center')
     d += (g4 := logic.Nand().at(g3.out).anchor('in2').label('0.2', 'in1', ofst=(0, 0.5)).label('$f(x)$', 'out'))
     d += g4.label('G4', 'center')
-    d += logic.Wire('n', k=-0.5).at(g1.in2).to(g3.in2)
+    d += logic.Wire('n', k=-0.5).at(g1.out).to(g3.in2)
+    d += g4.label('fuck you', 'out')
 
 d.draw()
 d.save('my_circuit.svg')
 
-def AddBaseGate(drawing, gateIndex, gateType, val1Type, value1, val2Type, value2):
-    assert gateType in [GateTypes.NAND.value,
-                        GateTypes.BNAND.value,
-                        GateTypes.AND.value,
-                        GateTypes.BAND.value,
-                        GateTypes.MUX.value]
+for elem in d.elements:
+    if type(elem) is schemdraw.logic.logic.And or type(elem) is schemdraw.logic.logic.Nand:
+        print('-' * 15)
+        print(elem)
+        print(elem.segments)
+        print(elem.__str__())
 
-    # add check to ignore unnecessary AND gate
-    # if ((gateType == GateTypes.AND.value and (value1 <= 1+1e-4 and value1 >= 1-1e-4)
-    #    or gateType == GateTypes.AND.value and (value2 <= 1+1e-4 and value2 >= 1-1e-4)) and gateIndex != 1):
-    #    gateIndex = gateIndex - 1
-    #    return graph
-
-    if type(value1) is not str:
-        graph.add_edge((val1Type, str(round(value1, 4))),
-                       (gateType, "G" + str(gateIndex)))
-    else:
-        graph.add_edge((val1Type, value1),
-                       (gateType, "G" + str(gateIndex)))
-
-    if type(value2) is not str:
-        graph.add_edge((val2Type, str(round(value2, 4))),
-                       (gateType, "G" + str(gateIndex)))
-    else:
-        graph.add_edge((val2Type, value2),
-                       (gateType, "G" + str(gateIndex)))
-
-    return graph
+#  Gate() : gateType, input1, input1Type, input2, input2Type, output, outputType, index, isBase, isXsquared
 
 
-def AddGateFromGate(drawing, prevGateType, prevGateIndex, newGateIndex, gateType, valType, value):
-    assert gateType in [GateTypes.NAND.value,
-                        GateTypes.BNAND.value,
-                        GateTypes.AND.value,
-                        GateTypes.BAND.value,
-                        GateTypes.MUX.value]
+def AddBaseGate(drawing, gateIndex, gateType, in1, in1Type, in2, in2Type, isXsquared):
+    assert type(drawing) == schemdraw.Drawing()
+    gateWrapper = Gate(gateType, in1, in1Type, in2, in2Type, out, outType, gateIndex, True, isXsquared)
 
-    # add check to ignore unnecessary AND gate
-    # if (valType == NotGateTypes.CONSTANT.value):
-    #    if (gateType == GateTypes.AND.value and (float(value) <= 1.0001 and float(value) >= 0.9998)):
-    #        newGateIndex = newGateIndex - 1
-    #        return graph
-    # else:
-    graph.add_edge((prevGateType, "G" + str(prevGateIndex)),
-                   (gateType, "G" + str(newGateIndex)))
-    if type(value) is not str:
-        graph.add_edge((valType, str(round(value, 4))),
-                       (gateType, "G" + str(newGateIndex)))
-    else:
-        graph.add_edge((valType, value),
-                       (gateType, "G" + str(newGateIndex)))
+    if in1 is not str:
+        if in1 is float:
+            in1 = round(in1, 4)
 
-    return graph
+        in1 = str(in1)
+
+    if in2 is not str:
+        if in2 is float:
+            in2 = round(in2, 4)
+
+        in2 = str(in2)
+
+    with drawing as d:
+        if gateType == GateTypes.NAND:
+            d += (gate := logic.Nand().label(in1, 'in1').label(in2, 'in2'))
+            d += gate.label("G" + str(gateIndex), 'center')
+        if gateType == GateTypes.AND:
+            d += (gate := logic.And().label(in1, 'in1').label(in2, 'in2'))
+            d += gate.label("G" + str(gateIndex), 'center')
+
+    gateWrapper.gate = gate
+
+    return d, gateWrapper
+
+
+def AddGateFromGate(drawing, prevGate, baseGate, gateType, gateIndex, inValue, inType, out, outType, connectBase):
+    assert type(drawing) == schemdraw.Drawing()
+    assert type(prevGate) == schemdraw.logic.logic
+    gateWrapper = Gate(gateType, None, None, inValue, inType, out, outType, gateIndex, False, False)
+
+    if inValue is not str:
+        if inValue is float:
+            inValue = round(inValue, 4)
+
+        inValue = str(inValue)
+
+    with drawing as d:
+        if not connectBase:
+            if gateType == GateTypes.NAND:
+                d += (gate := logic.Nand().at(prevGate.out).anchor('in2').label(inValue, 'in1', ofst=(0, 0.5)))
+                d += gate.label("G" + str(gateIndex), 'center')
+            if gateType == GateTypes.AND:
+                d += (gate := logic.And().at(prevGate.out).anchor('in2').label(inValue, 'in1', ofst=(0, 0.5)))
+                d += gate.label("G" + str(gateIndex), 'center')
+        else:
+            if gateType == GateTypes.NAND:
+                d += (gate := logic.Nand().at(prevGate.out).anchor('in1'))
+                d += gate.label("G" + str(gateIndex), 'center')
+            if gateType == GateTypes.AND:
+                d += (gate := logic.And().at(prevGate.out).anchor('in1'))
+                d += gate.label("G" + str(gateIndex), 'center')
+
+            d += logic.Wire('n', k=-0.5).at(baseGate.in2).to(gate.in2)
+
+    gateWrapper.gate = gate
+
+    return drawing, gateWrapper

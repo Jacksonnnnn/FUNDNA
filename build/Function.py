@@ -8,6 +8,7 @@ class Function:
         assert FuncTypes.isIn(functype)
 
         self.circuit = None
+        self.circuitGates = None
         self.horner_coeffs = None
         self.doubleNAND_coeffs = None
         self.poli_coeffs = None
@@ -158,17 +159,16 @@ class Function:
 
     def generateCircuit(self):
         if self.rearrangeType == RearrangeType.DOUBLE_NAND:
-            self.circuit = doubleNAND_to_circuit(self)
+            self.circuit, self.circuitGates = doubleNAND_to_circuit(self)
         if self.rearrangeType == RearrangeType.HORNER:
-            self.circuit = horner_to_circuit(self)
+            self.circuit, self.circuitGates = horner_to_circuit(self)
 
-        # self.circuit = removeFrivolous(self.circuit)
         if self.rearrangeType != RearrangeType.UNKNOWN:
-            show_graph(self)
+            show_circuit(self)
 
     def generateReactions(self):
         if self.rearrangeType != RearrangeType.UNKNOWN:
-            self.CRN = make_reactions(self.circuit)
+            self.CRN = make_reactions(self)
 
     def generateTrace(self):
         if self.rearrangeType == RearrangeType.DOUBLE_NAND:
