@@ -1,7 +1,7 @@
 import schemdraw
 from schemdraw import logic
-from schemdraw.parsing import logicparse
-from Gate import Gate
+
+# from schemdraw.parsing import logicparse
 
 # with logicparse('(a and b) and (y nand x)', outlabel='$f(x)$') as d:
 #    d.save('my_circuit.svg')
@@ -35,68 +35,3 @@ for elem in d.elements:
         print(elem)
         print(elem.segments)
         print(elem.__str__())
-
-#  Gate() : gateType, input1, input1Type, input2, input2Type, output, outputType, index, isBase, isXsquared
-
-
-def AddBaseGate(drawing, gateIndex, gateType, in1, in1Type, in2, in2Type, isXsquared):
-    assert type(drawing) == schemdraw.Drawing()
-    gateWrapper = Gate(gateType, in1, in1Type, in2, in2Type, out, outType, gateIndex, True, isXsquared)
-
-    if in1 is not str:
-        if in1 is float:
-            in1 = round(in1, 4)
-
-        in1 = str(in1)
-
-    if in2 is not str:
-        if in2 is float:
-            in2 = round(in2, 4)
-
-        in2 = str(in2)
-
-    with drawing as d:
-        if gateType == GateTypes.NAND:
-            d += (gate := logic.Nand().label(in1, 'in1').label(in2, 'in2'))
-            d += gate.label("G" + str(gateIndex), 'center')
-        if gateType == GateTypes.AND:
-            d += (gate := logic.And().label(in1, 'in1').label(in2, 'in2'))
-            d += gate.label("G" + str(gateIndex), 'center')
-
-    gateWrapper.gate = gate
-
-    return d, gateWrapper
-
-
-def AddGateFromGate(drawing, prevGate, baseGate, gateType, gateIndex, inValue, inType, out, outType, connectBase):
-    assert type(drawing) == schemdraw.Drawing()
-    assert type(prevGate) == schemdraw.logic.logic
-    gateWrapper = Gate(gateType, None, None, inValue, inType, out, outType, gateIndex, False, False)
-
-    if inValue is not str:
-        if inValue is float:
-            inValue = round(inValue, 4)
-
-        inValue = str(inValue)
-
-    with drawing as d:
-        if not connectBase:
-            if gateType == GateTypes.NAND:
-                d += (gate := logic.Nand().at(prevGate.out).anchor('in2').label(inValue, 'in1', ofst=(0, 0.5)))
-                d += gate.label("G" + str(gateIndex), 'center')
-            if gateType == GateTypes.AND:
-                d += (gate := logic.And().at(prevGate.out).anchor('in2').label(inValue, 'in1', ofst=(0, 0.5)))
-                d += gate.label("G" + str(gateIndex), 'center')
-        else:
-            if gateType == GateTypes.NAND:
-                d += (gate := logic.Nand().at(prevGate.out).anchor('in1'))
-                d += gate.label("G" + str(gateIndex), 'center')
-            if gateType == GateTypes.AND:
-                d += (gate := logic.And().at(prevGate.out).anchor('in1'))
-                d += gate.label("G" + str(gateIndex), 'center')
-
-            d += logic.Wire('n', k=-0.5).at(baseGate.in2).to(gate.in2)
-
-    gateWrapper.gate = gate
-
-    return drawing, gateWrapper
