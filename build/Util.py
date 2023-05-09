@@ -380,7 +380,7 @@ def doubleNAND_to_circuit(func):
                                                          None, None, False, True)
                         gateIndex = gateIndex + 1
 
-    drawing += gates[-1].gate.label(outputWithFormatting, 'out')
+    drawing += gates[-1].gate.label(outputWithFormatting[0:5] + '$', 'out')
     gates[-1].outputs.append(output)
     gates[-1].outputTypes.append(NotGateTypes.OUTPUT)
 
@@ -519,7 +519,7 @@ def horner_to_circuit(func):
                                                                      None, None, False, False)
                                     gateIndex = gateIndex + 1
 
-    drawing += gates[-1].gate.label(outputWithFormatting, 'out')
+    drawing += gates[-1].gate.label(outputWithFormatting[0:5] + '$', 'out')
     gates[-1].outputs.append(output)
     gates[-1].outputTypes.append(NotGateTypes.OUTPUT)
 
