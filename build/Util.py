@@ -527,68 +527,78 @@ def FrivelousNumber(number):
 
 
 def show_circuit(func):
-    func.circuit.save("assets/result_new.svg")
+    func.circuit.save("assets/result.png")
     for gate in func.circuitGates:
         PrintGateInfo(gate)
     # func.circuit.draw()
 
 
 def make_reactions(func):
-    graph = func.circuit
     reactionStr = ""
-    for node in graph:
-        if GateTypes.isIn(node[0]):
-            gate_type = node[0]
-            input_substances = list(graph.predecessors(node))
-            output_substances = list(graph.neighbors(node))
-            gateName = node[1]
+    for g in func.circuitGates:
+        if GateTypes.isInEnum(g.gateType):
+            gateType = g.gateType
+            inputs = [g.input1, g.input2]
+            outputs = g.outputs
+            gateName = "G" + str(g.index)
 
-            reactionStr = reactionStr + gateName + "(" + gate_type + ")\n" \
-                          + "Inputs: " + input_substances[0][1] + ", " + input_substances[1][1] + "\n" \
-                          + "Output(s) To: "
+            if type(inputs[0]) is not str and inputs[0] is not None:
+                inputs[0] = str(round(inputs[0], 4))
 
-            for output in output_substances:
-                reactionStr = reactionStr + " " + output[1]
+            if type(inputs[1]) is not str and inputs[1] is not None:
+                inputs[1] = str(round(inputs[1], 4))
 
-            reactionStr = reactionStr + "\n\nReaction Table:\n"
+            if gateType == GateTypes.AND:
+                gateTypeStr = "M-AND"
+            else:
+                gateTypeStr = "M-NAND"
 
-            reaction = make_reaction(gate_type, input_substances, output_substances, gateName)
+            reactionStr += gateName + "(" + gateTypeStr + ")\n"
+            reactionStr += "Inputs: " + inputs[0] + ", " + inputs[1] + "\n"
+            reactionStr += "Output(s) To: "
+
+            for output in outputs:
+                if output != outputs[0]:
+                    reactionStr += ", " + output
+                else:
+                    reactionStr += " " + output
+
+            reactionStr += "\n\nReaction Table:\n"
+
+            reaction = make_reaction(gateType, inputs, gateName)
 
             for r in reaction:
                 print(r)
-                reactionStr = reactionStr + r + "\n"
+                reactionStr += r + "\n"
             print("-" * 100)
 
-            reactionStr = reactionStr + "-" * 85 + "\n"
+            reactionStr += "-" * 85 + "\n"
 
+    print("\n\n\n\n\tREACTION STATEMENTS!!\n")
+    print(reactionStr)
     return reactionStr
 
 
-def make_reaction(gate_type, input_substances, output_substances, gateName):
-    assert gate_type in [GateTypes.NAND.value,
-                         GateTypes.BNAND.value,
-                         GateTypes.AND.value,
-                         GateTypes.BAND.value,
-                         GateTypes.MUX.value]
+def make_reaction(gateType, inputs, gateName):
+    assert GateTypes.isInEnum(gateType)
 
-    assert len(input_substances) == 2
+    assert len(inputs) == 2
 
-    print(gate_type, "(", gateName, ")")
-    print(input_substances)
-    print(output_substances)
+    print(gateType, "(", gateName, ")")
+    print(inputs)
 
-    a = input_substances[0][1]
-    b = input_substances[1][1]
+    a = inputs[0]
+    b = inputs[1]
     c = gateName
 
-    if gate_type == GateTypes.AND.value:
+    if gateType == GateTypes.AND:
         reaction_list = [
             f"{a}_0 + {b}_0 -> {c}_0",
             f"{a}_0 + {b}_1 -> {c}_0",
             f"{a}_1 + {b}_0 -> {c}_0",
             f"{a}_1 + {b}_1 -> {c}_1",
         ]
-    elif gate_type == GateTypes.NAND.value:
+    elif gateType == GateTypes.NAND:
         reaction_list = [
             f"{a}_0 + {b}_0 -> {c}_1",
             f"{a}_0 + {b}_1 -> {c}_1",
@@ -596,6 +606,6 @@ def make_reaction(gate_type, input_substances, output_substances, gateName):
             f"{a}_1 + {b}_1 -> {c}_0",
         ]
     else:
-        print("GATE ERROR: Given Gate Type ", gate_type)
+        print("GATE ERROR: Given Gate Type ", gateType)
         return -1
     return reaction_list

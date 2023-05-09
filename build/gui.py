@@ -171,8 +171,11 @@ def calculate():
         entry_5.insert(INSERT, function.CRN)
 
         # Update Circuit Diagram
-        img = Image.open("assets/result_new.svg")
-        img = img.resize((398, 354))
+        baseWidth = 398
+        img = Image.open("assets/result.png")
+        wpercent = (baseWidth / float(img.size[0]))
+        hsize = int(float(img.size[1])*float(wpercent))
+        img = img.resize((baseWidth, hsize), Image.LANCZOS)
         photo = ImageTk.PhotoImage(img)
 
         image_3_updater.config(image=photo)
