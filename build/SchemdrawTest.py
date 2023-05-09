@@ -15,16 +15,15 @@ from schemdraw import logic
 
 # logic gate drawing of (x^2)/10 + x/15 + 4/5
 with schemdraw.Drawing() as d:
-    d += (g1 := logic.Nand().label('0.75', 'in1').label('X', 'in2'))
+    d += (g1 := logic.Nand().right().label('0.75', 'in1').label('X', 'in2'))
     d += g1.label('G1', 'center')
-    d += (g2 := logic.Nand().at(g1.out).anchor('in2').label('0.6667', 'in1', ofst=(0, 0.5)))
+    d += (g2 := logic.Nand().at(g1.out).right().anchor('in2').label('0.6667', 'in1', ofst=(0, 0.5)))
     d += g2.label('G2', 'center')
-    d += (g3 := logic.Nand().at(g2.out).anchor('in1'))
+    d += (g3 := logic.Nand().at(g2.out).right().anchor('in1'))
     d += g3.label('G3', 'center')
-    d += (g4 := logic.Nand().at(g3.out).anchor('in2').label('0.2', 'in1', ofst=(0, 0.5)).label('$f(x)$', 'out'))
+    d += (g4 := logic.Nand().at(g3.out).right().anchor('in2').label('0.2', 'in1', ofst=(0, 0.5)).label('$f(x)$', 'out'))
     d += g4.label('G4', 'center')
     d += logic.Wire('n', k=-0.5).at(g1.out).to(g3.in2)
-    d += g4.label('fuck you', 'out')
 
 d.draw()
 d.save('my_circuit.svg')
