@@ -5,15 +5,19 @@ except:
     print("Unable to import PyInstaller... continuing")
 finally:
     from pathlib import Path
+
     from tkinter import *
+    import tkinter.messagebox as messagebox
     from tkinter.scrolledtext import ScrolledText
+
     from math import *
     from mpmath import *
 
     import sympy
     import sympy as sp
-    from PIL import Image, ImageTk
     from sympy import sympify
+
+    from PIL import Image, ImageTk
 
     from FuncTypes import *
     from Util import *
@@ -49,7 +53,7 @@ def updateVariables():
 
     functionStr = entry_4.get().replace("^", "**")
     variable = entry_3.get()
-    point = int(entry_2.get())
+    point = float(entry_2.get())
     power = int(entry_1.get()) + 1
     lExpress = "lambda " + variable + ": " + functionStr
     # lambda x: sin(x)
@@ -182,13 +186,13 @@ def calculate():
         image_3_updater.image = photo
 
     else:
-        entry_5.delete('1.0', END)
-        entry_5.insert(INSERT, "Function Type Not Supported!\n" +
-                       "Function: " + function.title + "\n" +
-                       "Around Point: " + function.point.__str__() + "\n" +
-                       "Degree Estimation: " + function.order.__str__() + "\n" +
-                       "Maclaurin Series: \n" +
-                       function.taylorString)
+        messagebox.showinfo("UK Function To Circuit Designer",
+                            "Error! The function you entered is not supported for these parameters:\n" +
+                            "-----------------------------------\n"
+                            "Function: " + functionStr.replace("**", "^") + "\n" +
+                            "Variable: " + variable + "\n" +
+                            "Degree: " + str(power - 1) + "\n" +
+                            "Point Estimation: " + str(point))
 
 
 def clearEq():
@@ -814,7 +818,7 @@ canvas.create_text(
     30.625,
     571.6666870117188,
     anchor="nw",
-    text="Center:",
+    text="Point Est.:",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 20 * -1)
 )
@@ -964,7 +968,7 @@ canvas.create_text(
     27.0,
     394.0,
     anchor="nw",
-    text="Traced Value at Zero:",
+    text="Traced Value at Point:",
     fill="#1F2C5E",
     font=("BitterRoman ExtraBold", 24 * -1)
 )
