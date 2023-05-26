@@ -85,12 +85,12 @@ def DetermineDotParensPlus(testTube, f, replace):
 #       # Note that you can write multiple reactions in one line:
 #       A + 2C -> E [k = 13.78]; E + F <=> 2A  [kf = 13, kr = 14]
 
-simpleReactionFile = open("tests/simple.txt", "w+")
+simpleReactionFile = open("!simple.txt", "w+")
 simpleReaction = nuskell.dsdcompiler.translate('A + B -> C', 'soloveichik2010.ts', modular=True)
 TestTubeAnalysis(simpleReaction, simpleReactionFile, False)
 simpleReactionFile.close()
 
-andGateFile = open("tests/andGate.txt", "w+")
+andGateFile = open("!andGate.txt", "w+")
 andGate = nuskell.dsdcompiler.translate('A0 + B0 -> C0;'
                                         'A0 + B1 -> C0;'
                                         'A1 + B0 -> C0;'
@@ -119,7 +119,7 @@ andGateFile.close()
 # 'G3_0 + 0.2_1 -> G4_1;'
 # 'G3_1 + 0.2_0 -> G4_1;'
 # 'G3_1 + 0.2_1 -> G4_0'
-polynomialFile = open("tests/polynomial.txt", "w+")
+polynomialFile = open("!polynomial.txt", "w+")
 polynomial = nuskell.dsdcompiler.translate('0.75_0 + X_0 -> G1_1;'
                                            '0.75_0 + X_1 -> G1_1;'
                                            '0.75_1 + X_0 -> G1_1;'
