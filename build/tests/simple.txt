@@ -1,0 +1,146 @@
+--------------------------------------------------
+TRANSLATION:
+--------------------------------------------------
+Complex: A
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h10 t1 d2 t3
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h10	  15
+		  t1	  5
+		  d2	  15
+		  t3	  5
+
+Complex: B
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h11 t4 d5 t6
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h11	  15
+		  t4	  5
+		  d5	  15
+		  t6	  5
+
+Complex: C
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h12 t7 d8 t9
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h12	  15
+		  t7	  5
+		  d8	  15
+		  t9	  5
+
+Complex: f2
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d13( t7( d8 t9 + ) ) t6*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d13	  15
+		  t7	  5
+		  d8	  15
+		  t9	  5
+		  t7*	  5
+		  d13*	  15
+		  t6*	  5
+
+Complex: f3
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d2 t3 t4
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d2	  15
+		  t3	  5
+		  t4	  5
+
+Complex: f1
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d2( t3( t4( + d5( t6( d13 t7 + ) ) ) ) ) t1*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d2	  15
+		  t3	  5
+		  t4	  5
+		  d5	  15
+		  t6	  5
+		  d13	  15
+		  t7	  5
+		  t6*	  5
+		  d5*	  15
+		  t4*	  5
+		  t3*	  5
+		  d2*	  15
+		  t1*	  5
+
+
+--------------------------------------------------
+DOT-PARENS-PLUS NOTATION OF COMPLEXES:
+--------------------------------------------------
+A
+	....
+	h10 t1 d2 t3
+B
+	....
+	h11 t4 d5 t6
+C
+	....
+	h12 t7 d8 t9
+f2
+	((..+)).
+	d13( t7( d8 t9 + ) ) t6*
+f3
+	...
+	d2 t3 t4
+f1
+	(((+((..+))))).
+	d2( t3( t4( + d5( t6( d13 t7 + ) ) ) ) ) t1*
+
+--------------------------------------------------
+Reactions:
+--------------------------------------------------
+	Reaction 0 - Involved Complexes:
+	  - A
+	  - B
+	  - C
+	  - f2
+	  - f3
+	  - f1

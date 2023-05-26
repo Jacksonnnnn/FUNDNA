@@ -1,0 +1,1563 @@
+--------------------------------------------------
+TRANSLATION:
+--------------------------------------------------
+Complex: 0.75_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h90 t42 d43 t44
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h90	  15
+		  t42	  5
+		  d43	  15
+		  t44	  5
+
+Complex: X_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h91 t45 d46 t47
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h91	  15
+		  t45	  5
+		  d46	  15
+		  t47	  5
+
+Complex: G1_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h92 t48 d49 t50
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h92	  15
+		  t48	  5
+		  d49	  15
+		  t50	  5
+
+Complex: X_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h93 t51 d52 t53
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h93	  15
+		  t51	  5
+		  d52	  15
+		  t53	  5
+
+Complex: 0.75_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h94 t54 d55 t56
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h94	  15
+		  t54	  5
+		  d55	  15
+		  t56	  5
+
+Complex: G1_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h95 t57 d58 t59
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h95	  15
+		  t57	  5
+		  d58	  15
+		  t59	  5
+
+Complex: 0.6667_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h96 t60 d61 t62
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h96	  15
+		  t60	  5
+		  d61	  15
+		  t62	  5
+
+Complex: G2_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h97 t63 d64 t65
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h97	  15
+		  t63	  5
+		  d64	  15
+		  t65	  5
+
+Complex: 0.6667_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h98 t66 d67 t68
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h98	  15
+		  t66	  5
+		  d67	  15
+		  t68	  5
+
+Complex: G2_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h99 t69 d70 t71
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h99	  15
+		  t69	  5
+		  d70	  15
+		  t71	  5
+
+Complex: G3_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h100 t72 d73 t74
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h100	  15
+		  t72	  5
+		  d73	  15
+		  t74	  5
+
+Complex: G3_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h101 t75 d76 t77
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h101	  15
+		  t75	  5
+		  d76	  15
+		  t77	  5
+
+Complex: 0.2_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h102 t78 d79 t80
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h102	  15
+		  t78	  5
+		  d79	  15
+		  t80	  5
+
+Complex: G4_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h103 t81 d82 t83
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h103	  15
+		  t81	  5
+		  d82	  15
+		  t83	  5
+
+Complex: 0.2_1
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h104 t84 d85 t86
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h104	  15
+		  t84	  5
+		  d85	  15
+		  t86	  5
+
+Complex: G4_0
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
+	Concentration:		Undefined
+	Kernel String:		h105 t87 d88 t89
+	Dot-parens-plus:	....
+	Pair Table:	
+		[None, None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  h105	  15
+		  t87	  5
+		  d88	  15
+		  t89	  5
+
+Complex: f17
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d106( t48( d49 t50 + ) ) t47*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d106	  15
+		  t48	  5
+		  d49	  15
+		  t50	  5
+		  t48*	  5
+		  d106*	  15
+		  t47*	  5
+
+Complex: f20
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d107( t48( d49 t50 + ) ) t53*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d107	  15
+		  t48	  5
+		  d49	  15
+		  t50	  5
+		  t48*	  5
+		  d107*	  15
+		  t53*	  5
+
+Complex: f23
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d108( t48( d49 t50 + ) ) t47*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d108	  15
+		  t48	  5
+		  d49	  15
+		  t50	  5
+		  t48*	  5
+		  d108*	  15
+		  t47*	  5
+
+Complex: f26
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d109( t57( d58 t59 + ) ) t53*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d109	  15
+		  t57	  5
+		  d58	  15
+		  t59	  5
+		  t57*	  5
+		  d109*	  15
+		  t53*	  5
+
+Complex: f29
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d110( t63( d64 t65 + ) ) t62*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d110	  15
+		  t63	  5
+		  d64	  15
+		  t65	  5
+		  t63*	  5
+		  d110*	  15
+		  t62*	  5
+
+Complex: f32
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d111( t63( d64 t65 + ) ) t68*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d111	  15
+		  t63	  5
+		  d64	  15
+		  t65	  5
+		  t63*	  5
+		  d111*	  15
+		  t68*	  5
+
+Complex: f35
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d112( t63( d64 t65 + ) ) t62*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d112	  15
+		  t63	  5
+		  d64	  15
+		  t65	  5
+		  t63*	  5
+		  d112*	  15
+		  t62*	  5
+
+Complex: f38
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d113( t69( d70 t71 + ) ) t68*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d113	  15
+		  t69	  5
+		  d70	  15
+		  t71	  5
+		  t69*	  5
+		  d113*	  15
+		  t68*	  5
+
+Complex: f41
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d114( t72( d73 t74 + ) ) t59*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d114	  15
+		  t72	  5
+		  d73	  15
+		  t74	  5
+		  t72*	  5
+		  d114*	  15
+		  t59*	  5
+
+Complex: f44
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d115( t72( d73 t74 + ) ) t50*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d115	  15
+		  t72	  5
+		  d73	  15
+		  t74	  5
+		  t72*	  5
+		  d115*	  15
+		  t50*	  5
+
+Complex: f47
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d116( t72( d73 t74 + ) ) t59*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d116	  15
+		  t72	  5
+		  d73	  15
+		  t74	  5
+		  t72*	  5
+		  d116*	  15
+		  t59*	  5
+
+Complex: f50
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d117( t75( d76 t77 + ) ) t50*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d117	  15
+		  t75	  5
+		  d76	  15
+		  t77	  5
+		  t75*	  5
+		  d117*	  15
+		  t50*	  5
+
+Complex: f53
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d118( t81( d82 t83 + ) ) t80*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d118	  15
+		  t81	  5
+		  d82	  15
+		  t83	  5
+		  t81*	  5
+		  d118*	  15
+		  t80*	  5
+
+Complex: f56
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d119( t81( d82 t83 + ) ) t86*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d119	  15
+		  t81	  5
+		  d82	  15
+		  t83	  5
+		  t81*	  5
+		  d119*	  15
+		  t86*	  5
+
+Complex: f59
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d120( t81( d82 t83 + ) ) t80*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d120	  15
+		  t81	  5
+		  d82	  15
+		  t83	  5
+		  t81*	  5
+		  d120*	  15
+		  t80*	  5
+
+Complex: f62
+	Enclosed Domains:	
+	Exterior Domains:	(0, 2) (0, 3) (1, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d121( t87( d88 t89 + ) ) t86*
+	Dot-parens-plus:	((..+)).
+	Pair Table:	
+		[(1, 1), (1, 0), None, None]
+		[(0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d121	  15
+		  t87	  5
+		  d88	  15
+		  t89	  5
+		  t87*	  5
+		  d121*	  15
+		  t86*	  5
+
+Complex: f18
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d43 t44 t45
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d43	  15
+		  t44	  5
+		  t45	  5
+
+Complex: f16
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d43( t44( t45( + d46( t47( d106 t48 + ) ) ) ) ) t42*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d43	  15
+		  t44	  5
+		  t45	  5
+		  d46	  15
+		  t47	  5
+		  d106	  15
+		  t48	  5
+		  t47*	  5
+		  d46*	  15
+		  t45*	  5
+		  t44*	  5
+		  d43*	  15
+		  t42*	  5
+
+Complex: f21
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d43 t44 t51
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d43	  15
+		  t44	  5
+		  t51	  5
+
+Complex: f19
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d43( t44( t51( + d52( t53( d107 t48 + ) ) ) ) ) t42*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d43	  15
+		  t44	  5
+		  t51	  5
+		  d52	  15
+		  t53	  5
+		  d107	  15
+		  t48	  5
+		  t53*	  5
+		  d52*	  15
+		  t51*	  5
+		  t44*	  5
+		  d43*	  15
+		  t42*	  5
+
+Complex: f22
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d55( t56( t45( + d46( t47( d108 t48 + ) ) ) ) ) t54*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d55	  15
+		  t56	  5
+		  t45	  5
+		  d46	  15
+		  t47	  5
+		  d108	  15
+		  t48	  5
+		  t47*	  5
+		  d46*	  15
+		  t45*	  5
+		  t56*	  5
+		  d55*	  15
+		  t54*	  5
+
+Complex: f43
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d70( t71( t48( + d49( t50( d115 t72 + ) ) ) ) ) t69*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d70	  15
+		  t71	  5
+		  t48	  5
+		  d49	  15
+		  t50	  5
+		  d115	  15
+		  t72	  5
+		  t50*	  5
+		  d49*	  15
+		  t48*	  5
+		  t71*	  5
+		  d70*	  15
+		  t69*	  5
+
+Complex: f49
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d64( t65( t48( + d49( t50( d117 t75 + ) ) ) ) ) t63*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d64	  15
+		  t65	  5
+		  t48	  5
+		  d49	  15
+		  t50	  5
+		  d117	  15
+		  t75	  5
+		  t50*	  5
+		  d49*	  15
+		  t48*	  5
+		  t65*	  5
+		  d64*	  15
+		  t63*	  5
+
+Complex: f36
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d49 t50 t60
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d49	  15
+		  t50	  5
+		  t60	  5
+
+Complex: f34
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d49( t50( t60( + d61( t62( d112 t63 + ) ) ) ) ) t48*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d49	  15
+		  t50	  5
+		  t60	  5
+		  d61	  15
+		  t62	  5
+		  d112	  15
+		  t63	  5
+		  t62*	  5
+		  d61*	  15
+		  t60*	  5
+		  t50*	  5
+		  d49*	  15
+		  t48*	  5
+
+Complex: f39
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d49 t50 t66
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d49	  15
+		  t50	  5
+		  t66	  5
+
+Complex: f37
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d49( t50( t66( + d67( t68( d113 t69 + ) ) ) ) ) t48*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d49	  15
+		  t50	  5
+		  t66	  5
+		  d67	  15
+		  t68	  5
+		  d113	  15
+		  t69	  5
+		  t68*	  5
+		  d67*	  15
+		  t66*	  5
+		  t50*	  5
+		  d49*	  15
+		  t48*	  5
+
+Complex: f25
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d55( t56( t51( + d52( t53( d109 t57 + ) ) ) ) ) t54*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d55	  15
+		  t56	  5
+		  t51	  5
+		  d52	  15
+		  t53	  5
+		  d109	  15
+		  t57	  5
+		  t53*	  5
+		  d52*	  15
+		  t51*	  5
+		  t56*	  5
+		  d55*	  15
+		  t54*	  5
+
+Complex: f24
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d55 t56 t45
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d55	  15
+		  t56	  5
+		  t45	  5
+
+Complex: f27
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d55 t56 t51
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d55	  15
+		  t56	  5
+		  t51	  5
+
+Complex: f40
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d70( t71( t57( + d58( t59( d114 t72 + ) ) ) ) ) t69*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d70	  15
+		  t71	  5
+		  t57	  5
+		  d58	  15
+		  t59	  5
+		  d114	  15
+		  t72	  5
+		  t59*	  5
+		  d58*	  15
+		  t57*	  5
+		  t71*	  5
+		  d70*	  15
+		  t69*	  5
+
+Complex: f46
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d64( t65( t57( + d58( t59( d116 t72 + ) ) ) ) ) t63*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d64	  15
+		  t65	  5
+		  t57	  5
+		  d58	  15
+		  t59	  5
+		  d116	  15
+		  t72	  5
+		  t59*	  5
+		  d58*	  15
+		  t57*	  5
+		  t65*	  5
+		  d64*	  15
+		  t63*	  5
+
+Complex: f30
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d58 t59 t60
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d58	  15
+		  t59	  5
+		  t60	  5
+
+Complex: f28
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d58( t59( t60( + d61( t62( d110 t63 + ) ) ) ) ) t57*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d58	  15
+		  t59	  5
+		  t60	  5
+		  d61	  15
+		  t62	  5
+		  d110	  15
+		  t63	  5
+		  t62*	  5
+		  d61*	  15
+		  t60*	  5
+		  t59*	  5
+		  d58*	  15
+		  t57*	  5
+
+Complex: f33
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d58 t59 t66
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d58	  15
+		  t59	  5
+		  t66	  5
+
+Complex: f31
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d58( t59( t66( + d67( t68( d111 t63 + ) ) ) ) ) t57*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d58	  15
+		  t59	  5
+		  t66	  5
+		  d67	  15
+		  t68	  5
+		  d111	  15
+		  t63	  5
+		  t68*	  5
+		  d67*	  15
+		  t66*	  5
+		  t59*	  5
+		  d58*	  15
+		  t57*	  5
+
+Complex: f51
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d64 t65 t48
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d64	  15
+		  t65	  5
+		  t48	  5
+
+Complex: f48
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d64 t65 t57
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d64	  15
+		  t65	  5
+		  t57	  5
+
+Complex: f45
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d70 t71 t48
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d70	  15
+		  t71	  5
+		  t48	  5
+
+Complex: f42
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d70 t71 t57
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d70	  15
+		  t71	  5
+		  t57	  5
+
+Complex: f60
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d73 t74 t78
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d73	  15
+		  t74	  5
+		  t78	  5
+
+Complex: f58
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d73( t74( t78( + d79( t80( d120 t81 + ) ) ) ) ) t72*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d73	  15
+		  t74	  5
+		  t78	  5
+		  d79	  15
+		  t80	  5
+		  d120	  15
+		  t81	  5
+		  t80*	  5
+		  d79*	  15
+		  t78*	  5
+		  t74*	  5
+		  d73*	  15
+		  t72*	  5
+
+Complex: f63
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d73 t74 t84
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d73	  15
+		  t74	  5
+		  t84	  5
+
+Complex: f61
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d73( t74( t84( + d85( t86( d121 t87 + ) ) ) ) ) t72*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d73	  15
+		  t74	  5
+		  t84	  5
+		  d85	  15
+		  t86	  5
+		  d121	  15
+		  t87	  5
+		  t86*	  5
+		  d85*	  15
+		  t84*	  5
+		  t74*	  5
+		  d73*	  15
+		  t72*	  5
+
+Complex: f54
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d76 t77 t78
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d76	  15
+		  t77	  5
+		  t78	  5
+
+Complex: f52
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d76( t77( t78( + d79( t80( d118 t81 + ) ) ) ) ) t75*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d76	  15
+		  t77	  5
+		  t78	  5
+		  d79	  15
+		  t80	  5
+		  d118	  15
+		  t81	  5
+		  t80*	  5
+		  d79*	  15
+		  t78*	  5
+		  t77*	  5
+		  d76*	  15
+		  t75*	  5
+
+Complex: f57
+	Enclosed Domains:	
+	Exterior Domains:	(0, 0) (0, 1) (0, 2)
+	Concentration:		constant 100 nM
+	Kernel String:		d76 t77 t84
+	Dot-parens-plus:	...
+	Pair Table:	
+		[None, None, None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d76	  15
+		  t77	  5
+		  t84	  5
+
+Complex: f55
+	Enclosed Domains:	
+	Exterior Domains:	(1, 2) (1, 3) (2, 5)
+	Concentration:		constant 100 nM
+	Kernel String:		d76( t77( t84( + d85( t86( d119 t81 + ) ) ) ) ) t75*
+	Dot-parens-plus:	(((+((..+))))).
+	Pair Table:	
+		[(2, 4), (2, 3), (2, 2)]
+		[(2, 1), (2, 0), None, None]
+		[(1, 1), (1, 0), (0, 2), (0, 1), (0, 0), None]
+	Strand Table:	
+		Domain:	Length:
+		-------	-------
+		  d76	  15
+		  t77	  5
+		  t84	  5
+		  d85	  15
+		  t86	  5
+		  d119	  15
+		  t81	  5
+		  t86*	  5
+		  d85*	  15
+		  t84*	  5
+		  t77*	  5
+		  d76*	  15
+		  t75*	  5
+
+
+--------------------------------------------------
+DOT-PARENS-PLUS NOTATION OF COMPLEXES:
+--------------------------------------------------
+0.75_0
+	....
+	h90 t42 d43 t44
+X_0
+	....
+	h91 t45 d46 t47
+G1_1
+	....
+	h92 t48 d49 t50
+X_1
+	....
+	h93 t51 d52 t53
+0.75_1
+	....
+	h94 t54 d55 t56
+G1_0
+	....
+	h95 t57 d58 t59
+0.6667_0
+	....
+	h96 t60 d61 t62
+G2_1
+	....
+	h97 t63 d64 t65
+0.6667_1
+	....
+	h98 t66 d67 t68
+G2_0
+	....
+	h99 t69 d70 t71
+G3_1
+	....
+	h100 t72 d73 t74
+G3_0
+	....
+	h101 t75 d76 t77
+0.2_0
+	....
+	h102 t78 d79 t80
+G4_1
+	....
+	h103 t81 d82 t83
+0.2_1
+	....
+	h104 t84 d85 t86
+G4_0
+	....
+	h105 t87 d88 t89
+f17
+	((..+)).
+	d106( t48( d49 t50 + ) ) t47*
+f20
+	((..+)).
+	d107( t48( d49 t50 + ) ) t53*
+f23
+	((..+)).
+	d108( t48( d49 t50 + ) ) t47*
+f26
+	((..+)).
+	d109( t57( d58 t59 + ) ) t53*
+f29
+	((..+)).
+	d110( t63( d64 t65 + ) ) t62*
+f32
+	((..+)).
+	d111( t63( d64 t65 + ) ) t68*
+f35
+	((..+)).
+	d112( t63( d64 t65 + ) ) t62*
+f38
+	((..+)).
+	d113( t69( d70 t71 + ) ) t68*
+f41
+	((..+)).
+	d114( t72( d73 t74 + ) ) t59*
+f44
+	((..+)).
+	d115( t72( d73 t74 + ) ) t50*
+f47
+	((..+)).
+	d116( t72( d73 t74 + ) ) t59*
+f50
+	((..+)).
+	d117( t75( d76 t77 + ) ) t50*
+f53
+	((..+)).
+	d118( t81( d82 t83 + ) ) t80*
+f56
+	((..+)).
+	d119( t81( d82 t83 + ) ) t86*
+f59
+	((..+)).
+	d120( t81( d82 t83 + ) ) t80*
+f62
+	((..+)).
+	d121( t87( d88 t89 + ) ) t86*
+f18
+	...
+	d43 t44 t45
+f16
+	(((+((..+))))).
+	d43( t44( t45( + d46( t47( d106 t48 + ) ) ) ) ) t42*
+f21
+	...
+	d43 t44 t51
+f19
+	(((+((..+))))).
+	d43( t44( t51( + d52( t53( d107 t48 + ) ) ) ) ) t42*
+f22
+	(((+((..+))))).
+	d55( t56( t45( + d46( t47( d108 t48 + ) ) ) ) ) t54*
+f43
+	(((+((..+))))).
+	d70( t71( t48( + d49( t50( d115 t72 + ) ) ) ) ) t69*
+f49
+	(((+((..+))))).
+	d64( t65( t48( + d49( t50( d117 t75 + ) ) ) ) ) t63*
+f36
+	...
+	d49 t50 t60
+f34
+	(((+((..+))))).
+	d49( t50( t60( + d61( t62( d112 t63 + ) ) ) ) ) t48*
+f39
+	...
+	d49 t50 t66
+f37
+	(((+((..+))))).
+	d49( t50( t66( + d67( t68( d113 t69 + ) ) ) ) ) t48*
+f25
+	(((+((..+))))).
+	d55( t56( t51( + d52( t53( d109 t57 + ) ) ) ) ) t54*
+f24
+	...
+	d55 t56 t45
+f27
+	...
+	d55 t56 t51
+f40
+	(((+((..+))))).
+	d70( t71( t57( + d58( t59( d114 t72 + ) ) ) ) ) t69*
+f46
+	(((+((..+))))).
+	d64( t65( t57( + d58( t59( d116 t72 + ) ) ) ) ) t63*
+f30
+	...
+	d58 t59 t60
+f28
+	(((+((..+))))).
+	d58( t59( t60( + d61( t62( d110 t63 + ) ) ) ) ) t57*
+f33
+	...
+	d58 t59 t66
+f31
+	(((+((..+))))).
+	d58( t59( t66( + d67( t68( d111 t63 + ) ) ) ) ) t57*
+f51
+	...
+	d64 t65 t48
+f48
+	...
+	d64 t65 t57
+f45
+	...
+	d70 t71 t48
+f42
+	...
+	d70 t71 t57
+f60
+	...
+	d73 t74 t78
+f58
+	(((+((..+))))).
+	d73( t74( t78( + d79( t80( d120 t81 + ) ) ) ) ) t72*
+f63
+	...
+	d73 t74 t84
+f61
+	(((+((..+))))).
+	d73( t74( t84( + d85( t86( d121 t87 + ) ) ) ) ) t72*
+f54
+	...
+	d76 t77 t78
+f52
+	(((+((..+))))).
+	d76( t77( t78( + d79( t80( d118 t81 + ) ) ) ) ) t75*
+f57
+	...
+	d76 t77 t84
+f55
+	(((+((..+))))).
+	d76( t77( t84( + d85( t86( d119 t81 + ) ) ) ) ) t75*
+
+--------------------------------------------------
+Reactions:
+--------------------------------------------------
+	Reaction 0 - Involved Complexes:
+	  - 0.75_0
+	  - X_0
+	  - G1_1
+	  - f17
+	  - f18
+	  - f16
+	Reaction 1 - Involved Complexes:
+	  - 0.75_0
+	  - G1_1
+	  - X_1
+	  - f20
+	  - f21
+	  - f19
+	Reaction 2 - Involved Complexes:
+	  - X_0
+	  - G1_1
+	  - 0.75_1
+	  - f23
+	  - f22
+	  - f24
+	Reaction 3 - Involved Complexes:
+	  - X_1
+	  - 0.75_1
+	  - G1_0
+	  - f26
+	  - f25
+	  - f27
+	Reaction 4 - Involved Complexes:
+	  - G1_0
+	  - 0.6667_0
+	  - G2_1
+	  - f29
+	  - f30
+	  - f28
+	Reaction 5 - Involved Complexes:
+	  - G1_0
+	  - G2_1
+	  - 0.6667_1
+	  - f32
+	  - f33
+	  - f31
+	Reaction 6 - Involved Complexes:
+	  - G1_1
+	  - 0.6667_0
+	  - G2_1
+	  - f35
+	  - f36
+	  - f34
+	Reaction 7 - Involved Complexes:
+	  - G1_1
+	  - 0.6667_1
+	  - G2_0
+	  - f38
+	  - f39
+	  - f37
+	Reaction 8 - Involved Complexes:
+	  - G1_0
+	  - G2_0
+	  - G3_1
+	  - f41
+	  - f40
+	  - f42
+	Reaction 9 - Involved Complexes:
+	  - G1_1
+	  - G2_0
+	  - G3_1
+	  - f44
+	  - f43
+	  - f45
+	Reaction 10 - Involved Complexes:
+	  - G1_0
+	  - G2_1
+	  - G3_1
+	  - f47
+	  - f46
+	  - f48
+	Reaction 11 - Involved Complexes:
+	  - G1_1
+	  - G2_1
+	  - G3_0
+	  - f50
+	  - f49
+	  - f51
+	Reaction 12 - Involved Complexes:
+	  - G3_0
+	  - 0.2_0
+	  - G4_1
+	  - f53
+	  - f54
+	  - f52
+	Reaction 13 - Involved Complexes:
+	  - G3_0
+	  - G4_1
+	  - 0.2_1
+	  - f56
+	  - f57
+	  - f55
+	Reaction 14 - Involved Complexes:
+	  - G3_1
+	  - 0.2_0
+	  - G4_1
+	  - f59
+	  - f60
+	  - f58
+	Reaction 15 - Involved Complexes:
+	  - G3_1
+	  - 0.2_1
+	  - G4_0
+	  - f62
+	  - f63
+	  - f61
