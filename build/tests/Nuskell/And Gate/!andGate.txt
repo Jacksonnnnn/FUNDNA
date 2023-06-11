@@ -3,7 +3,7 @@
 --------------------------------------------------
 TRANSLATION:
 --------------------------------------------------
-Complex: A_0
+Complex: A0
 	Enclosed Domains:	
 	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
 	Concentration:		Undefined
@@ -19,7 +19,7 @@ Complex: A_0
 		  d2	  15
 		  t3	  5
 
-Complex: B_0
+Complex: B0
 	Enclosed Domains:	
 	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
 	Concentration:		Undefined
@@ -35,7 +35,7 @@ Complex: B_0
 		  d5	  15
 		  t6	  5
 
-Complex: C_0
+Complex: C0
 	Enclosed Domains:	
 	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
 	Concentration:		Undefined
@@ -51,7 +51,7 @@ Complex: C_0
 		  d8	  15
 		  t9	  5
 
-Complex: B_1
+Complex: B1
 	Enclosed Domains:	
 	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
 	Concentration:		Undefined
@@ -67,7 +67,7 @@ Complex: B_1
 		  d11	  15
 		  t12	  5
 
-Complex: A_1
+Complex: A1
 	Enclosed Domains:	
 	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
 	Concentration:		Undefined
@@ -83,7 +83,7 @@ Complex: A_1
 		  d14	  15
 		  t15	  5
 
-Complex: C_1
+Complex: C1
 	Enclosed Domains:	
 	Exterior Domains:	(0, 0) (0, 1) (0, 2) (0, 3)
 	Concentration:		Undefined
@@ -351,22 +351,22 @@ Complex: f11
 --------------------------------------------------
 DOT-PARENS-PLUS NOTATION OF COMPLEXES:
 --------------------------------------------------
-A_0
+A0
 	....
 	h19 t1 d2 t3
-B_0
+B0
 	....
 	h20 t4 d5 t6
-C_0
+C0
 	....
 	h21 t7 d8 t9
-B_1
+B1
 	....
 	h22 t10 d11 t12
-A_1
+A1
 	....
 	h23 t13 d14 t15
-C_1
+C1
 	....
 	h24 t16 d17 t18
 f4
@@ -410,30 +410,30 @@ f11
 Reactions:
 --------------------------------------------------
 	Reaction 0 - Involved Complexes:
-	  - A_0
-	  - B_0
-	  - C_0
+	  - A0
+	  - B0
+	  - C0
 	  - f3
 	  - f1
 	  - f2
 	Reaction 1 - Involved Complexes:
-	  - A_0
-	  - C_0
-	  - B_1
+	  - A0
+	  - C0
+	  - B1
 	  - f4
 	  - f6
 	  - f5
 	Reaction 2 - Involved Complexes:
-	  - B_0
-	  - C_0
-	  - A_1
+	  - B0
+	  - C0
+	  - A1
 	  - f9
 	  - f7
 	  - f8
 	Reaction 3 - Involved Complexes:
-	  - B_1
-	  - A_1
-	  - C_1
+	  - B1
+	  - A1
+	  - C1
 	  - f10
 	  - f12
 	  - f11

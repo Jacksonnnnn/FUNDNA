@@ -1,0 +1,62 @@
+PS C:\Users\jhuse\OneDrive - University of Kentucky\Research\DNA Computing\GitHub> echo "A -> B" | nuskell --ts soloveichik2010.ts --verify crn-bisimulation --pilfile
+Compilation successfull. Wrote file: domainlevel_sys.pil
+ - signal species: A B
+ - fuel species: f1 f2
+
+Enumeration successfull. Wrote file: domainlevel_enum.pil
+ -   7 species
+ -   2 reactions
+ -   2 signal species
+ -   2 fuel species
+ -   3 intermediate species
+ -   5 distinct strands in the system
+ - 170 nucleotides to be designed
+
+Verification result: True. The implementation CRN is correct according to crn-bisimulation.
+PS C:\Users\jhuse\OneDrive - University of Kentucky\Research\DNA Computing\GitHub> echo "A -> B" | nuskell --ts soloveichik2010.ts --verify crn-bisimulation --pilfile -v
+INFO ******************* Nuskell Domain-level System Compiler 0.8 *******************
+INFO
+INFO ***************** Translating using scheme soloveichik2010.ts ******************
+INFO Formal species: A, B
+INFO Signal Complexes:
+   A = h7 t1 d2 t3
+   B = h8 t4 d5 t6
+INFO Fuel Complexes:
+   f1 = d2( t3( d9 t4 + ) ) t1*
+   f2 = d9( t4( d5 t6 + ) ) t3*
+Compilation successfull. Wrote file: domainlevel_sys.pil
+ - signal species: A B
+ - fuel species: f1 f2
+
+INFO ************************ Enumerating reaction pathways. ************************
+INFO After enumeration: 8 species, 2 reactions
+INFO Removing unnecessary complexes with history domains.
+INFO Enumerated CRN:
+  reaction [condensed    = 0.000650504 /nM/s ] f1 + A -> i6 + i7
+  reaction [condensed    = 0.000650504 /nM/s ] i6 + f2 -> i12 + B_1_
+Enumeration successfull. Wrote file: domainlevel_enum.pil
+ -   7 species
+ -   2 reactions
+ -   2 signal species
+ -   2 fuel species
+ -   3 intermediate species
+ -   5 distinct strands in the system
+ - 170 nucleotides to be designed
+
+INFO ******************* Verification using: ['crn-bisimulation'] *******************
+INFO Formal CRN with 2 species:
+  A -> B [k = 1]
+INFO Implementation CRN (no fuels, no wastes, no rates):
+  A -> i6
+  i6 -> B_1_
+INFO Partial interpretation:
+  A => A
+  B_1_ => B
+INFO ******************** Verification method: crn-bisimulation *********************
+INFO Returned interpretation for crn-bisimulation:
+  A => A
+  B_1_ => B
+  i6 => B
+INFO Interpreted CRN:
+  A -> B
+Verification result: True. The implementation CRN is correct according to crn-bisimulation.

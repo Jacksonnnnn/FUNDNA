@@ -38,7 +38,9 @@ mv * ../
 cd ../
 rm nuskell-0.8
 python3 -m pip install --upgrade dsdobjects
-python3 -m pip install .
+python3 -m pip install --upgrade pytest
+python3 -m pip install .[dev]
+python3 -m pytest
 
 # PYINSTALL GUI EXECUTABLES
 pyinstaller gui.py Function.py FuncTypes.py GateTypes.py NotGateTypes.py RearrangeType.py Util.py --name "FUNDNA --debug" --clean --onefile --icon "assets/UK logo-white.png" --add-data "assets/*.png;assets" --hidden-import=scipy --hidden-import=networkx --hidden-import=matplotlib --hidden-import=PIL --hidden-import=PIL._imagingtk --hidden-import=PIL._tkinter_finder --hidden-import=pathlib --hidden-import=sympy --hidden-import=mpmath --hidden-import=tk --hidden-import=schemdraw --debug=imports

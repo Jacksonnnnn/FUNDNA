@@ -1,4 +1,5 @@
 import nuskell.dsdcompiler
+import nuskell.crnverifier
 
 
 def TestTubeAnalysis(testTube, file, replace):
@@ -70,7 +71,8 @@ def DetermineDotParensPlus(testTube, f, replace):
     for id in testTube[0]:
         strand = testTube[0][id]
         if replace:
-            f.write("\n" + str(strand.name.replace('c', '0.').replace('a', '_0').replace('b', '_1')) + "\n\t" + "".join(strand.structure) + "\n\t" + str(strand.kernel_string))
+            f.write("\n" + str(strand.name.replace('c', '0.').replace('a', '_0').replace('b', '_1')) + "\n\t" + "".join(
+                strand.structure) + "\n\t" + str(strand.kernel_string))
         else:
             f.write("\n" + str(strand.name) + "\n\t" + "".join(strand.structure) + "\n\t" + str(strand.kernel_string))
 
@@ -85,16 +87,11 @@ def DetermineDotParensPlus(testTube, f, replace):
 #       # Note that you can write multiple reactions in one line:
 #       A + 2C -> E [k = 13.78]; E + F <=> 2A  [kf = 13, kr = 14]
 
-simpleReactionFile = open("!simple.txt", "w+")
-simpleReaction = nuskell.dsdcompiler.translate('A + B -> C', 'soloveichik2010.ts', modular=True)
-TestTubeAnalysis(simpleReaction, simpleReactionFile, False)
-simpleReactionFile.close()
-
 andGateFile = open("!andGate.txt", "w+")
-andGate = nuskell.dsdcompiler.translate('A0 + B0 -> C0;'
-                                        'A0 + B1 -> C0;'
-                                        'A1 + B0 -> C0;'
-                                        'A1 + B1 -> C1', 'soloveichik2010.ts', modular=True)
+andGate = nuskell.dsdcompiler.translate('A_0 + B_0 -> C_0;'
+                                        'A_0 + B_1 -> C_0;'
+                                        'A_1 + B_0 -> C_0;'
+                                        'A_1 + B_1 -> C_1', 'soloveichik2010.ts', modular=True)
 TestTubeAnalysis(andGate, andGateFile, False)
 andGateFile.close()
 
@@ -138,9 +135,60 @@ polynomial = nuskell.dsdcompiler.translate('0.75_0 + X_0 -> G1_1;'
                                            'G3_0 + 0.2_0 -> G4_1;'
                                            'G3_0 + 0.2_1 -> G4_1;'
                                            'G3_1 + 0.2_0 -> G4_1;'
-                                           'G3_1 + 0.2_1 -> G4_0'.replace('0.', 'c')
-                                                                 .replace('_0', 'a')
-                                                                 .replace('_1', 'b'),
-                                           'soloveichik2010.ts', modular=True)
+                                           'G3_1 + 0.2_1 -> G4_0'.replace('0.', 'c'),
+                                              'soloveichik2010.ts', modular=True)
 TestTubeAnalysis(polynomial, polynomialFile, True)
 polynomialFile.close()
+
+simpleReactionFile = open("!simple.txt", "w+")
+simpleReaction = nuskell.dsdcompiler.translate('A + B -> C', 'soloveichik2010.ts', modular=True)
+TestTubeAnalysis(simpleReaction, simpleReactionFile, False)
+simpleReactionFile.close()
+
+# this is the formal crn (fcrn) and formal species (fs)
+fcrn, fs = nuskell.dsdcompiler.crn_parser.parse_crn_string('A0 + B0 -> C0;'
+                                                           'A0 + B1 -> C0;'
+                                                           'A1 + B0 -> C0;'
+                                                           'A1 + B1 -> C1')
+
+print("-" * 50)
+print("CRN:")
+print(fcrn)
+print("-" * 50)
+print("Formal Species:")
+print(fs)
+print("-" * 50)
+
+# vcrn = [[['A', 'B'], ['C'], 0.3, 0]] # implementation crn (reactants, products, kforward, kreverse)
+#
+# v = nuskell.crnverifier.verify(fcrn, vcrn, fs, method = 'crn-bisimulation')
+#
+# if v:
+#     print("Input CRN and TestTube-Species are CRN bisimulation equivalent.")
+# else:
+#     print("Input CRN and TestTube-Species are not CRN bisimulation equivalent.")
+
+
+# from nuskell import translate, verify
+#
+# testtube = translate('A+B->C', scheme = 'soloveichik2010.ts')
+#
+# # Get the enumerated CRN
+# testtube.enumerate_reactions()
+#
+# # Interpret the enumerated CRN, i.e. replace history species
+# interpretation = testtube.interpret_species(['A','B','C'], prune=True)
+#
+# # Formulate reversible reactions as two irreversible reactions.
+# fcrn = [[['A','B'],['C']]]
+# vcrn = []
+# for r in testtube.reactions:
+#   rxn = [map(str,r.reactants), map(str,r.products)]
+#   vcrn.append(rxn)
+#
+# v = verify(fcrn, vcrn, fs, method = 'bisimulation')
+#
+# if v :
+#   print("Input CRN and TestTube-Species are CRN bisimulation equivalent.")
+# else :
+#   print("Input CRN and TestTube-Species are not CRN bisimulation equivalent.")

@@ -33,6 +33,15 @@ power = 6
 functionStr = "exp(-x)"
 lExpress = ""
 lFunc = None
+hasNuskell = False
+
+try:
+    import nuskell.dsdcompiler
+
+    fcrn, fs = nuskell.dsdcompiler.crn_parser.parse_crn_string('A + B -> C')
+    hasNuskell = True
+finally:
+    pass
 
 
 def relative_to_assets(path: str) -> Path:
@@ -71,6 +80,7 @@ def updateVariables():
 def calculate():
     global image_3
     global lFunc
+    global hasNuskell
 
     # Update Variables
     updateVariables()
@@ -130,9 +140,9 @@ def calculate():
                                                r"\definecolor{background}{RGB}" + bg_color +
                                                r"\pagecolor{background}"
                                                r"\begin{document}",
-                   viewer="file", filename="assets/taylor.png", dvioptions=["-D 1200"])
+                   viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
         # Open the image as if it were a file. This works only for .ps!
-        img = Image.open("assets/taylor.png")
+        img = Image.open(relative_to_assets("taylor.png"))
         # See note at the bottom
         img.load()
         img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
@@ -141,27 +151,27 @@ def calculate():
         entry_6.image = photo
 
         # convert rearranged polynomial coeff dictionary to expression - set label (entry_7)
-        #exec(variable + " = sympy.symbols('" + variable + "')")
-        #expr = "$\displaystyle " + sympy.latex(eval(function.rearrangeString)) + "$"  # sympify(function.rearrangeString, strict=True)
+        # exec(variable + " = sympy.symbols('" + variable + "')")
+        # expr = "$\displaystyle " + sympy.latex(eval(function.rearrangeString)) + "$"  # sympify(function.rearrangeString, strict=True)
 
-        #print(expr)
+        # print(expr)
 
         # This creates a PNG file and saves there the output of sympy.preview
-        #bg_color = "{196, 196, 196}"
-        #sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
+        # bg_color = "{196, 196, 196}"
+        # sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
         #                                       r"\usepackage{pagecolor}"
         #                                       r"\definecolor{background}{RGB}" + bg_color +
         #                                       r"\pagecolor{background}"
         #                                       r"\begin{document}",
         #           viewer="file", filename="assets/rearranged.png", dvioptions=["-D 1200"])
         # Open the image as if it were a file. This works only for .ps!
-        #img = Image.open("assets/rearranged.png")
+        # img = Image.open("assets/rearranged.png")
         # See note at the bottom
-        #img.load()
-        #img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
-        #photo = ImageTk.PhotoImage(img)
-        #entry_7.config(image=photo)
-        #entry_7.image = photo
+        # img.load()
+        # img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
+        # photo = ImageTk.PhotoImage(img)
+        # entry_7.config(image=photo)
+        # entry_7.image = photo
         entry_7.delete(0, END)
         entry_7.insert(INSERT, function.rearrangeString)
 
@@ -176,14 +186,64 @@ def calculate():
 
         # Update Circuit Diagram
         baseWidth = 398
-        img = Image.open("assets/result.png")
+        img = Image.open(relative_to_assets("result.png"))
         wpercent = (baseWidth / float(img.size[0]))
-        hsize = int(float(img.size[1])*float(wpercent))
+        hsize = int(float(img.size[1]) * float(wpercent))
         img = img.resize((baseWidth, hsize), Image.LANCZOS)
         photo = ImageTk.PhotoImage(img)
 
         image_3_updater.config(image=photo)
         image_3_updater.image = photo
+
+        # Generate Nuskell Information
+        if hasNuskell is True:
+            print("\n\n\nNUSKELL CRN STRING:\n")
+            input_crn = function.generateNuskellString().replace('0.', 'tempc')
+            print(input_crn)
+
+            verify = False
+
+            # "--verify", "crn-bisimulation",
+            cmd = ["echo", f'"{input_crn}"', "|", "nuskell", "--ts", "soloveichik2010.ts", "--pilfile", "-vv", "--enum-detailed", "--logfile"]
+
+            if verify:
+                cmd.append("--verify")
+                cmd.append("crn-bisimulation")
+
+            cliString = " ".join(cmd)
+
+            import io, os, subprocess
+            if not os.path.exists(relative_to_assets("tests")):
+                os.mkdir(relative_to_assets("tests"))
+
+            stream = subprocess.check_output(cliString, shell=True)
+
+            cliFile = open(relative_to_assets("tests/CLI Output.txt"), "w+")
+
+            cliFile.write(" ".join(cmd) + "\n")
+            cliOutput = io.BytesIO(stream)
+            cliFile.writelines(io.TextIOWrapper(cliOutput, encoding='utf-8').read().replace('tempc', '0.'))
+            cliFile.close()
+
+            if os.path.exists("domainlevel_enum.pil"):
+                os.replace("domainlevel_enum.pil", relative_to_assets("tests/domainlevel_enum.pil"))
+
+                with open(relative_to_assets("tests/domainlevel_enum.pil"), "r") as file:
+                    data = file.read()
+                    data = data.replace("tempc", "0.")
+
+                with open(relative_to_assets("tests/domainlevel_enum.pil"), "w") as file:
+                    file.write(data)
+
+            if os.path.exists("domainlevel_sys.pil"):
+                os.replace("domainlevel_sys.pil", relative_to_assets("tests/domainlevel_sys.pil"))
+
+                with open(relative_to_assets("tests/domainlevel_sys.pil"), "r") as file:
+                    data = file.read()
+                    data = data.replace("tempc", "0.")
+
+                with open(relative_to_assets("tests/domainlevel_sys.pil"), "w") as file:
+                    file.write(data)
 
     else:
         messagebox.showinfo("UK Function To Circuit Designer",
@@ -1046,20 +1106,20 @@ entry_bg_7 = canvas.create_image(
     326.0,
     image=entry_image_7
 )
-#entry_7 = Label(
+# entry_7 = Label(
 #    bd=0,
 #    bg="#C4C4C4",
 #    highlightthickness=0,
 #    #    state="disabled",
 #    justify="center",
 #    font=("BitterRoman ExtraBold", 15)
-#)
+# )
 entry_7 = Entry(
     bd=0,
     bg="#C4C4C4",
     disabledbackground="#c4c4c4",
     disabledforeground="#1F2C5E",
-    #state="disabled",
+    # state="disabled",
     justify="center",
     font=("BitterRoman ExtraBold", 12)
 )

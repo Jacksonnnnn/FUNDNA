@@ -206,3 +206,23 @@ class Function:
             return 1
         else:
             return 0
+
+    def generateNuskellString(self):
+        nuskellCRN = ""
+        for g in self.circuitGates:
+            if GateTypes.isInEnum(g.gateType):
+                gateType = g.gateType
+                inputs = [g.input1, g.input2]
+                gateName = "G" + str(g.index)
+
+                if type(inputs[0]) is not str and inputs[0] is not None:
+                    inputs[0] = str(round(inputs[0], 4))
+
+                if type(inputs[1]) is not str and inputs[1] is not None:
+                    inputs[1] = str(round(inputs[1], 4))
+
+                reaction = make_reaction(gateType, inputs, gateName)
+
+                nuskellCRN += "; ".join(reaction)
+
+        return nuskellCRN
