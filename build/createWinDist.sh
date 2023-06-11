@@ -3,8 +3,8 @@
 # REMOVE OLD FILES
 rm -r build
 rm -r dist
-rm -r nuskell-0.8
-rm "nuskell-0.8.zip"
+rm -r nuskell-master
+rm "nuskell-jphuse.zip"
 rm "FUNDNA.spec"
 rm "FUNDNA --debug.spec"
 
@@ -31,12 +31,9 @@ python3 -m pip install --upgrade schemdraw
 python3 -m pip install --upgrade pyinstaller
 
 # INSTALL NUSKELL
-curl -o "nuskell-0.8.zip" https://github.com/DNA-and-Natural-Algorithms-Group/nuskell/archive/refs/tags/v0.8.zip
-unzip nuskell-0.8.zip
-cd nuskell-0.8/nuskell-0.8
-mv * ../
-cd ../
-rm nuskell-0.8
+curl -o "nuskell-jphuse.zip" https://github.com/jphuse/nuskell/archive/refs/heads/master.zip
+unzip nuskell-jphuse.zip
+cd nuskell-master
 python3 -m pip install --upgrade dsdobjects
 python3 -m pip install --upgrade pytest
 python3 -m pip install .[dev]
