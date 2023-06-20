@@ -159,16 +159,16 @@ print("Formal Species:")
 print(fs)
 print("-" * 50)
 
-# vcrn = [[['A', 'B'], ['C'], 0.3, 0]] # implementation crn (reactants, products, kforward, kreverse)
-#
-# v = nuskell.crnverifier.verify(fcrn, vcrn, fs, method = 'crn-bisimulation')
-#
-# if v:
-#     print("Input CRN and TestTube-Species are CRN bisimulation equivalent.")
-# else:
-#     print("Input CRN and TestTube-Species are not CRN bisimulation equivalent.")
+vcrn = [[['A', 'B'], ['C'], 0.3, 0]] # implementation crn (reactants, products, kforward, kreverse)
+v = nuskell.crnverifier.verify(fcrn, vcrn, fs, method = 'crn-bisimulation')
+if v:
+    print("Input CRN and TestTube-Species are CRN bisimulation equivalent.")
+else:
+    print("Input CRN and TestTube-Species are not CRN bisimulation equivalent.")
 
 
+# ORIGINAL CODE FROM OLD VERSION OF NUSKELL (does not work anymore)
+# -------------------------------------------------------
 # from nuskell import translate, verify
 #
 # testtube = translate('A+B->C', scheme = 'soloveichik2010.ts')
