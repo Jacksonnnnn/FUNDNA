@@ -146,10 +146,10 @@ TestTubeAnalysis(simpleReaction, simpleReactionFile, False)
 simpleReactionFile.close()
 
 # this is the formal crn (fcrn) and formal species (fs)
-fcrn, fs = nuskell.dsdcompiler.crn_parser.parse_crn_string('A0 + B0 -> C0;'
-                                                           'A0 + B1 -> C0;'
-                                                           'A1 + B0 -> C0;'
-                                                           'A1 + B1 -> C1')
+fcrn, fs = nuskell.dsdcompiler.crn_parser.parse_crn_string('A_0 + B_0 -> C_0;'
+                                                           'A_0 + B_1 -> C_0;'
+                                                           'A_1 + B_0 -> C_0;'
+                                                           'A_1 + B_1 -> C_1')
 
 print("-" * 50)
 print("CRN:")
