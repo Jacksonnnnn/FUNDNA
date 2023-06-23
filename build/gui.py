@@ -1,3 +1,6 @@
+import tkinter
+import tkinter.ttk
+
 try:
     from PyInstaller import *
     import pyi_splash
@@ -7,8 +10,10 @@ finally:
     from pathlib import Path
 
     from tkinter import *
+    import tkinter as tk
     import tkinter.messagebox as messagebox
     from tkinter.scrolledtext import ScrolledText
+    from tkinter import ttk
 
     from math import *
     from mpmath import *
@@ -34,6 +39,25 @@ functionStr = "exp(-x)"
 lExpress = ""
 lFunc = None
 hasNuskell = False
+scheme = ""
+
+nuskellSchemes = [  # development
+    "cardelli_2domain_fixed_dev.ts", "cardelli_2domain_fixed_noGC_dev.ts", "lakin2016_3D_fix_dev.ts",
+    "mehta_3domain_dev.ts", "soloveichik_cooperative_dev.ts", "soloveichik_opt_dev.ts",
+    "thachuk_xchange_dev.ts", "thachuk_xchange_dev.ts",
+
+    # implementations
+    "zhang2007_autocatalyst.pil", "zhang2007_catalyst.pil",
+
+    # literature
+    "cardelli2011_FJ.ts", "cardelli2011_NM.ts", "cardelli2013_2D.ts", "cardelli2013_2D_2TGC.ts",
+    "cardelli2013_2D_3I.ts", "chen2013_2D_JF.ts", "lakin2012_3D.ts", "lakin2016_2D_3I.ts",
+    "qian2011_3D.ts", "soloveichik2010.ts", "srinivas2015.ts",
+
+    # variants
+    "cardelli2011_FJ_noGC.ts", "cardelli2011_NM_noGC.ts", "cardelli2013_2D_3I_noGC.ts",
+    "cardelli2013_2D_noGC.ts", "chen2013_2D_JF_var1.ts", "chen2013_2D_JF_var2.ts", "lakin2012_3D_var1.ts",
+    "qian2011_3D_var1.ts"]
 
 try:
     import nuskell.dsdcompiler
@@ -48,7 +72,13 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 
-# entry_4 is the input function
+# entry_10 is the CRN
+# entry_9 is the traced value
+# entry_8 is the rearrangement
+# entry_7 is the maclaurin
+# entry_6 is the input function
+# entry_5 is the nuskell true/false
+# entry_4 is the nuskell scheme
 # entry_3 is the variable
 # entry_2 is the point
 # entry_1 is the power
@@ -59,8 +89,11 @@ def updateVariables():
     global power
     global lExpress
     global lFunc
+    global scheme
+    global useNuskell
 
-    functionStr = entry_4.get().replace("^", "**")
+    functionStr = entry_6.get().replace("^", "**")
+    scheme = entry_4.get()
     variable = entry_3.get()
     point = float(entry_2.get())
     power = int(entry_1.get()) + 1
@@ -70,6 +103,8 @@ def updateVariables():
 
     print("-=( + Updated Variables (Local) + )=-")
     print("Function String: " + functionStr)
+    print("Use Nuskell?: " + str(useNuskell.get()))
+    print("Translation Scheme: " + scheme)
     print("Variable Selected: " + variable)
     print("Around Point: " + point.__str__())
     print("Degree Est.: " + power.__str__())
@@ -77,10 +112,59 @@ def updateVariables():
     print("-----------")
 
 
+def clearEq():
+    entry_6.delete(0, END)
+
+
+def insertVar():
+    updateVariables()
+
+    global variable
+    entry_6.insert(INSERT, variable)
+
+
+def insertButton(button):
+    if button == "0":
+        entry_6.insert(INSERT, "0")
+    elif button == "1":
+        entry_6.insert(INSERT, "1")
+    elif button == "2":
+        entry_6.insert(INSERT, "2")
+    elif button == "3":
+        entry_6.insert(INSERT, "3")
+    elif button == "4":
+        entry_6.insert(INSERT, "4")
+    elif button == "5":
+        entry_6.insert(INSERT, "5")
+    elif button == "6":
+        entry_6.insert(INSERT, "6")
+    elif button == "7":
+        entry_6.insert(INSERT, "7")
+    elif button == "8":
+        entry_6.insert(INSERT, "8")
+    elif button == "9":
+        entry_6.insert(INSERT, "9")
+    elif button == "/":
+        entry_6.insert(INSERT, "/")
+    elif button == "*":
+        entry_6.insert(INSERT, "*")
+    elif button == "-":
+        entry_6.insert(INSERT, "-")
+    elif button == "+":
+        entry_6.insert(INSERT, "+")
+    elif button == "^":
+        entry_6.insert(INSERT, "^")
+    else:
+        entry_6.insert(INSERT, button)
+        entry_6.icursor(entry_6.index(INSERT) - 1)  # move cursor back 1
+
+
 def calculate():
-    global image_3
+    global image_4
     global lFunc
     global hasNuskell
+    global useNuskell
+    global scheme
 
     # Update Variables
     updateVariables()
@@ -118,7 +202,6 @@ def calculate():
         funcType = FuncTypes.POLYNOMIAL
 
     function = Function(lFunc, point, power, funcType, functionStr, variable)
-    # Function(lambda function, point, order, type, title, variable)
 
     print("Function Type: " + function.functype.__str__())
 
@@ -129,7 +212,7 @@ def calculate():
         function.generateReactions()
 
         # Set Labels
-        # convert taylor polynomial coeff dictionary to expression - set label (entry_6)
+        # convert taylor polynomial coeff dictionary to expression - set label (entry_7)
         x = "x"
         expr = "$\displaystyle " + sympy.latex(sympify(function.taylorString)) + "$"
 
@@ -147,42 +230,21 @@ def calculate():
         img.load()
         img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
         photo = ImageTk.PhotoImage(img)
-        entry_6.config(image=photo)
-        entry_6.image = photo
+        entry_7.config(image=photo)
+        entry_7.image = photo
 
-        # convert rearranged polynomial coeff dictionary to expression - set label (entry_7)
-        # exec(variable + " = sympy.symbols('" + variable + "')")
-        # expr = "$\displaystyle " + sympy.latex(eval(function.rearrangeString)) + "$"  # sympify(function.rearrangeString, strict=True)
-
-        # print(expr)
-
-        # This creates a PNG file and saves there the output of sympy.preview
-        # bg_color = "{196, 196, 196}"
-        # sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
-        #                                       r"\usepackage{pagecolor}"
-        #                                       r"\definecolor{background}{RGB}" + bg_color +
-        #                                       r"\pagecolor{background}"
-        #                                       r"\begin{document}",
-        #           viewer="file", filename="assets/rearranged.png", dvioptions=["-D 1200"])
-        # Open the image as if it were a file. This works only for .ps!
-        # img = Image.open("assets/rearranged.png")
-        # See note at the bottom
-        # img.load()
-        # img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
-        # photo = ImageTk.PhotoImage(img)
-        # entry_7.config(image=photo)
-        # entry_7.image = photo
-        entry_7.delete(0, END)
-        entry_7.insert(INSERT, function.rearrangeString)
-
-        # trace equation - set label (entry_8)
-        function.generateTrace()
+        # rearrangement - set label (entry_8)
         entry_8.delete(0, END)
-        entry_8.insert(INSERT, str(function.traceValue))
+        entry_8.insert(INSERT, function.rearrangeString)
 
-        # generate crn - set label (entry_5)
-        entry_5.delete('1.0', END)
-        entry_5.insert(INSERT, function.CRN)
+        # trace equation - set label (entry_9)
+        function.generateTrace()
+        entry_9.delete(0, END)
+        entry_9.insert(INSERT, str(function.traceValue))
+
+        # generate crn - set label (entry_10)
+        entry_10.delete('1.0', END)
+        entry_10.insert(INSERT, function.CRN)
 
         # Update Circuit Diagram
         baseWidth = 398
@@ -192,110 +254,77 @@ def calculate():
         img = img.resize((baseWidth, hsize), Image.LANCZOS)
         photo = ImageTk.PhotoImage(img)
 
-        image_3_updater.config(image=photo)
-        image_3_updater.image = photo
+        image_4_updater.config(image=photo)
+        image_4_updater.image = photo
 
-        # Generate Nuskell Information
-        if hasNuskell is True:
-            print("\n\n\nNUSKELL CRN STRING:\n")
-            input_crn = function.generateNuskellString().replace('0.', 'tempc')
-            print(input_crn)
+        # Run Nuskell Protocol
+        if useNuskell is True:
+            if hasNuskell is True:
+                # GENERATE NUSKELL COMPATIBLE CRN
+                print("\n\n\nNUSKELL CRN STRING:\n")
+                input_crn = function.generateNuskellString().replace('0.', 'tempc')
+                print(input_crn)
 
-            verify = False
+                # GENERATE CLI STRING
+                verify = False
+                cmd = ["echo", f'"{input_crn}"', "|", "nuskell", "--ts", f'{scheme}', "--pilfile", "-vv",
+                       "--enum-detailed", "--logfile"]
 
-            # "--verify", "crn-bisimulation",
-            cmd = ["echo", f'"{input_crn}"', "|", "nuskell", "--ts", "soloveichik2010.ts", "--pilfile", "-vv", "--enum-detailed", "--logfile"]
+                if verify:
+                    cmd.append("--verify")
+                    cmd.append("crn-bisimulation")
 
-            if verify:
-                cmd.append("--verify")
-                cmd.append("crn-bisimulation")
+                cliString = " ".join(cmd)
 
-            cliString = " ".join(cmd)
+                # GENERATE TESTS FOLDER IN ~/ASSETS/TESTS
+                import io, os, subprocess
+                if not os.path.exists(relative_to_assets("tests")):
+                    os.mkdir(relative_to_assets("tests"))
 
-            import io, os, subprocess
-            if not os.path.exists(relative_to_assets("tests")):
-                os.mkdir(relative_to_assets("tests"))
+                # OPEN SHELL TERMINAL AND RUN NUSKELL COMMAND
+                stream = subprocess.check_output(cliString, shell=True)
 
-            stream = subprocess.check_output(cliString, shell=True)
+                # TAKE OUTPUT FROM CLI AND WRITE IT IN TEST FILE
+                cliFile = open(relative_to_assets("tests/CLI Output.txt"), "w+")
+                cliFile.write(" ".join(cmd) + "\n")
+                cliOutput = io.BytesIO(stream)
+                cliFile.writelines(io.TextIOWrapper(cliOutput, encoding='utf-8').read().replace('tempc', '0.'))
+                cliFile.close()
 
-            cliFile = open(relative_to_assets("tests/CLI Output.txt"), "w+")
+                # ENSURE THE NUSKELL-GENERATED FILES ARE IN TESTS FOLDER
+                if os.path.exists("domainlevel_enum.pil"):
+                    os.replace("domainlevel_enum.pil", relative_to_assets("tests/domainlevel_enum.pil"))
 
-            cliFile.write(" ".join(cmd) + "\n")
-            cliOutput = io.BytesIO(stream)
-            cliFile.writelines(io.TextIOWrapper(cliOutput, encoding='utf-8').read().replace('tempc', '0.'))
-            cliFile.close()
+                    with open(relative_to_assets("tests/domainlevel_enum.pil"), "r") as file:
+                        data = file.read()
+                        data = data.replace("tempc", "0.")
 
-            if os.path.exists("domainlevel_enum.pil"):
-                os.replace("domainlevel_enum.pil", relative_to_assets("tests/domainlevel_enum.pil"))
+                    with open(relative_to_assets("tests/domainlevel_enum.pil"), "w") as file:
+                        file.write(data)
 
-                with open(relative_to_assets("tests/domainlevel_enum.pil"), "r") as file:
-                    data = file.read()
-                    data = data.replace("tempc", "0.")
+                if os.path.exists("domainlevel_sys.pil"):
+                    os.replace("domainlevel_sys.pil", relative_to_assets("tests/domainlevel_sys.pil"))
 
-                with open(relative_to_assets("tests/domainlevel_enum.pil"), "w") as file:
-                    file.write(data)
+                    with open(relative_to_assets("tests/domainlevel_sys.pil"), "r") as file:
+                        data = file.read()
+                        data = data.replace("tempc", "0.")
 
-            if os.path.exists("domainlevel_sys.pil"):
-                os.replace("domainlevel_sys.pil", relative_to_assets("tests/domainlevel_sys.pil"))
+                    with open(relative_to_assets("tests/domainlevel_sys.pil"), "w") as file:
+                        file.write(data)
 
-                with open(relative_to_assets("tests/domainlevel_sys.pil"), "r") as file:
-                    data = file.read()
-                    data = data.replace("tempc", "0.")
+        else:   # NUSKELL NOT INSTALLED
+            messagebox.showerror("Error! Nuskell Not Installed", "Error!\nNuskell is not installed. Please follow the "
+                                                                 "installation steps provided in the documentation at "
+                                                                 "https://github.com/CUT-Labs/FUNDNA.")
 
-                with open(relative_to_assets("tests/domainlevel_sys.pil"), "w") as file:
-                    file.write(data)
-
-    else:
-        messagebox.showinfo("UK Function To Circuit Designer",
-                            "Error! The function you entered is not supported for these parameters:\n" +
-                            "-----------------------------------\n"
-                            "Function: " + functionStr.replace("**", "^") + "\n" +
-                            "Variable: " + variable + "\n" +
-                            "Degree: " + str(power - 1) + "\n" +
-                            "Point Estimation: " + str(point))
-
-
-def clearEq():
-    entry_4.delete(0, END)
-
-
-def insertVar():
-    global variable
-    entry_4.insert(INSERT, variable)
-
-
-def insertButton(button):
-    if button == 0:
-        entry_4.insert(INSERT, "0")
-    elif button == 1:
-        entry_4.insert(INSERT, "1")
-    elif button == 2:
-        entry_4.insert(INSERT, "2")
-    elif button == 3:
-        entry_4.insert(INSERT, "3")
-    elif button == 4:
-        entry_4.insert(INSERT, "4")
-    elif button == 5:
-        entry_4.insert(INSERT, "5")
-    elif button == 6:
-        entry_4.insert(INSERT, "6")
-    elif button == 7:
-        entry_4.insert(INSERT, "7")
-    elif button == 8:
-        entry_4.insert(INSERT, "8")
-    elif button == 9:
-        entry_4.insert(INSERT, "9")
-    elif button == "/":
-        entry_4.insert(INSERT, "/")
-    elif button == "*":
-        entry_4.insert(INSERT, "*")
-    elif button == "-":
-        entry_4.insert(INSERT, "-")
-    elif button == "+":
-        entry_4.insert(INSERT, "+")
-    else:
-        entry_4.insert(INSERT, button)
-        entry_4.icursor(entry_4.index(INSERT) - 1)  # move cursor back 1
+    else:   # INPUT FUNCTION NOT COMPATIBLE
+        messagebox.showerror("UK Function To Circuit Designer",
+                             "Error! The function you entered is not supported for these parameters:\n" +
+                             "-----------------------------------\n"
+                             "Function: " + functionStr.replace("**", "^") + "\n" +
+                             "Variable: " + variable + "\n" +
+                             "Degree: " + str(power - 1) + "\n" +
+                             "Point Estimation: " + str(point))
 
 
 window = Tk()
@@ -308,6 +337,8 @@ window.title("UK DNA Function Designer")
 
 window.geometry("1400x750")
 window.configure(bg="#DCDDDE")
+
+useNuskell = BooleanVar()
 
 canvas = Canvas(
     window,
@@ -361,17 +392,34 @@ button_1.place(
     height=46.66668701171875
 )
 
-# -
+# ^
 button_image_2 = PhotoImage(
     file=relative_to_assets("button_2.png"))
 button_2 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("-"),
+    command=lambda: insertButton("^"),
     relief="flat"
 )
 button_2.place(
+    x=1264.0,
+    y=638.0,
+    width=52.5,
+    height=46.66668701171875
+)
+
+# -
+button_image_3 = PhotoImage(
+    file=relative_to_assets("button_3.png"))
+button_3 = Button(
+    image=button_image_3,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("-"),
+    relief="flat"
+)
+button_3.place(
     x=1330.0,
     y=583.3333129882812,
     width=52.5,
@@ -379,16 +427,16 @@ button_2.place(
 )
 
 # *
-button_image_3 = PhotoImage(
-    file=relative_to_assets("button_3.png"))
-button_3 = Button(
-    image=button_image_3,
+button_image_4 = PhotoImage(
+    file=relative_to_assets("button_4.png"))
+button_4 = Button(
+    image=button_image_4,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: insertButton("*"),
     relief="flat"
 )
-button_3.place(
+button_4.place(
     x=1330.0,
     y=528.888916015625,
     width=52.5,
@@ -396,16 +444,16 @@ button_3.place(
 )
 
 # /
-button_image_4 = PhotoImage(
-    file=relative_to_assets("button_4.png"))
-button_4 = Button(
-    image=button_image_4,
+button_image_5 = PhotoImage(
+    file=relative_to_assets("button_5.png"))
+button_5 = Button(
+    image=button_image_5,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: insertButton("/"),
     relief="flat"
 )
-button_4.place(
+button_5.place(
     x=1330.0,
     y=474.4444580078125,
     width=52.5,
@@ -413,16 +461,16 @@ button_4.place(
 )
 
 # (-)
-button_image_5 = PhotoImage(
-    file=relative_to_assets("button_5.png"))
-button_5 = Button(
-    image=button_image_5,
+button_image_6 = PhotoImage(
+    file=relative_to_assets("button_6.png"))
+button_6 = Button(
+    image=button_image_6,
     borderwidth=0,
     highlightthickness=0,
     command=lambda: insertButton("-"),
     relief="flat"
 )
-button_5.place(
+button_6.place(
     x=1198.75,
     y=637.7777709960938,
     width=52.5,
@@ -430,16 +478,16 @@ button_5.place(
 )
 
 # 0
-button_image_6 = PhotoImage(
-    file=relative_to_assets("button_6.png"))
-button_6 = Button(
-    image=button_image_6,
+button_image_7 = PhotoImage(
+    file=relative_to_assets("button_7.png"))
+button_7 = Button(
+    image=button_image_7,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(0),
+    command=lambda: insertButton("0"),
     relief="flat"
 )
-button_6.place(
+button_7.place(
     x=1133.125,
     y=637.7777709960938,
     width=52.5,
@@ -447,16 +495,16 @@ button_6.place(
 )
 
 # 1
-button_image_7 = PhotoImage(
-    file=relative_to_assets("button_7.png"))
-button_7 = Button(
-    image=button_image_7,
+button_image_8 = PhotoImage(
+    file=relative_to_assets("button_8.png"))
+button_8 = Button(
+    image=button_image_8,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(1),
+    command=lambda: insertButton("1"),
     relief="flat"
 )
-button_7.place(
+button_8.place(
     x=1133.125,
     y=583.3333129882812,
     width=52.5,
@@ -464,16 +512,16 @@ button_7.place(
 )
 
 # 2
-button_image_8 = PhotoImage(
-    file=relative_to_assets("button_8.png"))
-button_8 = Button(
-    image=button_image_8,
+button_image_9 = PhotoImage(
+    file=relative_to_assets("button_9.png"))
+button_9 = Button(
+    image=button_image_9,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(2),
+    command=lambda: insertButton("2"),
     relief="flat"
 )
-button_8.place(
+button_9.place(
     x=1198.75,
     y=583.3333129882812,
     width=52.5,
@@ -481,16 +529,16 @@ button_8.place(
 )
 
 # 3
-button_image_9 = PhotoImage(
-    file=relative_to_assets("button_9.png"))
-button_9 = Button(
-    image=button_image_9,
+button_image_10 = PhotoImage(
+    file=relative_to_assets("button_10.png"))
+button_10 = Button(
+    image=button_image_10,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(3),
+    command=lambda: insertButton("3"),
     relief="flat"
 )
-button_9.place(
+button_10.place(
     x=1264.375,
     y=583.3333129882812,
     width=52.5,
@@ -498,16 +546,16 @@ button_9.place(
 )
 
 # 4
-button_image_10 = PhotoImage(
-    file=relative_to_assets("button_10.png"))
-button_10 = Button(
-    image=button_image_10,
+button_image_11 = PhotoImage(
+    file=relative_to_assets("button_11.png"))
+button_11 = Button(
+    image=button_image_11,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(4),
+    command=lambda: insertButton("4"),
     relief="flat"
 )
-button_10.place(
+button_11.place(
     x=1133.125,
     y=528.888916015625,
     width=52.5,
@@ -515,16 +563,16 @@ button_10.place(
 )
 
 # 5
-button_image_11 = PhotoImage(
-    file=relative_to_assets("button_11.png"))
-button_11 = Button(
-    image=button_image_11,
+button_image_12 = PhotoImage(
+    file=relative_to_assets("button_12.png"))
+button_12 = Button(
+    image=button_image_12,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(5),
+    command=lambda: insertButton("5"),
     relief="flat"
 )
-button_11.place(
+button_12.place(
     x=1198.75,
     y=528.888916015625,
     width=52.5,
@@ -532,16 +580,16 @@ button_11.place(
 )
 
 # 6
-button_image_12 = PhotoImage(
-    file=relative_to_assets("button_12.png"))
-button_12 = Button(
-    image=button_image_12,
+button_image_13 = PhotoImage(
+    file=relative_to_assets("button_13.png"))
+button_13 = Button(
+    image=button_image_13,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(6),
+    command=lambda: insertButton("6"),
     relief="flat"
 )
-button_12.place(
+button_13.place(
     x=1264.375,
     y=528.888916015625,
     width=52.5,
@@ -549,16 +597,16 @@ button_12.place(
 )
 
 # 7
-button_image_13 = PhotoImage(
-    file=relative_to_assets("button_13.png"))
-button_13 = Button(
-    image=button_image_13,
+button_image_14 = PhotoImage(
+    file=relative_to_assets("button_14.png"))
+button_14 = Button(
+    image=button_image_14,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(7),
+    command=lambda: insertButton("7"),
     relief="flat"
 )
-button_13.place(
+button_14.place(
     x=1133.125,
     y=474.4444580078125,
     width=52.5,
@@ -566,16 +614,16 @@ button_13.place(
 )
 
 # 8
-button_image_14 = PhotoImage(
-    file=relative_to_assets("button_14.png"))
-button_14 = Button(
-    image=button_image_14,
+button_image_15 = PhotoImage(
+    file=relative_to_assets("button_15.png"))
+button_15 = Button(
+    image=button_image_15,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(8),
+    command=lambda: insertButton("8"),
     relief="flat"
 )
-button_14.place(
+button_15.place(
     x=1198.75,
     y=474.4444580078125,
     width=52.5,
@@ -583,16 +631,16 @@ button_14.place(
 )
 
 # 9
-button_image_15 = PhotoImage(
-    file=relative_to_assets("button_15.png"))
-button_15 = Button(
-    image=button_image_15,
+button_image_16 = PhotoImage(
+    file=relative_to_assets("button_16.png"))
+button_16 = Button(
+    image=button_image_16,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton(9),
+    command=lambda: insertButton("9"),
     relief="flat"
 )
-button_15.place(
+button_16.place(
     x=1264.375,
     y=474.4444580078125,
     width=52.5,
@@ -600,240 +648,292 @@ button_15.place(
 )
 
 # exp()
-button_image_16 = PhotoImage(
-    file=relative_to_assets("button_16.png"))
-button_16 = Button(
-    image=button_image_16,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: insertButton("exp()"),
-    relief="flat"
-)
-button_16.place(
-    x=903.875,
-    y=474.4444580078125,
-    width=112.875,
-    height=46.66668701171875
-)
-
-# log()
 button_image_17 = PhotoImage(
     file=relative_to_assets("button_17.png"))
 button_17 = Button(
     image=button_image_17,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("log()"),
+    command=lambda: insertButton("exp()"),
     relief="flat"
 )
 button_17.place(
-    x=773.5,
-    y=474.4444580078125,
+    x=989.125,
+    y=480.0,
     width=112.875,
     height=46.66668701171875
 )
 
-# tan()
+# log()
 button_image_18 = PhotoImage(
     file=relative_to_assets("button_18.png"))
 button_18 = Button(
     image=button_image_18,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("tan()"),
+    command=lambda: insertButton("log()"),
     relief="flat"
 )
 button_18.place(
-    x=643.125,
-    y=474.4444580078125,
+    x=858.75,
+    y=480.0,
     width=112.875,
     height=46.66668701171875
 )
 
-# cos()
+# tan()
 button_image_19 = PhotoImage(
     file=relative_to_assets("button_19.png"))
 button_19 = Button(
     image=button_image_19,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("cos()"),
+    command=lambda: insertButton("tanh()"),
     relief="flat"
 )
 button_19.place(
-    x=512.75,
-    y=474.4444580078125,
+    x=728.375,
+    y=480.0,
     width=112.875,
     height=46.66668701171875
 )
 
-# sin()
+# cos()
 button_image_20 = PhotoImage(
     file=relative_to_assets("button_20.png"))
 button_20 = Button(
     image=button_image_20,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("sin()"),
+    command=lambda: insertButton("cos()"),
     relief="flat"
 )
 button_20.place(
-    x=386.75,
-    y=474.4444580078125,
+    x=598.0,
+    y=480.0,
     width=112.875,
     height=46.66668701171875
 )
 
-# sec()
+# sin()
 button_image_21 = PhotoImage(
     file=relative_to_assets("button_21.png"))
 button_21 = Button(
     image=button_image_21,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("sec()"),
+    command=lambda: insertButton("sin()"),
     relief="flat"
 )
 button_21.place(
-    x=387.0,
-    y=529.0,
+    x=472.0,
+    y=480.0,
     width=112.875,
     height=46.66668701171875
 )
 
-# sech()
+# sec()
 button_image_22 = PhotoImage(
     file=relative_to_assets("button_22.png"))
 button_22 = Button(
     image=button_image_22,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("sech()"),
+    command=lambda: insertButton("sec()"),
     relief="flat"
 )
 button_22.place(
-    x=387.0,
-    y=583.0,
+    x=472.25,
+    y=534.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
 
-# csc()
+# sech()
 button_image_23 = PhotoImage(
     file=relative_to_assets("button_23.png"))
 button_23 = Button(
     image=button_image_23,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("csc()"),
+    command=lambda: insertButton("sech()"),
     relief="flat"
 )
 button_23.place(
-    x=513.0,
-    y=529.0,
+    x=472.25,
+    y=588.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
 
-# csch()
+# csc()
 button_image_24 = PhotoImage(
     file=relative_to_assets("button_24.png"))
 button_24 = Button(
     image=button_image_24,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("csch()"),
+    command=lambda: insertButton("csc()"),
     relief="flat"
 )
 button_24.place(
-    x=513.0,
-    y=583.0,
+    x=598.25,
+    y=534.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
 
-# coth()
+# csch()
 button_image_25 = PhotoImage(
     file=relative_to_assets("button_25.png"))
 button_25 = Button(
     image=button_image_25,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("coth()"),
+    command=lambda: insertButton("csch()"),
     relief="flat"
 )
 button_25.place(
-    x=643.0,
-    y=583.0,
+    x=598.25,
+    y=588.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
-# tanh()
+
+# coth()
 button_image_26 = PhotoImage(
     file=relative_to_assets("button_26.png"))
 button_26 = Button(
     image=button_image_26,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("tanh()"),
+    command=lambda: insertButton("coth()"),
     relief="flat"
 )
 button_26.place(
-    x=774.0,
-    y=583.0,
+    x=728.25,
+    y=588.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
 
-# cot()
+# tanh()
 button_image_27 = PhotoImage(
     file=relative_to_assets("button_27.png"))
 button_27 = Button(
     image=button_image_27,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("cot()"),
+    command=lambda: insertButton("tanh()"),
     relief="flat"
 )
 button_27.place(
-    x=643.0,
-    y=529.0,
+    x=859.25,
+    y=588.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
 
-# sinh()
+# cot()
 button_image_28 = PhotoImage(
     file=relative_to_assets("button_28.png"))
 button_28 = Button(
     image=button_image_28,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("sinh()"),
+    command=lambda: insertButton("cot()"),
     relief="flat"
 )
 button_28.place(
-    x=774.0,
-    y=529.0,
+    x=728.25,
+    y=534.5555419921875,
     width=112.875,
     height=46.66668701171875
 )
 
-# cosh()
+# sinh()
 button_image_29 = PhotoImage(
     file=relative_to_assets("button_29.png"))
 button_29 = Button(
     image=button_image_29,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: insertButton("cosh()"),
+    command=lambda: insertButton("sinh()"),
     relief="flat"
 )
 button_29.place(
-    x=904.0,
-    y=529.0,
+    x=859.25,
+    y=534.5555419921875,
     width=112.875,
     height=46.66668701171875
+)
+
+# cosh()
+button_image_30 = PhotoImage(
+    file=relative_to_assets("button_30.png"))
+button_30 = Button(
+    image=button_image_30,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertButton("cosh()"),
+    relief="flat"
+)
+button_30.place(
+    x=989.25,
+    y=534.5555419921875,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# var()
+button_image_31 = PhotoImage(
+    file=relative_to_assets("button_31.png"))
+button_31 = Button(
+    image=button_image_31,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: insertVar(),
+    relief="flat"
+)
+button_31.place(
+    x=473.25,
+    y=643.5555419921875,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# clear
+button_image_32 = PhotoImage(
+    file=relative_to_assets("button_32.png"))
+button_32 = Button(
+    image=button_image_32,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: clearEq(),
+    relief="flat"
+)
+button_32.place(
+    x=27.0,
+    y=474.0,
+    width=112.875,
+    height=46.66668701171875
+)
+
+# calculate()
+button_image_33 = PhotoImage(
+    file=relative_to_assets("button_33.png"))
+button_33 = Button(
+    image=button_image_33,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: calculate(),
+    relief="flat"
+)
+button_33.place(
+    x=1133.0,
+    y=431.0,
+    width=267.0,
+    height=38.0
 )
 
 # uk logo
@@ -845,150 +945,26 @@ image_1 = canvas.create_image(
     image=image_image_1
 )
 
-# line
+# nsf logo
 image_image_2 = PhotoImage(
     file=relative_to_assets("image_2.png"))
 image_2 = canvas.create_image(
-    241.5,
-    38.22222137451172,
+    266.0,
+    726.0,
     image=image_image_2
 )
 
-# nsf logo
-image_image_4 = PhotoImage(
-    file=relative_to_assets("image_4.png"))
-image_4 = canvas.create_image(
-    266.0,
-    726.0,
-    image=image_image_4
+# divider line
+image_image_3 = PhotoImage(
+    file=relative_to_assets("image_3.png"))
+image_3 = canvas.create_image(
+    241.5,
+    38.22222137451172,
+    image=image_image_3
 )
 
-# Bottom Text 1 - Variable
-canvas.create_text(
-    30.625,
-    535.888916015625,
-    anchor="nw",
-    text="Variable:",
-    fill="#FFFFFF",
-    font=("BitterRoman ExtraBold", 20 * -1)
-)
-
-# Bottom Text 2 - Point Estimation
-canvas.create_text(
-    30.625,
-    571.6666870117188,
-    anchor="nw",
-    text="Point Est.:",
-    fill="#FFFFFF",
-    font=("BitterRoman ExtraBold", 20 * -1)
-)
-
-# Bottom Text 3 - Degree of Rounding
-canvas.create_text(
-    30.625,
-    607.4444580078125,
-    anchor="nw",
-    text="Degree:",
-    fill="#FFFFFF",
-    font=("BitterRoman ExtraBold", 20 * -1)
-)
-
-# Degree of Rounding Entry
-entry_image_1 = PhotoImage(
-    file=relative_to_assets("entry_1.png"))
-entry_bg_1 = canvas.create_image(
-    165.8125,
-    618.7222290039062,
-    image=entry_image_1
-)
-entry_1 = Entry(
-    bd=0,
-    bg="#DCDDDE",
-    highlightthickness=0,
-    justify="center",
-    font=("BitterRoman ExtraBold", 15)
-)
-entry_1.place(
-    x=137.375,
-    y=607.4444580078125,
-    width=56.875,
-    height=20.5555419921875
-)
-entry_1.insert(0, "5")
-
-# Point Estimation Text Box
-entry_image_2 = PhotoImage(
-    file=relative_to_assets("entry_2.png"))
-entry_bg_2 = canvas.create_image(
-    165.8125,
-    582.9444580078125,
-    image=entry_image_2
-)
-entry_2 = Entry(
-    bd=0,
-    bg="#DCDDDE",
-    highlightthickness=0,
-    justify="center",
-    font=("BitterRoman ExtraBold", 15)
-)
-entry_2.place(
-    x=137.375,
-    y=571.6666870117188,
-    width=56.875,
-    height=20.5555419921875
-)
-entry_2.insert(0, 0)
-
-# Variable Entry
-entry_image_3 = PhotoImage(
-    file=relative_to_assets("entry_3.png"))
-entry_bg_3 = canvas.create_image(
-    165.8125,
-    547.1666870117188,
-    image=entry_image_3
-)
-entry_3 = Entry(
-    bd=0,
-    bg="#DCDDDE",
-    highlightthickness=0,
-    justify="center",
-    font=("BitterRoman ExtraBold", 15)
-)
-entry_3.place(
-    x=137.375,
-    y=535.888916015625,
-    width=56.875,
-    height=20.5555419921875
-)
-entry_3.insert(0, "x")
-
-# User Input Equation
-entry_image_4 = PhotoImage(
-    file=relative_to_assets("entry_4.png"))
-entry_bg_4 = canvas.create_image(
-    566.5,
-    449.5,
-    image=entry_image_4
-)
-entry_4 = Entry(
-    bd=0,
-    bg="#B1C9E8",
-    highlightthickness=0,
-    borderwidth=50,
-    relief=FLAT,
-    font=("BitterRoman ExtraBold", 15)
-)
-entry_4.place(
-    x=0.0,
-    y=432.0,
-    width=1133.0,
-    height=33.0
-)
-
-entry_4.insert(0, "exp(-x)")
-
-# graph picture
-image_3_updater = Label(
+# schemdraw background
+image_4_updater = Label(
     bd=0,
     bg="#fff",
     highlightthickness=0,
@@ -996,64 +972,220 @@ image_3_updater = Label(
     justify="center",
     font=("BitterRoman ExtraBold", 15)
 )
-image_3_updater.place(
+image_4_updater.place(
     x=1002,
     y=78,
     width=398.0,
     height=354.0
 )
 
-# Generated Maclaurin Series Output Label
-canvas.create_text(
-    27.0,
-    90.0,
-    anchor="nw",
-    text="Maclaurin Series:",
-    fill="#1F2C5E",
-    font=("BitterRoman ExtraBold", 24 * -1)
+# fundna logo
+image_image_5 = PhotoImage(
+    file=relative_to_assets("image_5.png"))
+image_5 = canvas.create_image(
+    420.0,
+    38.0,
+    image=image_image_5
 )
 
-# Generated Rearranged Equation Output Label
-canvas.create_text(
-    27.0,
-    235.0,
-    anchor="nw",
-    text="Rearranged Estimate:",
-    fill="#1F2C5E",
-    font=("BitterRoman ExtraBold", 24 * -1)
+# degree field
+entry_image_1 = PhotoImage(
+    file=relative_to_assets("entry_1.png"))
+entry_bg_1 = canvas.create_image(
+    174.75,
+    641.7222290039062,
+    image=entry_image_1
+)
+entry_1 = Entry(
+    bd=0,
+    bg="#DCDDDE",
+    fg="#000716",
+    highlightthickness=0,
+    font=("BitterRoman ExtraBold", 15)
+)
+entry_1.place(
+    x=137.25,
+    y=630.4444580078125,
+    width=75.0,
+    height=20.5555419921875
+)
+entry_1.insert(INSERT, "5")
+
+# point est field
+entry_image_2 = PhotoImage(
+    file=relative_to_assets("entry_2.png"))
+entry_bg_2 = canvas.create_image(
+    174.75,
+    605.9444580078125,
+    image=entry_image_2
+)
+entry_2 = Entry(
+    bd=0,
+    bg="#DCDDDE",
+    fg="#000716",
+    highlightthickness=0,
+    font=("BitterRoman ExtraBold", 15)
+)
+entry_2.place(
+    x=137.25,
+    y=594.6666870117188,
+    width=75.0,
+    height=20.5555419921875
+)
+entry_2.insert(INSERT, "0")
+
+# var field
+entry_image_3 = PhotoImage(
+    file=relative_to_assets("entry_3.png"))
+entry_bg_3 = canvas.create_image(
+    174.375,
+    570.0,
+    image=entry_image_3
+)
+entry_3 = Entry(
+    bd=0,
+    bg="#DCDDDE",
+    fg="#000716",
+    highlightthickness=0,
+    font=("BitterRoman ExtraBold", 15)
+)
+entry_3.place(
+    x=136.875,
+    y=559.0,
+    width=75.0,
+    height=20.0
+)
+entry_3.insert(INSERT, "x")
+
+# scheme field
+entry_4 = tkinter.ttk.Combobox(
+    values=nuskellSchemes
+)
+entry_4.place(
+    x=325,
+    y=596.0,
+    width=120.0,
+    height=20.0
+)
+entry_4.set("soloveichik2010.ts")
+
+# nuskell? field
+entry_5 = tk.Checkbutton(
+    variable=useNuskell,
+    onvalue=True,
+    offvalue=False,
+    width=22
+)
+entry_5.place(
+    x=330.25,
+    y=558.111083984375,
+    width=22.0,
+    height=22.0
+)
+entry_5.select()
+
+# function input field
+entry_image_6 = PhotoImage(
+    file=relative_to_assets("entry_6.png"))
+entry_bg_6 = canvas.create_image(
+    566.5,
+    449.5,
+    image=entry_image_6
+)
+entry_6 = Entry(
+    bd=0,
+    bg="#B1C9E8",
+    fg="#000716",
+    highlightthickness=0,
+    font=("BitterRoman ExtraBold", 15)
+)
+entry_6.place(
+    x=0.0,
+    y=432.0,
+    width=1133.0,
+    height=33.0
+)
+entry_6.insert(INSERT, "exp(-x)")
+
+# maclaurin series field
+entry_image_7 = PhotoImage(
+    file=relative_to_assets("entry_7.png"))
+
+entry_bg_7 = canvas.create_image(
+    223.5,
+    179.0,
+    image=entry_image_7
 )
 
-# Generated Value at Point and Power Output Label
-canvas.create_text(
-    27.0,
-    394.0,
-    anchor="nw",
-    text="Traced Value at Point:",
-    fill="#1F2C5E",
-    font=("BitterRoman ExtraBold", 24 * -1)
+entry_7 = Label(
+    bd=0,
+    bg="#C4C4C4",
+    highlightthickness=0,
+    #    state="disabled",
+    justify="center",
+    font=("BitterRoman ExtraBold", 15)
 )
 
-# Generated Chemical Reaction Network (CRN) Output Label
-canvas.create_text(
+entry_7.place(
+    x=27.0,
+    y=143.0,
+    width=393.0,
+    height=70.0
+)
+
+# rearrangement field
+entry_image_8 = PhotoImage(
+    file=relative_to_assets("entry_8.png"))
+entry_bg_8 = canvas.create_image(
+    223.5,
+    326.0,
+    image=entry_image_8
+)
+entry_8 = Entry(
+    bd=0,
+    bg="#C4C4C4",
+    fg="#000716",
+    highlightthickness=0,
+    font=("BitterRoman ExtraBold", 15)
+)
+entry_8.place(
+    x=27.0,
+    y=290.0,
+    width=393.0,
+    height=70.0
+)
+
+# traced value field
+entry_image_9 = PhotoImage(
+    file=relative_to_assets("entry_9.png"))
+entry_bg_9 = canvas.create_image(
+    350.0,
+    407.5,
+    image=entry_image_9
+)
+entry_9 = Entry(
+    bd=0,
+    bg="#C4C4C4",
+    fg="#000716",
+    highlightthickness=0,
+    font=("BitterRoman ExtraBold", 15)
+)
+entry_9.place(
+    x=280.0,
+    y=391.0,
+    width=140.0,
+    height=31.0
+)
+
+# CRN
+canvas.create_rectangle(
     444.0,
-    90.0,
-    anchor="nw",
-    text="Chemical Reaction Network (CRN):",
-    fill="#1F2C5E",
-    font=("BitterRoman ExtraBold", 24 * -1)
-)
-
-# Generated Chemical Reaction Network (CRN) Output Area
-# crn_frame = Frame(window, width=531.0, height=294.0, bg="#000000")
-
-entry_image_5 = PhotoImage(
-    file=relative_to_assets("entry_5.png"))
-entry_bg_5 = canvas.create_image(
-    709.5,
-    269.0,
-    image=entry_image_5
-)
-entry_5 = ScrolledText(
+    121.0,
+    975.0,
+    417.0,
+    fill="#C4C4C4",
+    outline="")
+entry_10 = ScrolledText(
     # width=64, Scrolled Text Size
     # height=19, Scrolled Text Size
     bd=0,
@@ -1064,165 +1196,14 @@ entry_5 = ScrolledText(
     #    state="disabled",
 )
 
-entry_5.place(
+entry_10.place(
     x=444.0,
     y=121.0,
     width=531.0,
     height=294.0
 )
-entry_5.insert(INSERT, "Enter a function in the calculator!")
+entry_10.insert(INSERT, "Enter a function in the calculator!")
 
-# Maclaurin Series Output Area
-entry_image_6 = PhotoImage(
-    file=relative_to_assets("entry_6.png"))
-
-entry_bg_6 = canvas.create_image(
-    223.5,
-    179.0,
-    image=entry_image_6
-)
-
-entry_6 = Label(
-    bd=0,
-    bg="#C4C4C4",
-    highlightthickness=0,
-    #    state="disabled",
-    justify="center",
-    font=("BitterRoman ExtraBold", 15)
-)
-
-entry_6.place(
-    x=27.0,
-    y=143.0,
-    width=393.0,
-    height=70.0
-)
-
-# Rearranged Estimate Output Area
-entry_image_7 = PhotoImage(
-    file=relative_to_assets("entry_7.png"))
-entry_bg_7 = canvas.create_image(
-    223.5,
-    326.0,
-    image=entry_image_7
-)
-# entry_7 = Label(
-#    bd=0,
-#    bg="#C4C4C4",
-#    highlightthickness=0,
-#    #    state="disabled",
-#    justify="center",
-#    font=("BitterRoman ExtraBold", 15)
-# )
-entry_7 = Entry(
-    bd=0,
-    bg="#C4C4C4",
-    disabledbackground="#c4c4c4",
-    disabledforeground="#1F2C5E",
-    # state="disabled",
-    justify="center",
-    font=("BitterRoman ExtraBold", 12)
-)
-entry_7.place(
-    x=27.0,
-    y=290.0,
-    width=393.0,
-    height=70.0
-)
-
-# Traced Value at Point Output Area
-entry_image_8 = PhotoImage(
-    file=relative_to_assets("entry_8.png"))
-entry_bg_8 = canvas.create_image(
-    350.0,
-    407.5,
-    image=entry_image_8
-)
-entry_8 = Entry(
-    bd=0,
-    bg="#C4C4C4",
-    disabledbackground="#c4c4c4",
-    disabledforeground="#1F2C5E",
-    #    state="disabled",
-    justify="center",
-    font=("BitterRoman ExtraBold", 15)
-)
-entry_8.place(
-    x=280.0,
-    y=391.0,
-    width=140.0,
-    height=31.0
-)
-# entry_8.insert(0, "test1")
-
-# Calculate Button
-button_image_32 = PhotoImage(
-    file=relative_to_assets("button_32.png"))
-button_32 = Button(
-    image=button_image_32,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: calculate(),
-    relief="flat"
-)
-button_32.place(
-    x=1133.0,
-    y=431.0,
-    width=267.0,
-    height=38.0
-)
-
-# Update user variables (variable, point, power) Input Area
-button_image_33 = PhotoImage(
-    file=relative_to_assets("button_33.png"))
-button_33 = Button(
-    image=button_image_33,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: updateVariables(),
-    relief="flat"
-)
-button_33.place(
-    x=27.0,
-    y=643.0,
-    width=167.0,
-    height=38.0
-)
-# Variable Button
-button_image_30 = PhotoImage(
-    file=relative_to_assets("button_30.png"))
-button_30 = Button(
-    image=button_image_30,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: insertVar(),
-    relief="flat"
-)
-button_30.place(
-    x=388.0,
-    y=638.0,
-    width=112.875,
-    height=46.66668701171875
-)
-
-# Clear Button
-button_image_31 = PhotoImage(
-    file=relative_to_assets("button_31.png"))
-button_31 = Button(
-    image=button_image_31,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: clearEq(),
-    relief="flat"
-)
-button_31.place(
-    x=66.0,
-    y=474.0,
-    width=112.875,
-    height=46.66668701171875
-)
-
-# Supporting Statement
 canvas.create_text(
     296.0,
     715.0,
@@ -1231,14 +1212,87 @@ canvas.create_text(
     fill="#FFFFFF",
     font=("Caladea Regular", 20 * -1)
 )
-
-image_image_5 = PhotoImage(
-    file=relative_to_assets("image_5.png"))
-image_5 = canvas.create_image(
-    420.0,
-    38.0,
-    image=image_image_5
+canvas.create_text(
+    30.5,
+    558.888916015625,
+    anchor="nw",
+    text="Variable:",
+    fill="#FFFFFF",
+    font=("BitterRoman ExtraBold", 20 * -1)
 )
+
+canvas.create_text(
+    27.0,
+    594.6666870117188,
+    anchor="nw",
+    text="Point Est:",
+    fill="#FFFFFF",
+    font=("BitterRoman ExtraBold", 20 * -1)
+)
+
+canvas.create_text(
+    44.5,
+    630.4444580078125,
+    anchor="nw",
+    text="Degree:",
+    fill="#FFFFFF",
+    font=("BitterRoman ExtraBold", 20 * -1)
+)
+
+canvas.create_text(
+    223.875,
+    558.0,
+    anchor="nw",
+    text="Nuskell?",
+    fill="#FFFFFF",
+    font=("BitterRoman ExtraBold", 20 * -1)
+)
+
+canvas.create_text(
+    223.875,
+    596.0,
+    anchor="nw",
+    text="Scheme:",
+    fill="#FFFFFF",
+    font=("BitterRoman ExtraBold", 20 * -1)
+)
+
+canvas.create_text(
+    27.0,
+    90.0,
+    anchor="nw",
+    text="Maclaurin Series:",
+    fill="#1F2C5E",
+    font=("BitterRoman ExtraBold", 24 * -1)
+)
+
+canvas.create_text(
+    27.0,
+    235.0,
+    anchor="nw",
+    text="Rearranged Estimate:",
+    fill="#1F2C5E",
+    font=("BitterRoman ExtraBold", 24 * -1)
+)
+
+canvas.create_text(
+    27.0,
+    394.0,
+    anchor="nw",
+    text="Traced Value at Point:",
+    fill="#1F2C5E",
+    font=("BitterRoman ExtraBold", 24 * -1)
+)
+
+canvas.create_text(
+    444.0,
+    90.0,
+    anchor="nw",
+    text="Chemical Reaction Network (CRN):",
+    fill="#1F2C5E",
+    font=("BitterRoman ExtraBold", 24 * -1)
+)
+
 try:
     pyi_splash.close()
 finally:
