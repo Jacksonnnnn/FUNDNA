@@ -31,9 +31,11 @@ python3 -m pip install --upgrade schemdraw
 python3 -m pip install --upgrade pyinstaller
 
 # INSTALL NUSKELL
-curl -o "nuskell-jphuse.zip" https://github.com/jphuse/nuskell/archive/refs/heads/master.zip
-unzip nuskell-jphuse.zip
-cd nuskell-master
+rm -r nuskell-jphuse
+mkdir nuskell-jphuse
+cd nuskell-jphuse
+git clone https://github.com/jphuse/nuskell.git
+cd nuskell
 python3 -m pip install --upgrade dsdobjects
 python3 -m pip install --upgrade pytest
 python3 -m pip install .[dev]
