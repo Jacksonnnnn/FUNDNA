@@ -2,6 +2,7 @@ from collections import defaultdict
 from math import factorial
 
 import matplotlib.pyplot as plt
+import matplotlib.backends.backend_svg
 import networkx as nx
 from scipy.misc import derivative
 from scipy.special import comb

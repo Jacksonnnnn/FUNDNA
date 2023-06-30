@@ -1,3 +1,4 @@
+cd ../
 echo "***** Removing old files..."
 echo ""
 rm -r nuskell-jphuse
