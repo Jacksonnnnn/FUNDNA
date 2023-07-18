@@ -39,8 +39,9 @@ functionStr = "exp(-x)"
 lExpress = ""
 lFunc = None
 hasNuskell = False
+useNuskell = True
 verify = False
-scheme = ""
+scheme = "soloveichik2010.ts"
 
 nuskellSchemes = [  # development
     "cardelli_2domain_fixed_dev.ts", "cardelli_2domain_fixed_noGC_dev.ts", "lakin2016_3D_fix_dev.ts",
@@ -348,7 +349,104 @@ def calculate():
                              "Point Estimation: " + str(point))
 
 
+def NuskellSettingsPopup(use, selectedScheme):
+    popup = Tk()
+    popup.title("Nuskell Configuration")
+    popup.geometry("445x88")
+
+    inner_useNuskell = BooleanVar()
+    inner_useNuskell = use
+    inner_scheme = selectedScheme
+
+    popup_canvas = Canvas(
+        popup,
+        bg="#DCDDDE",
+        height=88,
+        width=445,
+        bd=0,
+        highlightthickness=0,
+        relief="ridge"
+    )
+    popup_canvas.place(x=0, y=0)
+
+    schemeDropdown = tkinter.ttk.Combobox(
+        popup,
+        values=nuskellSchemes
+    )
+    schemeDropdown.place(
+        x=185,
+        y=48,
+        width=250,
+        height=30
+    )
+    schemeDropdown.set(inner_scheme)
+
+    checkbutton = tk.Checkbutton(
+        popup,
+        variable=inner_useNuskell,
+        onvalue=True,
+        offvalue=False,
+        width=25,
+    )
+    checkbutton.place(
+        x=185,
+        y=10,
+        width=25.0,
+        height=25.0
+    )
+
+    if inner_useNuskell:
+        checkbutton.select()
+
+    save_button_image = PhotoImage(
+        file=relative_to_assets("save_button.png"))
+    save_button = Button(
+        image=save_button_image,
+        borderwidth=0,
+        highlightthickness=0,
+        command=lambda: SaveNuskellConfig(inner_useNuskell.get(), schemeDropdown.get()),
+        relief="flat"
+    )
+    save_button.place(
+        x=0.0,
+        y=0.0,
+        width=167.0,
+        height=38.0
+    )
+
+    popup_canvas.create_text(
+        10,
+        10,
+        anchor="nw",
+        text="Translate to DSD?",
+        fill="#1F2C5E",
+        font=("BitterRoman ExtraBold", 20 * -1)
+    )
+
+    popup_canvas.create_text(
+        10,
+        48,
+        anchor="nw",
+        text="Scheme:",
+        fill="#1F2C5E",
+        font=("BitterRoman ExtraBold", 20 * -1)
+    )
+
+    popup.resizable(True, True)
+    popup.mainloop()
+
+
+def SaveNuskellConfig(use, selectedScheme):
+    global useNuskell
+    global scheme
+
+    useNuskell = use
+    scheme = selectedScheme
+
+
 window = Tk()
+
+useNuskell = BooleanVar()
 
 favicon = PhotoImage(file=relative_to_assets("UK logo-white.png"))
 
@@ -358,8 +456,6 @@ window.title("UK DNA Function Designer")
 
 window.geometry("1400x750")
 window.configure(bg="#DCDDDE")
-
-useNuskell = BooleanVar()
 
 canvas = Canvas(
     window,
@@ -957,6 +1053,22 @@ button_33.place(
     height=38.0
 )
 
+button_image_34 = PhotoImage(
+    file=relative_to_assets("button_34.png"))
+button_34 = Button(
+    image=button_image_34,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: NuskellSettingsPopup(useNuskell, scheme),
+    relief="flat"
+)
+button_34.place(
+    x=224.0,
+    y=594.0,
+    width=220.0,
+    height=59.0
+)
+
 # uk logo
 image_image_1 = PhotoImage(
     file=relative_to_assets("image_1.png"))
@@ -1078,33 +1190,6 @@ entry_3.place(
 )
 entry_3.insert(INSERT, "x")
 
-# scheme field
-entry_4 = tkinter.ttk.Combobox(
-    values=nuskellSchemes
-)
-entry_4.place(
-    x=325,
-    y=596.0,
-    width=120.0,
-    height=20.0
-)
-entry_4.set("soloveichik2010.ts")
-
-# nuskell? field
-entry_5 = tk.Checkbutton(
-    variable=useNuskell,
-    onvalue=True,
-    offvalue=False,
-    width=22
-)
-entry_5.place(
-    x=330.25,
-    y=558.111083984375,
-    width=22.0,
-    height=22.0
-)
-entry_5.select()
-
 # function input field
 entry_image_6 = PhotoImage(
     file=relative_to_assets("entry_6.png"))
@@ -1134,7 +1219,7 @@ entry_image_7 = PhotoImage(
 
 entry_bg_7 = canvas.create_image(
     223.5,
-    179.0,
+    164.0,
     image=entry_image_7
 )
 
@@ -1149,7 +1234,7 @@ entry_7 = Label(
 
 entry_7.place(
     x=27.0,
-    y=143.0,
+    y=128.0,
     width=393.0,
     height=70.0
 )
@@ -1158,8 +1243,8 @@ entry_7.place(
 entry_image_8 = PhotoImage(
     file=relative_to_assets("entry_8.png"))
 entry_bg_8 = canvas.create_image(
-    223.5,
-    326.0,
+    220.5,
+    288.0,
     image=entry_image_8
 )
 entry_8 = Entry(
@@ -1170,8 +1255,8 @@ entry_8 = Entry(
     font=("BitterRoman ExtraBold", 15)
 )
 entry_8.place(
-    x=27.0,
-    y=290.0,
+    x=24.0,
+    y=252.0,
     width=393.0,
     height=70.0
 )
@@ -1180,8 +1265,8 @@ entry_8.place(
 entry_image_9 = PhotoImage(
     file=relative_to_assets("entry_9.png"))
 entry_bg_9 = canvas.create_image(
-    350.0,
-    407.5,
+    347.0,
+    374.5,
     image=entry_image_9
 )
 entry_9 = Entry(
@@ -1192,8 +1277,8 @@ entry_9 = Entry(
     font=("BitterRoman ExtraBold", 15)
 )
 entry_9.place(
-    x=280.0,
-    y=391.0,
+    x=279.0,
+    y=360.0,
     width=140.0,
     height=31.0
 )
@@ -1234,7 +1319,7 @@ canvas.create_text(
     font=("Caladea Regular", 20 * -1)
 )
 canvas.create_text(
-    30.5,
+    41.5,
     558.888916015625,
     anchor="nw",
     text="Variable:",
@@ -1243,16 +1328,16 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    27.0,
+    10.0,
     594.6666870117188,
     anchor="nw",
-    text="Point Est:",
+    text="Est. @ Point:",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 20 * -1)
 )
 
 canvas.create_text(
-    44.5,
+    53.0,
     630.4444580078125,
     anchor="nw",
     text="Degree:",
@@ -1261,19 +1346,10 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    223.875,
+    224.0,
     558.0,
     anchor="nw",
-    text="Nuskell?",
-    fill="#FFFFFF",
-    font=("BitterRoman ExtraBold", 20 * -1)
-)
-
-canvas.create_text(
-    223.875,
-    596.0,
-    anchor="nw",
-    text="Scheme:",
+    text="Translate to DSD?",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 20 * -1)
 )
@@ -1289,7 +1365,7 @@ canvas.create_text(
 
 canvas.create_text(
     27.0,
-    235.0,
+    215.0,
     anchor="nw",
     text="Rearranged Estimate:",
     fill="#1F2C5E",
@@ -1297,8 +1373,8 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    27.0,
-    394.0,
+    24.0,
+    361.0,
     anchor="nw",
     text="Traced Value at Point:",
     fill="#1F2C5E",
