@@ -28,7 +28,7 @@ echo ""
 # PYINSTALL GUI EXECUTABLES
 echo ""
 echo "    *** FUNDNA --debug.exe..."
-pyinstaller gui.py Function.py FuncTypes.py GateTypes.py NotGateTypes.py RearrangeType.py Util.py --name "FUNDNA --debug" --clean --onefile --icon "assets/UK logo-white.png" --add-data "assets/*.png;assets" --hidden-import=scipy --hidden-import=networkx --hidden-import=matplotlib --hidden-import=PIL --hidden-import=PIL._imagingtk --hidden-import=PIL._tkinter_finder --hidden-import=pathlib --hidden-import=sympy --hidden-import=mpmath --hidden-import=tk --hidden-import=schemdraw --debug=imports
+pyinstaller gui.py Function.py FuncTypes.py GateTypes.py NotGateTypes.py RearrangeType.py Util.py --name "FUNDNA --debug" --clean --onefile --icon "assets/UK logo-white.png" --splash "assets/FUNDNA Splash Page.png" --add-data "assets/*.png;assets" --hidden-import=scipy --hidden-import=networkx --hidden-import=matplotlib --hidden-import=PIL --hidden-import=PIL._imagingtk --hidden-import=PIL._tkinter_finder --hidden-import=pathlib --hidden-import=sympy --hidden-import=mpmath --hidden-import=tk --hidden-import=schemdraw --debug=imports
 echo ""
 echo "    *** FUNDNA.exe..."
 pyinstaller gui.py Function.py FuncTypes.py GateTypes.py NotGateTypes.py RearrangeType.py Util.py --name "FUNDNA" --clean -w --onefile --icon "assets/UK logo-web.png" --splash "assets/FUNDNA Splash Page.png" --add-data "assets/*.png;assets" --hidden-import=scipy --hidden-import=networkx --hidden-import=matplotlib --hidden-import=PIL --hidden-import=PIL._imagingtk --hidden-import=PIL._tkinter_finder --hidden-import=pathlib --hidden-import=sympy --hidden-import=mpmath --hidden-import=tk --hidden-import=schemdraw --debug=imports

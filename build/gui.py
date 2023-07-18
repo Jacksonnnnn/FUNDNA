@@ -1,9 +1,12 @@
 import tkinter
 import tkinter.ttk
 
+usingExe = False
+
 try:
     from PyInstaller import *
     import pyi_splash
+    usingExe = True
 except:
     print("Unable to import PyInstaller... continuing")
 finally:
@@ -42,6 +45,14 @@ hasNuskell = False
 useNuskell = True
 verify = False
 scheme = "soloveichik2010.ts"
+
+try:
+    if usingExe:
+        print("Using Pyinstall-Generated EXE Files")
+    else:
+        print("Using Python GUI Files")
+finally:
+    usingExe = False
 
 nuskellSchemes = [  # development
     "cardelli_2domain_fixed_dev.ts", "cardelli_2domain_fixed_noGC_dev.ts", "lakin2016_3D_fix_dev.ts",
@@ -93,6 +104,7 @@ def updateVariables():
     global lFunc
     global scheme
     global useNuskell
+    global usingExe
 
     functionStr = entry_6.get().replace("^", "**")
     variable = entry_3.get()
@@ -275,8 +287,12 @@ def calculate():
                 print(input_crn)
 
                 # GENERATE CLI STRING
-                cmd = ["echo", f'"{input_crn}"', "|", "nuskell", "--ts", f'{scheme}', "--pilfile", "-vv",
-                       "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
+                if usingExe:
+                    cmd = ["echo", f'{input_crn}', "|", "nuskell", "--ts", f'{scheme}', "--pilfile", "-vv",
+                           "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
+                else:
+                    cmd = ["echo", f'"{input_crn}"', "|", "nuskell", "--ts", f'{scheme}', "--pilfile", "-vv",
+                           "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
 
                 if verify:
                     cmd.append("--verify")
