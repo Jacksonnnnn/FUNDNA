@@ -95,7 +95,6 @@ def updateVariables():
     global useNuskell
 
     functionStr = entry_6.get().replace("^", "**")
-    scheme = entry_4.get()
     variable = entry_3.get()
     point = float(entry_2.get())
     power = int(entry_1.get()) + 1
@@ -350,18 +349,17 @@ def calculate():
 
 
 def NuskellSettingsPopup(use, selectedScheme):
-    popup = Tk()
+    popup = Toplevel()
     popup.title("Nuskell Configuration")
-    popup.geometry("445x88")
+    popup.geometry("445x136")
 
     inner_useNuskell = BooleanVar()
-    inner_useNuskell = use
-    inner_scheme = selectedScheme
+    inner_scheme = StringVar()
 
     popup_canvas = Canvas(
         popup,
         bg="#DCDDDE",
-        height=88,
+        height=136,
         width=445,
         bd=0,
         highlightthickness=0,
@@ -379,6 +377,7 @@ def NuskellSettingsPopup(use, selectedScheme):
         width=250,
         height=30
     )
+    inner_scheme = scheme
     schemeDropdown.set(inner_scheme)
 
     checkbutton = tk.Checkbutton(
@@ -395,12 +394,13 @@ def NuskellSettingsPopup(use, selectedScheme):
         height=25.0
     )
 
-    if inner_useNuskell:
+    if useNuskell:
         checkbutton.select()
 
     save_button_image = PhotoImage(
         file=relative_to_assets("save_button.png"))
     save_button = Button(
+        popup,
         image=save_button_image,
         borderwidth=0,
         highlightthickness=0,
@@ -409,7 +409,7 @@ def NuskellSettingsPopup(use, selectedScheme):
     )
     save_button.place(
         x=0.0,
-        y=0.0,
+        y=86.0,
         width=167.0,
         height=38.0
     )
@@ -446,6 +446,8 @@ def SaveNuskellConfig(use, selectedScheme):
 
 window = Tk()
 
+scheme = StringVar()
+scheme = "soloveichik2010.ts"
 useNuskell = BooleanVar()
 
 favicon = PhotoImage(file=relative_to_assets("UK logo-white.png"))
