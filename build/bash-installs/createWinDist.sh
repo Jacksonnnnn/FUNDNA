@@ -32,6 +32,8 @@ echo ""
 echo "***** Installing required dependencies..."
 echo ""
 # INSTALL REQUIRED DEPENDENCIES
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade scipy
 python3 -m pip install --upgrade networkx
 python3 -m pip install --upgrade matplotlib
@@ -79,4 +81,8 @@ pyinstaller gui.py Function.py FuncTypes.py GateTypes.py NotGateTypes.py Rearran
 echo ""
 echo "    *** FUNDNA.exe..."
 pyinstaller gui.py Function.py FuncTypes.py GateTypes.py NotGateTypes.py RearrangeType.py Util.py --name "FUNDNA" --clean -w --onefile --icon "assets/UK logo-web.png" --splash "assets/FUNDNA Splash Page.png" --add-data "assets/*.png;assets" --hidden-import=scipy --hidden-import=networkx --hidden-import=matplotlib --hidden-import=PIL --hidden-import=PIL._imagingtk --hidden-import=PIL._tkinter_finder --hidden-import=pathlib --hidden-import=sympy --hidden-import=mpmath --hidden-import=tk --hidden-import=schemdraw --debug=imports
+
+echo ""
+echo ""
+echo "***** Installation Complete!"
 read

@@ -27,4 +27,8 @@ echo ""
 echo "    *** Running pytest..."
 python3 -m pytest
 
+echo ""
+echo ""
+echo "***** Installation Complete!"
+
 read
