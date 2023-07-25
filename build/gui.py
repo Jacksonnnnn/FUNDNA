@@ -422,7 +422,7 @@ def NuskellSettingsPopup(use, selectedScheme):
         image=save_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: SaveNuskellConfig(inner_useNuskell.get(), schemeDropdown.get()),
+        command=lambda: SaveNuskellConfig(inner_useNuskell.get(), schemeDropdown.get(), popup),
         relief="flat"
     )
     save_button.place(
@@ -454,12 +454,13 @@ def NuskellSettingsPopup(use, selectedScheme):
     popup.mainloop()
 
 
-def SaveNuskellConfig(use, selectedScheme):
+def SaveNuskellConfig(use, selectedScheme, popup):
     global useNuskell
     global scheme
 
     useNuskell = use
     scheme = selectedScheme
+    popup.destroy()
 
 
 window = Tk()
