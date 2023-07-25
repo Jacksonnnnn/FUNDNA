@@ -44,7 +44,11 @@ echo "    *** Running pytest..."
 python3 -m pytest
 
 echo ""
+echo "    *** Running Nuskell Help Command..."
+nuskell --help
+
 echo ""
-echo "***** Installation Successful!"
+echo ""
+echo "***** Installation Complete!"
 
 read
