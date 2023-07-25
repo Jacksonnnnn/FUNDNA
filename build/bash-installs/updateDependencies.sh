@@ -1,10 +1,13 @@
 #!/bin/bash
 cd ../
+rm -r nuskell-jphuse
 echo ""
 echo ""
 echo "***** Installing required dependencies..."
 echo ""
 # INSTALL REQUIRED DEPENDENCIES
+python3 -m ensurepip --upgrade
+python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade scipy
 python3 -m pip install --upgrade networkx
 python3 -m pip install --upgrade matplotlib
@@ -39,3 +42,9 @@ python3 -m pip install .[dev]
 echo ""
 echo "    *** Running pytest..."
 python3 -m pytest
+
+echo ""
+echo ""
+echo "***** Installation Successful!"
+
+read

@@ -239,7 +239,6 @@ def calculate():
                    viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
         # Open the image as if it were a file. This works only for .ps!
         img = Image.open(relative_to_assets("taylor.png"))
-        # See note at the bottom
         img.load()
         img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
         photo = ImageTk.PhotoImage(img)
