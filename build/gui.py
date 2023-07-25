@@ -6,6 +6,7 @@ usingExe = False
 try:
     from PyInstaller import *
     import pyi_splash
+
     usingExe = True
 except:
     print("Unable to import PyInstaller... continuing")
@@ -51,7 +52,9 @@ try:
         print("Using Pyinstall-Generated EXE Files")
     else:
         print("Using Python GUI Files")
-finally:
+        usingExe = False
+except:
+    print("Using Python GUI Files")
     usingExe = False
 
 nuskellSchemes = [  # development
@@ -349,14 +352,16 @@ def calculate():
                 elif "EDITOR" in os.environ:
                     subprocess.call([os.environ["EDITOR"], file_to_open])
 
-                messagebox.showinfo("Nuskell Simulation Completed!", "Congratulations!\n The Nuskell DSD Simulation has been completed. Please open the files in ~/assetts/tests.")
+                messagebox.showinfo("Nuskell Simulation Completed!",
+                                    "Congratulations!\n The Nuskell DSD Simulation has been completed. Please open the files in ~/assetts/tests.")
 
-            else:   # NUSKELL NOT INSTALLED
-                messagebox.showerror("Error! Nuskell Not Installed", "Error!\nNuskell is not installed. Please follow the "
-                                                                 "installation steps provided in the documentation at "
-                                                                 "https://github.com/CUT-Labs/FUNDNA.")
+            else:  # NUSKELL NOT INSTALLED
+                messagebox.showerror("Error! Nuskell Not Installed",
+                                     "Error!\nNuskell is not installed. Please follow the "
+                                     "installation steps provided in the documentation at "
+                                     "https://github.com/CUT-Labs/FUNDNA.")
 
-    else:   # INPUT FUNCTION NOT COMPATIBLE
+    else:  # INPUT FUNCTION NOT COMPATIBLE
         messagebox.showerror("UK Function To Circuit Designer",
                              "Error! The function you entered is not supported for these parameters:\n" +
                              "-----------------------------------\n"
