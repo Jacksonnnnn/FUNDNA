@@ -9,7 +9,7 @@ echo ""
 rm -r build
 rm -r dist
 rm -r nuskell-cutlabs
-rm "nuskell-jphuse.zip"
+rm "nuskell-cutlabs.zip"
 rm "FUNDNA.spec"
 rm "FUNDNA --debug.spec"
 
