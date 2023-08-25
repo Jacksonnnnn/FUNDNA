@@ -347,7 +347,7 @@ def calculate():
 
                 print("Nuskell Simulation Complete.")
 
-                file_to_open = os.getcwd + "/tests/nuskellCLI.txt"
+                file_to_open = os.getcwd() + "/tests/nuskellCLI.txt"
 
                 if hasattr(os, "startfile"):
                     os.startfile(file_to_open)
