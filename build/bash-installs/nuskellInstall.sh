@@ -1,18 +1,18 @@
 cd ../
 echo "***** Removing old files..."
 echo ""
-rm -r nuskell-jphuse
+rm -r nuskell-cutlabs
 
 echo ""
 echo ""
 echo "***** Installing Nuskell..."
 echo ""
 # INSTALL NUSKELL
-mkdir nuskell-jphuse
+mkdir nuskell-cutlabs
 echo ""
 echo "    *** Directory made"
-cd nuskell-jphuse
-git clone https://github.com/jphuse/nuskell.git
+cd nuskell-cutlabs
+git clone https://github.com/CUT-Labs/nuskell.git
 echo ""
 echo "    *** Repository Cloned"
 cd nuskell

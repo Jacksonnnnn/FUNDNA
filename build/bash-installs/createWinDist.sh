@@ -8,7 +8,7 @@ echo ""
 # REMOVE OLD FILES
 rm -r build
 rm -r dist
-rm -r nuskell-jphuse
+rm -r nuskell-cutlabs
 rm "nuskell-jphuse.zip"
 rm "FUNDNA.spec"
 rm "FUNDNA --debug.spec"
@@ -50,11 +50,11 @@ echo ""
 echo "***** Installing Nuskell..."
 echo ""
 # INSTALL NUSKELL
-mkdir nuskell-jphuse
+mkdir nuskell-cutlabs
 echo ""
 echo "    *** Directory made"
-cd nuskell-jphuse
-git clone https://github.com/jphuse/nuskell.git
+cd nuskell-cutlabs
+git clone https://github.com/CUT-Labs/nuskell.git
 echo ""
 echo "    *** Repository Cloned"
 cd nuskell
