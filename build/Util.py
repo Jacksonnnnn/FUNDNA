@@ -3,6 +3,9 @@ from math import factorial
 
 import matplotlib.pyplot as plt
 import matplotlib.backends.backend_svg
+
+matplotlib.use('TkAgg')
+
 import networkx as nx
 from scipy.misc import derivative
 from scipy.special import comb
