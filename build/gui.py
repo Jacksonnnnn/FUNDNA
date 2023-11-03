@@ -44,6 +44,14 @@ lExpress = ""
 lFunc = None
 hasNuskell = False
 useNuskell = True
+#
+# TODO:
+#   - Check if piperine is installed.
+#   - Decide how the .crn file is going to be generated, apply options (if any) in popup window.
+#   - Add Piperine implementation into Calculate() function.
+hasPiperine = False
+usePiperine = True
+pipOptions = ""
 verify = False
 scheme = "soloveichik2010.ts"
 
@@ -105,8 +113,13 @@ def updateVariables():
     global power
     global lExpress
     global lFunc
-    global scheme
+    global hasNuskell
     global useNuskell
+    global hasPiperine
+    global usePiperine
+    global pipOptions
+    global scheme
+    global verify
     global usingExe
 
     functionStr = entry_6.get().replace("^", "**")
@@ -119,12 +132,19 @@ def updateVariables():
 
     print("-=( + Updated Variables (Local) + )=-")
     print("Function String: " + functionStr)
-    print("Use Nuskell?: " + str(useNuskell))
-    print("Translation Scheme: " + scheme)
     print("Variable Selected: " + variable)
     print("Around Point: " + point.__str__())
     print("Degree Est.: " + power.__str__())
     print("Lambda Expression: " + lExpress)
+    print("-" * 100)
+    print("Has Nuskell: " + hasNuskell.__str__())
+    print("Use Nuskell: " + useNuskell.__str__())
+    print("Translation Scheme: " + scheme.__str__())
+    print("Verify Results: " + verify.__str__())
+    print("-" * 100)
+    print("Has Piperine: " + hasPiperine.__str__())
+    print("Use Piperine: " + usePiperine.__str__())
+    print("Piperine CLI Options: " + pipOptions.__str__())
     print("-----------")
 
 
@@ -180,7 +200,11 @@ def calculate():
     global lFunc
     global hasNuskell
     global useNuskell
+    global hasPiperine
+    global usePiperine
+    global pipOptions
     global scheme
+    global verify
 
     # Update Variables
     updateVariables()
@@ -193,6 +217,15 @@ def calculate():
     print("Degree Est.: " + power.__str__())
     print("Lambda Expression: " + lExpress)
     print("Lambda Function" + lFunc.__str__())
+    print("-" * 100)
+    print("Has Nuskell: " + hasNuskell.__str__())
+    print("Use Nuskell: " + useNuskell.__str__())
+    print("Translation Scheme: " + scheme.__str__())
+    print("Verify Results: " + verify.__str__())
+    print("-" * 100)
+    print("Has Piperine: " + hasPiperine.__str__())
+    print("Use Piperine: " + usePiperine.__str__())
+    print("Piperine CLI Options: " + pipOptions.__str__())
     print("-" * 100)
 
     # Convert to Function Parameter Types
@@ -375,18 +408,20 @@ def calculate():
                              "Point Estimation: " + str(point))
 
 
-def NuskellSettingsPopup(use, selectedScheme):
+def TranslationSettingsPopup():
     popup = Toplevel()
-    popup.title("Nuskell Configuration")
-    popup.geometry("445x136")
+    popup.title("DSD and DNA Translation")
+    popup.geometry("445x175")
 
     inner_useNuskell = BooleanVar()
     inner_scheme = StringVar()
 
+    inner_usePiperine = BooleanVar()
+
     popup_canvas = Canvas(
         popup,
         bg="#DCDDDE",
-        height=136,
+        height=175,
         width=445,
         bd=0,
         highlightthickness=0,
@@ -400,29 +435,62 @@ def NuskellSettingsPopup(use, selectedScheme):
     )
     schemeDropdown.place(
         x=185,
-        y=48,
+        y=38,
         width=250,
         height=30
     )
     inner_scheme = scheme
     schemeDropdown.set(inner_scheme)
 
-    checkbutton = tk.Checkbutton(
+    entry_pipOptions = Entry(
+        popup,
+        bd=0,
+        bg="#DCDDDE",
+        fg="#000716",
+        highlightthickness=0,
+        font=("BitterRoman ExtraBold", 15)
+    )
+    entry_pipOptions.place(
+        x=185,
+        y=100,
+        width=250,
+        height=30
+    )
+    entry_pipOptions.insert(INSERT, pipOptions)
+
+    nuskellCheckbutton = tk.Checkbutton(
         popup,
         variable=inner_useNuskell,
         onvalue=True,
         offvalue=False,
         width=25,
     )
-    checkbutton.place(
+    nuskellCheckbutton.place(
         x=185,
-        y=10,
+        y=8,
         width=25.0,
         height=25.0
     )
 
     if useNuskell:
-        checkbutton.select()
+        nuskellCheckbutton.select()
+
+    piperineCheckbutton = tk.Checkbutton(
+        popup,
+        variable=inner_usePiperine,
+        onvalue=True,
+        offvalue=False,
+        width=25,
+    )
+    piperineCheckbutton.place(
+        x=185,
+        y=72,
+        width=25.0,
+        height=25.0
+    )
+
+    if usePiperine:
+        piperineCheckbutton.select()
 
     save_button_image = PhotoImage(
         file=relative_to_assets("save_button.png"))
@@ -431,12 +499,17 @@ def NuskellSettingsPopup(use, selectedScheme):
         image=save_button_image,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: SaveNuskellConfig(inner_useNuskell.get(), schemeDropdown.get(), popup),
+        command=lambda: SaveTranslationConfig(
+            inner_useNuskell.get(),
+            schemeDropdown.get(),
+            inner_usePiperine.get(),
+            entry_pipOptions.get(),
+            popup),
         relief="flat"
     )
     save_button.place(
-        x=0.0,
-        y=86.0,
+        x=10.0,
+        y=130.0,
         width=167.0,
         height=38.0
     )
@@ -452,9 +525,27 @@ def NuskellSettingsPopup(use, selectedScheme):
 
     popup_canvas.create_text(
         10,
-        48,
+        40,
         anchor="nw",
-        text="Scheme:",
+        text="DSD Scheme:",
+        fill="#1F2C5E",
+        font=("BitterRoman ExtraBold", 20 * -1)
+    )
+
+    popup_canvas.create_text(
+        10,
+        70,
+        anchor="nw",
+        text="Translate to DNA?",
+        fill="#1F2C5E",
+        font=("BitterRoman ExtraBold", 20 * -1)
+    )
+
+    popup_canvas.create_text(
+        10,
+        100,
+        anchor="nw",
+        text="Piperine Options:",
         fill="#1F2C5E",
         font=("BitterRoman ExtraBold", 20 * -1)
     )
@@ -463,12 +554,26 @@ def NuskellSettingsPopup(use, selectedScheme):
     popup.mainloop()
 
 
-def SaveNuskellConfig(use, selectedScheme, popup):
+def SaveTranslationConfig(useN, selectedScheme, useP, pOptions, popup):
     global useNuskell
     global scheme
+    global usePiperine
+    global pipOptions
 
-    useNuskell = use
+    useNuskell = useN
     scheme = selectedScheme
+
+    usePiperine = useP
+    pipOptions = pOptions
+
+    print("-" * 100)
+    print("Use Nuskell: " + useNuskell.__str__())
+    print("Translation Scheme: " + scheme.__str__())
+    print("-" * 100)
+    print("Use Piperine: " + usePiperine.__str__())
+    print("Piperine CLI Options: " + pipOptions.__str__())
+    print("-" * 100)
+
     popup.destroy()
 
 
@@ -1089,7 +1194,7 @@ button_34 = Button(
     image=button_image_34,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: NuskellSettingsPopup(useNuskell, scheme),
+    command=lambda: TranslationSettingsPopup(),
     relief="flat"
 )
 button_34.place(
@@ -1379,7 +1484,7 @@ canvas.create_text(
     224.0,
     558.0,
     anchor="nw",
-    text="Translate to DSD?",
+    text="Translate to DSD or DNA?",
     fill="#FFFFFF",
     font=("BitterRoman ExtraBold", 20 * -1)
 )

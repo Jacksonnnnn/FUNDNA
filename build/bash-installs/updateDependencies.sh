@@ -18,6 +18,7 @@ python3 -m pip install --upgrade Pillow
 python3 -m pip install --upgrade mpmath
 python3 -m pip install --upgrade schemdraw
 python3 -m pip install --upgrade pyinstaller
+python3 -m pip install --upgrade tkdesigner
 
 echo ""
 echo ""
