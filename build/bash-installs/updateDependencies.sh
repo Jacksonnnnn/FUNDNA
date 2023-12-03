@@ -7,6 +7,7 @@ echo "***** Installing required dependencies..."
 echo ""
 # INSTALL REQUIRED DEPENDENCIES
 python3 -m ensurepip --upgrade
+python3 get-pip.py
 python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade scipy
 python3 -m pip install --upgrade networkx
@@ -58,9 +59,19 @@ echo ""
 
 echo ""
 echo "    *** Installing Dependencies"
-python3 -m pip install --upgrade numpy scipy
-python3 -m pip install --upgrade git+https://github.com/DNA-and-Natural-Algorithms-Group/peppercompiler.git
-python3 -m pip install --upgrade git+https://github.com/DNA-and-Natural-Algorithms-Group/stickydesign.git
+
+# PYTHON Must be at a maximum 2.7 - 3.7
+# NUMPY Must be 1.16
+# SCIPY Can be latest version
+# PEPPERCOMPILER Must be 0.1.2 (Git branch: c2c5f4a672b789377d4417ec0f828c78e9c91316)
+# STICKYDESIGN Must be 0.7.0
+# NUPACK Must be 3.0.6
+# JUPYTERLAB Can be latest version
+# MATPLOTLIB Can be latest version
+python3 -m pip install numpy==1.16
+python3 -m pip install --upgrade scipy
+python3 -m pip install --upgrade git+https://github.com/DNA-and-Natural-Algorithms-Group/peppercompiler.git@c2c5f4a672b789377d4417ec0f828c78e9c91316
+python3 -m pip install stickydesign==0.7.0
 echo ""
 
 echo "    *** Installing NUPACK"
@@ -76,5 +87,11 @@ make
 echo ""
 echo "    *** Installing Piperine"
 python3 -m pip install --upgrade git+https://github.com/DNA-and-Natural-Algorithms-Group/piperine.git
+
+piperine-design --help
+
+echo ""
+echo ""
+echo "***** Installation Complete!"
 
 read
