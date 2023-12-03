@@ -86,16 +86,21 @@ nuskellSchemes = [
 ]
 
 try:
+    print("Testing for Nuskell...")
     import nuskell.dsdcompiler
 
     fcrn, fs = nuskell.dsdcompiler.crn_parser.parse_crn_string('A + B -> C')
+
+    print("\tHas Nuskell")
     hasNuskell = True
 finally:
     pass
 
 try:
+    print("Testing for Piperine...")
     import piperine.designer
 
+    print("\tHas Piperine")
     hasPiperine = True
 finally:
     pass
@@ -269,26 +274,30 @@ def calculate():
         function.generateCircuit()
         function.generateReactions()
 
-        # Set Labels
-        # convert taylor polynomial coeff dictionary to expression - set label (entry_7)
-        x = "x"
-        expr = "$\displaystyle " + sympy.latex(sympify(function.taylorString)) + "$"
+        # known issue, need to fix LaTeX creation of Maclaurin Series Approx.
+        # # Set Labels
+        # # convert taylor polynomial coeff dictionary to expression - set label (entry_7)
+        # x = "x"
+        # expr = "$\displaystyle " + sympy.latex(sympify(function.taylorString)) + "$"
+        #
+        # # This creates a PNG file and saves there the output of sympy.preview
+        # bg_color = "{196, 196, 196}"
+        # sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
+        #                                        r"\usepackage{pagecolor}"
+        #                                        r"\definecolor{background}{RGB}" + bg_color +
+        #                                        r"\pagecolor{background}"
+        #                                        r"\begin{document}",
+        #            viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
+        # # Open the image as if it were a file. This works only for .ps!
+        # img = Image.open(relative_to_assets("taylor.png"))
+        # img.load()
+        # img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
+        # photo = ImageTk.PhotoImage(img)
+        # entry_7.config(image=photo)
+        # entry_7.image = photo
 
-        # This creates a PNG file and saves there the output of sympy.preview
-        bg_color = "{196, 196, 196}"
-        sp.preview(expr, euler=False, preamble=r"\documentclass{standalone}"
-                                               r"\usepackage{pagecolor}"
-                                               r"\definecolor{background}{RGB}" + bg_color +
-                                               r"\pagecolor{background}"
-                                               r"\begin{document}",
-                   viewer="file", filename=relative_to_assets("taylor.png"), dvioptions=["-D 1200"])
-        # Open the image as if it were a file. This works only for .ps!
-        img = Image.open(relative_to_assets("taylor.png"))
-        img.load()
-        img = img.resize((393, int((393 * img.size[1] / img.size[0]))), Image.BILINEAR)
-        photo = ImageTk.PhotoImage(img)
-        entry_7.config(image=photo)
-        entry_7.image = photo
+        entry_7.delete(0, END)
+        entry_7.insert(INSERT, function.taylorString)
 
         # rearrangement - set label (entry_8)
         entry_8.delete(0, END)
@@ -420,8 +429,8 @@ def calculate():
 
                 print("\n\nBeginning Piperine Simulation.")
                 # GENERATE Piperine COMPATIBLE CRN
-                print("\nNUSKELL CRN STRING:\n")
-                input_crn = function.generateNuskellString().replace('0.', 'tempc')
+                print("\nPIPERINE CRN STRING:\n")
+                input_crn = function.generateNuskellString().replace('0.', 'tempc').replace(';', '\n')
                 print(input_crn)
 
             else:  # PIPERINE NOT INSTALLED
@@ -1389,13 +1398,21 @@ entry_bg_7 = canvas.create_image(
     164.0,
     image=entry_image_7
 )
+# known issue, need to fix LaTeX creation of Maclaurin Series Approx.
+# entry_7 = Label(
+#     bd=0,
+#     bg="#C4C4C4",
+#     highlightthickness=0,
+#     #    state="disabled",
+#     justify="center",
+#     font=("BitterRoman ExtraBold", 15)
+# )
 
-entry_7 = Label(
+entry_7 = Entry(
     bd=0,
     bg="#C4C4C4",
+    fg="#000716",
     highlightthickness=0,
-    #    state="disabled",
-    justify="center",
     font=("BitterRoman ExtraBold", 15)
 )
 
