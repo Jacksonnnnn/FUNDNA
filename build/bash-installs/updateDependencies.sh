@@ -1,31 +1,33 @@
 #!/bin/bash
-cd ../
-rm -r nuskell-cutlabs
-echo ""
-echo ""
 echo "***** Installing required dependencies..."
 echo ""
-# INSTALL REQUIRED DEPENDENCIES
+
+cd "$(dirname "$0")"
+SCRIPT_DIR="$(pwd)"
+echo "Script directory: $SCRIPT_DIR"
+
+# Uninstall all dependencies to ensure version correctness,
+# then install required Python packages
 python3.8 -m ensurepip --upgrade
-python3.8 get-pip.py
+# python3.8 get-pip.py
 python3.8 -m pip install --upgrade pip
-python3.8 -m pip install --upgrade scipy
-python3.8 -m pip install --upgrade networkx
-python3.8 -m pip install --upgrade matplotlib
-python3.8 -m pip install --upgrade tk
-python3.8 -m pip install --upgrade pathlib
-python3.8 -m pip install --upgrade sympy
-python3.8 -m pip install --upgrade Pillow
-python3.8 -m pip install --upgrade mpmath
-python3.8 -m pip install --upgrade schemdraw
-python3.8 -m pip install --upgrade pyinstaller
-python3.8 -m pip install --upgrade tkdesigner
+python3.8 -m pip uninstall -r requirements.txt
+python3.8 -m pip uninstall peppercompiler
+python3.8 -m pip uninstall piperine
+python3.8 -m pip install --no-cache-dir -r requirements.txt
 
 echo ""
 echo ""
 echo "***** Installing Nuskell..."
 echo ""
-# INSTALL NUSKELL
+
+# Uninstall previous:
+cd ../
+rm -r nuskell-cutlabs
+echo ""
+echo ""
+
+# Install Nuskell
 mkdir nuskell-cutlabs
 echo ""
 echo "    *** Directory made"
@@ -35,12 +37,8 @@ echo ""
 echo "    *** Repository Cloned"
 cd nuskell
 echo ""
-echo "    *** Installing dependencies..."
-python3.8 -m pip install --upgrade dsdobjects
-python3.8 -m pip install --upgrade pytest
-echo ""
 echo "    *** Installing nuskell DEV..."
-python3.8 -m pip install .[dev]
+python3.8 -m pip install -U --no-deps .[dev]
 echo ""
 echo "    *** Running pytest..."
 python3.8 -m pytest
@@ -57,36 +55,35 @@ echo ""
 echo "***** Installing Piperine..."
 echo ""
 
-echo ""
-echo "    *** Installing Dependencies"
+# Install additional dependencies manually
 
-# PYTHON Must be 3.8
-# NUMPY Must be 1.16
-# SCIPY Can be latest version
-# PEPPERCOMPILER Must be 0.1.2 (Git branch: c2c5f4a672b789377d4417ec0f828c78e9c91316)
-# STICKYDESIGN Must be 0.7.0
-# NUPACK Must be 3.0.6
-# JUPYTERLAB Can be latest version
-# MATPLOTLIB Can be latest version
-python3.8 -m pip install numpy==1.16
-python3.8 -m pip install --upgrade scipy
-python3.8 -m pip install --upgrade git+https://github.com/DNA-and-Natural-Algorithms-Group/peppercompiler.git@c2c5f4a672b789377d4417ec0f828c78e9c91316
-python3.8 -m pip install stickydesign==0.7.0
-echo ""
+# Install NumPy
+python3.8 -m pip uninstall numpy
+pip uninstall numpy
 
+# Install SciPy
+python3.8 -m pip uninstall scipy
+pip uninstall scipy
+
+# Install NUPACK
 echo "    *** Installing NUPACK"
-python3.8 -m pip install --upgrade matplotlib jupyterlab
 echo ""
-echo "Please download NUPACK 3.0.6 from https://nupack.org/downloads to your home directory (${HOME}) and then press ENTER:"
+echo "Please download NUPACK 3.0.6 from https://nupack.org/downloads to your home directory ($HOME) and then press ENTER:"
 read
-tar -xvf "${HOME}/nupack3.0.6.tar"
-cd ${NUPACKHOME} || (echo "NUPACK 3.0.6 is not downloaded correctly, unable to install... Please make sure NUPACK is unzipped correctly and is located at ${NUPACKHOME}" && read)
-export NUPACKHOME="${HOME}/nupack3.0.6/"
+tar -xvf "$HOME/nupack3.0.6.tar"
+cd "$NUPACKHOME" || (echo "NUPACK 3.0.6 is not downloaded correctly, unable to install... Please make sure NUPACK is unzipped correctly and is located at $NUPACKHOME" && read)
+export NUPACKHOME="$HOME/nupack3.0.6/"
 make
 
+# Install Piperine
+# shellcheck disable=SC2164
+cd "$SCRIPT_DIR"
 echo ""
 echo "    *** Installing Piperine"
-python3.8 -m pip install --upgrade git+https://github.com/DNA-and-Natural-Algorithms-Group/piperine.git
+python3.8 -m pip uninstall -r piperine_requirements.txt
+python3.8 -m pip uninstall peppercompiler
+python3.8 -m pip uninstall piperine
+python3.8 -m pip install --no-cache-dir -r piperine_requirements.txt
 
 piperine-design --help
 

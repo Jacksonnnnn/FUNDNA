@@ -1,0 +1,23 @@
+# requirements.txt
+
+# Python version
+#python_version == 3.8.0
+
+# Required Python packages
+numpy==1.17.3 #<---- this is manually uninstalled and reinstalled in updateDependencies.sh to ensure this version
+oldest-supported-numpy>=0.0.0
+pandas==1.3.0
+scipy==1.8 #<---- this is manually uninstalled and reinstalled in updateDependencies.sh to ensure this version
+networkx==2.5.1
+matplotlib==3.5.3
+pathlib==1.0.1
+sympy==1.7.1
+pillow==8.4
+mpmath==1.2.1
+schemdraw>=0.0.0
+pyinstaller==4.5
+tkdesigner==1.0.7
+dsdobjects>=0.0.0
+pytest==6.2.4
+jupyterlab==3.0.16
+torch==2.1.0
