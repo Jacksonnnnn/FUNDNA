@@ -20,4 +20,3 @@ tkdesigner==1.0.7
 dsdobjects>=0.0.0
 pytest==6.2.4
 jupyterlab==3.0.16
-torch==2.1.0
