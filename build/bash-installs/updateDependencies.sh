@@ -14,6 +14,7 @@ python3.8 -m pip install --upgrade pip
 python3.8 -m pip uninstall -r requirements.txt
 python3.8 -m pip uninstall peppercompiler
 python3.8 -m pip uninstall piperine
+python3.8 -m pip uninstall stickydesign
 python3.8 -m pip install --no-cache-dir -r requirements.txt
 
 echo ""
@@ -83,6 +84,7 @@ echo "    *** Installing Piperine"
 python3.8 -m pip uninstall -r piperine_requirements.txt
 python3.8 -m pip uninstall peppercompiler
 python3.8 -m pip uninstall piperine
+python3.8 -m pip uninstall stickydesign
 python3.8 -m pip install --no-cache-dir -r piperine_requirements.txt
 
 piperine-design --help
