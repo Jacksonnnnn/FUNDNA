@@ -8,14 +8,14 @@ echo "Script directory: $SCRIPT_DIR"
 
 # Uninstall all dependencies to ensure version correctness,
 # then install required Python packages
-python3.8 -m ensurepip --upgrade
-# python3.8 get-pip.py
-python3.8 -m pip install --upgrade pip
-python3.8 -m pip uninstall -r requirements.txt
-python3.8 -m pip uninstall peppercompiler
-python3.8 -m pip uninstall piperine
-python3.8 -m pip uninstall stickydesign
-python3.8 -m pip install --no-cache-dir -r requirements.txt
+python3.12 -m ensurepip --upgrade
+# python3.12 get-pip.py
+python3.12 -m pip install --upgrade pip
+python3.12 -m pip uninstall -r requirements.txt
+python3.12 -m pip uninstall peppercompiler
+python3.12 -m pip uninstall piperine
+python3.12 -m pip uninstall stickydesign
+python3.12 -m pip install --upgrade -r requirements.txt
 
 echo ""
 echo ""
@@ -39,10 +39,10 @@ echo "    *** Repository Cloned"
 cd nuskell
 echo ""
 echo "    *** Installing nuskell DEV..."
-python3.8 -m pip install -U --no-deps .[dev]
+python3.12 -m pip install -U --no-deps .[dev]
 echo ""
 echo "    *** Running pytest..."
-python3.8 -m pytest
+python3.12 -m pytest
 
 echo ""
 echo "    *** Running Nuskell Help Command..."
@@ -59,11 +59,11 @@ echo ""
 # Install additional dependencies manually
 
 # Install NumPy
-python3.8 -m pip uninstall numpy
+python3.12 -m pip uninstall numpy
 pip uninstall numpy
 
 # Install SciPy
-python3.8 -m pip uninstall scipy
+python3.12 -m pip uninstall scipy
 pip uninstall scipy
 
 # Install NUPACK
@@ -81,11 +81,11 @@ make
 cd "$SCRIPT_DIR"
 echo ""
 echo "    *** Installing Piperine"
-python3.8 -m pip uninstall -r piperine_requirements.txt
-python3.8 -m pip uninstall peppercompiler
-python3.8 -m pip uninstall piperine
-python3.8 -m pip uninstall stickydesign
-python3.8 -m pip install --no-cache-dir -r piperine_requirements.txt
+python3.12 -m pip uninstall -r piperine_requirements.txt
+python3.12 -m pip uninstall peppercompiler
+python3.12 -m pip uninstall piperine
+python3.12 -m pip uninstall stickydesign
+python3.12 -m pip install --no-cache-dir -r piperine_requirements.txt
 
 piperine-design --help
 

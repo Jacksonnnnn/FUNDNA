@@ -26,20 +26,11 @@ A = h7 t1 d2 t3
 f1 = d2( t3( d9 t4 + ) ) t1* @constant 100 nM
 f2 = d9( t4( d5 t6 + ) ) t3* @constant 100 nM
 
-# Other complexes (6)
+# Other complexes (3)
 i6 = d2 t3 d9 t4
-i10 = d2 t3( d9 t4 + d9( t4( d5 t6 + ) ) )
-i2 = h7 t1( d2 t3 + d2( t3( d9 t4 + ) ) )
 i13 = d2 t3( d9( t4( + ) ) )
-i4 = h7 t1 d2 t3( + d9( t4( d5 t6 + ) ) )
-i7 = h7 t1( d2( t3( + ) ) )
+i7 = t3*( d2*( t1*( + h7 ) ) )
 
-# Reactions (8)
-reaction [bind21       =     0.0015 /nM/s ] i6 + f2 -> i10
-reaction [open         =    21.7651 /s   ] i10 -> i6 + f2
-reaction [branch-3way  =    16.6667 /s   ] i10 -> i13 + B_1_
-reaction [bind21       =     0.0015 /nM/s ] f1 + A -> i2
-reaction [branch-3way  =    16.6667 /s   ] i2 -> i6 + i7
-reaction [open         =    21.7651 /s   ] i2 -> f1 + A
-reaction [bind21       =     0.0015 /nM/s ] f2 + A -> i4
-reaction [open         =    21.7651 /s   ] i4 -> f2 + A
+# Reactions (2)
+reaction [condensed    = 0.000650504 /nM/s ] i6 + f2 -> i13 + B_1_
+reaction [condensed    = 0.000650504 /nM/s ] f1 + A -> i6 + i7

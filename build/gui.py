@@ -1,3 +1,4 @@
+import sys
 import tkinter
 import tkinter.ttk
 
@@ -42,15 +43,14 @@ power = 6
 functionStr = "exp(-x)"
 lExpress = ""
 lFunc = None
+
 hasNuskell = False
 useNuskell = False
-#
-# TODO:
-#   - Decide how the .crn file is going to be generated, apply options (if any) in popup window.
-#   - Add Piperine implementation into Calculate() function.
+
 hasPiperine = False
 usePiperine = False
 pipOptions = "--candidates 3 --energy 7.7 --maxspurious 0.4 --deviation 0.5"
+
 verify = False
 scheme = "soloveichik2010.ts"
 
@@ -226,12 +226,27 @@ def generateNuskell(messagebox, function):
     input_crn = function.generateNuskellString().replace('0.', 'tempc')
     print(input_crn)
 
+    print("\n\n\nPython Executable: " + sys.executable)
+
+    # Get the path of the Python executable
+    python_executable_path = sys.executable
+
+    # Extract the directory and filename from the path
+    directory, filename = os.path.split(python_executable_path)
+
+    # Replace "python3" with "nuskell" in the filename
+    nuskellModule = filename.replace("python3", "nuskell")
+
+    # Create the new path by joining the directory and the new filename
+    nuskellPath = os.path.join(directory, nuskellModule)
+    print("Nuskell Path: " + nuskellPath + "\n\n\n")
+
     # # GENERATE CLI STRING
     # if usingExe:
     #     cmd = ["echo", f'{input_crn}', "|", "nuskell", "--ts", f'{scheme}', "--pilfile", "-vv",
     #            "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
     # else:
-    cmd = ["echo", f'"{input_crn}"', "|", "/Library/Frameworks/Python.framework/Versions/3.8/bin/nuskell", "--ts",
+    cmd = ["echo", f'"{input_crn}"', "|", f"{nuskellPath}", "--ts",
            f'{scheme}', "--pilfile", "-vv",
            "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
 
