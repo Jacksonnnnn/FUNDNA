@@ -11,10 +11,10 @@ echo "Script directory: $SCRIPT_DIR"
 python3.12 -m ensurepip --upgrade
 # python3.12 get-pip.py
 python3.12 -m pip install --upgrade pip
-python3.12 -m pip uninstall -r requirements.txt
-python3.12 -m pip uninstall peppercompiler
-python3.12 -m pip uninstall piperine
-python3.12 -m pip uninstall stickydesign
+python3.12 -m pip uninstall -y -r requirements.txt
+python3.12 -m pip uninstall -y peppercompiler
+python3.12 -m pip uninstall -y piperine
+python3.12 -m pip uninstall -y stickydesign
 python3.12 -m pip install --upgrade -r requirements.txt
 
 echo ""
@@ -59,12 +59,12 @@ echo ""
 # Install additional dependencies manually
 
 # Install NumPy
-python3.12 -m pip uninstall numpy
-pip uninstall numpy
+python3.12 -m pip uninstall -y numpy
+pip uninstall -y numpy
 
 # Install SciPy
-python3.12 -m pip uninstall scipy
-pip uninstall scipy
+python3.12 -m pip uninstall -y scipy
+pip uninstall -y scipy
 
 # Install NUPACK
 echo "    *** Installing NUPACK"
@@ -81,10 +81,10 @@ make
 cd "$SCRIPT_DIR"
 echo ""
 echo "    *** Installing Piperine"
-python3.12 -m pip uninstall -r piperine_requirements.txt
-python3.12 -m pip uninstall peppercompiler
-python3.12 -m pip uninstall piperine
-python3.12 -m pip uninstall stickydesign
+python3.12 -m pip uninstall -y -r piperine_requirements.txt
+python3.12 -m pip uninstall -y peppercompiler
+python3.12 -m pip uninstall -y piperine
+python3.12 -m pip uninstall -y stickydesign
 python3.12 -m pip install --no-cache-dir -r piperine_requirements.txt
 
 piperine-design --help

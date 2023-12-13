@@ -7,5 +7,5 @@
 numpy==1.26.0
 scipy
 stickydesign>=0.8.4
-peppercompiler
+git+https://github.com/DNA-and-Natural-Algorithms-Group/peppercompiler@spacefixes # (updated by Dr. Evans <3)
 git+https://github.com/cgevans/piperine.git # (updated for 3.12 by Dr. Evans for us <3)
