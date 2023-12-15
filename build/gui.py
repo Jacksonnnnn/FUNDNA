@@ -20,6 +20,8 @@ finally:
     from tkinter.scrolledtext import ScrolledText
     from tkinter import ttk
 
+    import re
+
     from math import *
     from mpmath import *
 
@@ -223,7 +225,7 @@ def generateNuskell(messagebox, function):
     print("\n\nBeginning Nuskell Simulation.")
     # GENERATE NUSKELL COMPATIBLE CRN
     print("\nNUSKELL CRN STRING:\n")
-    input_crn = function.generateNuskellString().replace('0.', 'tempc')
+    input_crn = function.generateNuskellString().replace('0.', 'c')
     print(input_crn)
 
     print("\n\n\nPython Executable: " + sys.executable)
@@ -275,7 +277,7 @@ def generateNuskell(messagebox, function):
 
         with open("tests/nuskell/domainlevel_enum.pil", "r") as file:
             data = file.read()
-            data = data.replace("tempc", "0.")
+            data = data.replace("c", "0.")
 
         with open("tests/nuskell/domainlevel_enum.pil", "w") as file:
             file.write(data)
@@ -285,7 +287,7 @@ def generateNuskell(messagebox, function):
 
         with open("tests/nuskell/domainlevel_sys.pil", "r") as file:
             data = file.read()
-            data = data.replace("tempc", "0.")
+            data = data.replace("c", "0.")
 
         with open("tests/nuskell/domainlevel_sys.pil", "w") as file:
             file.write(data)
@@ -295,7 +297,7 @@ def generateNuskell(messagebox, function):
 
         with open("tests/nuskell/nuskellCLI.txt", "r") as file:
             data = file.read()
-            data = data.replace("tempc", "0.")
+            data = data.replace("c", "0.")
 
         with open("tests/nuskell/nuskellCLI.txt", "w") as file:
             file.write(data)
@@ -316,6 +318,48 @@ def generateNuskell(messagebox, function):
                         "open the files in ~/tests/nuskell.")
 
 
+def runPiperine(cliString, messagebox):
+    global pipOptions
+
+    try:
+        # Execute Piperine
+        stream = subprocess.check_output(cliString, shell=True)
+
+    except subprocess.CalledProcessError as e:
+        # Handle the case where Piperine encounters an error
+        print(f"Piperine Error: {e.output.decode()}")
+
+        import re
+
+        # Parse the error message to extract suggested parameters
+        match = re.search(r"Try target energy:(\S+), maxspurious:(\S+), deviation:(\S+)", e.output.decode())
+
+        if match:
+            suggested_energy = match.group(1)
+            suggested_maxspurious = match.group(2)
+            suggested_deviation = match.group(3)
+
+            print(
+                f"Suggested parameters: energy={suggested_energy}, maxspurious={suggested_maxspurious}, deviation={suggested_deviation}... trying again...\n\n")
+
+            # Modify the pipOptions string with suggested parameters
+            # Extracting the original number of candidates from pipOptions
+            original_candidates_match = re.search(r"--candidates (\d+)", pipOptions)
+            original_candidates = original_candidates_match.group(1) if original_candidates_match else "3"
+
+            # Combine the suggested parameters with the original candidates
+            pipOptions = f"--candidates {original_candidates} --energy {suggested_energy} --maxspurious {suggested_maxspurious} --deviation {suggested_deviation}"
+
+            # Retry Piperine with suggested parameters
+            runPiperine(cliString, messagebox)
+
+        else:
+            # Display an error message
+            messagebox.showerror("Error!",
+                                 f"Error!\n{e.output.decode()}\nFor further assistance, please reach out to us on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
+
+
+
 def generatePiperine(messagebox, function):
     global pipOptions
 
@@ -330,23 +374,106 @@ def generatePiperine(messagebox, function):
     print("\n\nBeginning Piperine Simulation.")
     # GENERATE Piperine COMPATIBLE CRN
     print("\nPIPERINE CRN STRING:\n")
-    input_crn = function.generatePiperineString().replace('0.', 'tempc')
+    input_crn = function.generatePiperineString().replace('0.', 'c')
     print(input_crn)
 
-    cmd = ["piperine-design", "my.crn"] + pipOptions.split(" ")
+    print("\n\n\nPython Executable: " + sys.executable)
+
+    # Get the path of the Python executable
+    python_executable_path = sys.executable
+
+    # Extract the directory and filename from the path
+    directory, filename = os.path.split(python_executable_path)
+
+    # Replace "python3" with "nuskell" in the filename
+    piperineModule = filename.replace("python3", "piperine-design")
+
+    # Create the new path by joining the directory and the new filename
+    piperinePath = os.path.join(directory, piperineModule)
+    print("Piperine Path: " + piperinePath + "\n\n\n")
+
+    cmd = [f"{piperinePath}", "tests/piperine/my.crn"] + pipOptions.split(" ")
 
     print(cmd)
 
-    if not os.path.exists("tests/piperine"):
-        os.mkdir("tests/piperine")
+    cliString = " ".join(cmd)
+
+    # Set the directory path
+    current_directory = os.path.abspath(os.path.dirname(__file__))
+
+    # Set the destination folder
+    destination_folder = os.path.join(current_directory, "tests/piperine")
+
+    # Create the destination folder if it doesn't exist
+    os.makedirs(destination_folder, exist_ok=True)
 
     with open("tests/piperine/my.crn", "w+") as file:
         file.write(input_crn)
 
     # Execue Piperine
-    # Find the best candidate from myScores.txt
-    # Present best strands to user
+    # WRITE COMMAND BEING EXECUTED
+    with open("tests/piperine/cli_command.txt", "w+") as file:
+        file.write(cliString)
 
+    runPiperine(cliString, messagebox)
+
+    # Move generated files to tests/piperine
+    # All files that end in .seq,
+    # All files that end in _strands.txt
+    # my_score_report.txt
+    # my_scores.csv
+
+    # List all files in the current directory
+    files = os.listdir(current_directory)
+
+    # Specify the file endings to move
+    file_endings_to_move = ['.seq', '_strands.txt', 'my_score_report.txt', 'my_scores.csv']
+
+    for file_name in files:
+        # Check if the file ends with any of the specified endings
+        if any(file_name.endswith(ending) for ending in file_endings_to_move):
+            # Construct the source and destination paths
+            source_path = os.path.join(current_directory, file_name)
+            destination_path = os.path.join(destination_folder, file_name)
+
+            # Move the file to the destination folder
+            shutil.move(source_path, destination_path)
+
+    # Find the best candidate from myScores.txt
+    # (Best sum-of-metaranks:      0 by [0])
+    if os.path.exists("tests/piperine/myScores.txt"):
+        with open("tests/piperine/myScores.txt", "r") as file:
+            data = file.read()
+
+            # Use regex to find the relevant information in the string
+            match = re.search(r"Best sum-of-metaranks:\s+(\d+)\s+by\s+\[([^\]]+)\]", data)
+
+            if match:
+                best_metarank = int(match.group(1))
+                best_candidates = [int(candidate) for candidate in match.group(2).split(',')]
+
+                # Present best strands to user
+                messagebox.showerror("Success!",
+                                     f"Great News!\nPiperine was able to generate DNA strands for this "
+                                     f"CRN! Please look in the ./tests/piperine/ folder and look at strand {best_candidates} "
+                                     f"(which had a sum-of-metaranks score of {best_metarank}).")
+            else:
+                #simulation didn't finnish, tere was an error.
+                messagebox.showerror("Error!",
+                                     "Error!\nPiperine encountered an error in it's execution. "
+                                     "Please go to the directory './tests/piperine/', open the "
+                                     "terminal, and execute the command prodivede in cli_command.txt. "
+                                     "For further assistance, please reach out to us with information "
+                                     "provided on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
+
+    else:
+        #simulation didn't finnish, tere was an error.
+        messagebox.showerror("Error!",
+                             "Error!\nPiperine encountered an error in it's execution. "
+                             "Please go to the directory './tests/piperine/', open the "
+                             "terminal, and execute the command prodivede in cli_command.txt. "
+                             "For further assistance, please reach out to us with information "
+                             "provided on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
 def calculate():
     global image_4
     global lFunc

@@ -223,12 +223,12 @@ class Function:
 
                 reaction = make_reaction(gateType, inputs, gateName)
 
-                nuskellCRN += "; ".join(reaction)
+                nuskellCRN += reaction + "; "
 
-        return nuskellCRN
+        return nuskellCRN.rstrip("; ")  # Remove the trailing semicolon
 
     def generatePiperineString(self):
-        nuskellCRN = ""
+        piperineCRN = ""
         for g in self.circuitGates:
             if GateTypes.isInEnum(g.gateType):
                 gateType = g.gateType
@@ -243,6 +243,6 @@ class Function:
 
                 reaction = make_reaction(gateType, inputs, gateName)
 
-                nuskellCRN += "\n".join(reaction)
+                piperineCRN += reaction.replace("; ", "\n") + "\n"
 
-        return nuskellCRN
+        return piperineCRN.rstrip("\n")  # Remove the trailing semicolon

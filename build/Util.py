@@ -577,7 +577,7 @@ def make_reactions(func):
 
             reactionStr += "\n\nReaction Table:\n"
 
-            reaction = make_reaction(gateType, inputs, gateName)
+            reaction = make_reaction(gateType, inputs, gateName).split("; ")
 
             for r in reaction:
                 print(r)
@@ -593,7 +593,6 @@ def make_reactions(func):
 
 def make_reaction(gateType, inputs, gateName):
     assert GateTypes.isInEnum(gateType)
-
     assert len(inputs) == 2
 
     print(gateType, "(", gateName, ")")
@@ -602,6 +601,15 @@ def make_reaction(gateType, inputs, gateName):
     a = inputs[0]
     b = inputs[1]
     c = gateName
+
+    if not isinstance(a, str):
+        a = str(round(a, 4))
+
+    if not isinstance(b, str):
+        b = str(round(b, 4))
+
+    if not isinstance(c, str):
+        c = str(c)
 
     if gateType == GateTypes.AND:
         reaction_list = [
@@ -620,4 +628,5 @@ def make_reaction(gateType, inputs, gateName):
     else:
         print("GATE ERROR: Given Gate Type ", gateType)
         return -1
-    return reaction_list
+
+    return "; ".join(reaction_list)
