@@ -1,3 +1,4 @@
+import shlex
 import sys
 import tkinter
 import tkinter.ttk
@@ -318,46 +319,118 @@ def generateNuskell(messagebox, function):
                         "open the files in ~/tests/nuskell.")
 
 
-def runPiperine(cliString, messagebox):
+import subprocess
+import sys
+import shlex
+import re
+
+def runPiperine(function, cliString, messagebox, output_file):
     global pipOptions
 
-    try:
-        # Execute Piperine
-        stream = subprocess.check_output(cliString, shell=True)
+    # Print the command for debugging purposes
+    print("Executing command:", cliString)
 
-    except subprocess.CalledProcessError as e:
-        # Handle the case where Piperine encounters an error
-        print(f"Piperine Error: {e.output.decode()}")
+    # Determine the platform
+    system = sys.platform.lower()
 
-        import re
+    if system == 'windows':
+        command = ['start', 'cmd', '/k'] + shlex.split(cliString)
+    elif system == 'linux':
+        command = ['xterm', '-e'] + shlex.split(cliString)
+    elif system == 'darwin':
+        command = ['osascript', '-e', f'tell app "Terminal" to do script "{cliString} > \'{output_file}\'"']
+    else:
+        raise OSError("Unsupported operating system")
 
-        # Parse the error message to extract suggested parameters
-        match = re.search(r"Try target energy:(\S+), maxspurious:(\S+), deviation:(\S+)", e.output.decode())
+    # Print the command for debugging purposes
+    print("Full command:", " ".join(command))
 
-        if match:
-            suggested_energy = match.group(1)
-            suggested_maxspurious = match.group(2)
-            suggested_deviation = match.group(3)
+    # Execute the command
+    result = subprocess.run(command, capture_output=True, text=True, check=True)
 
-            print(
-                f"Suggested parameters: energy={suggested_energy}, maxspurious={suggested_maxspurious}, deviation={suggested_deviation}... trying again...\n\n")
+    import time
+    time.sleep(15)
 
-            # Modify the pipOptions string with suggested parameters
-            # Extracting the original number of candidates from pipOptions
-            original_candidates_match = re.search(r"--candidates (\d+)", pipOptions)
-            original_candidates = original_candidates_match.group(1) if original_candidates_match else "3"
+    # Check the command output for debugging
+    print("Command output:", result.stdout)
 
-            # Combine the suggested parameters with the original candidates
-            pipOptions = f"--candidates {original_candidates} --energy {suggested_energy} --maxspurious {suggested_maxspurious} --deviation {suggested_deviation}"
+    if system == 'darwin':
+        # Activate the Terminal application
+        subprocess.run(['osascript', '-e', 'tell app "Terminal" to activate'])
 
-            # Retry Piperine with suggested parameters
-            runPiperine(cliString, messagebox)
+    # Read and print the content of the output file
+    with open(output_file, 'r') as file:
+        output_content = file.read()
+        print("Command output:", output_content)
 
-        else:
-            # Display an error message
-            messagebox.showerror("Error!",
-                                 f"Error!\n{e.output.decode()}\nFor further assistance, please reach out to us on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
+    match = re.search(r"Try target energy:(\S+), maxspurious:(\S+), deviation:(\S+),", output_content)
 
+    if match:
+        suggested_energy = str(match.group(1))
+        suggested_maxspurious = str(match.group(2))
+        suggested_deviation = str(match.group(3))
+
+        print(
+            f"Suggested parameters: energy={suggested_energy}, maxspurious={suggested_maxspurious}, deviation={suggested_deviation}... trying again...\n\n")
+
+        # Modify the pipOptions string with suggested parameters
+        original_candidates_match = re.search(r"--candidates (\d+)", pipOptions)
+        original_candidates = str(original_candidates_match.group(1)) if original_candidates_match else "3"
+
+        pipOptions = f"--candidates {original_candidates} --energy {suggested_energy} --maxspurious {suggested_maxspurious} --deviation {suggested_deviation}"
+
+        cliString, input_crn, output_file = determineCLI(function, pipOptions)
+
+        # WRITE COMMAND BEING EXECUTED
+        with open("tests/piperine/cli_command.txt", "w+") as file:
+            file.write(cliString)
+
+        # Retry Piperine with suggested parameters
+        runPiperine(function, cliString, messagebox, output_file)
+
+    else:
+        # Display an error message
+        messagebox.showerror("Error!",
+                             f"Error!\n\nPlease look at the file in {output_file} to see piperine errors.\n\nFor further assistance, please reach out to us on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
+
+
+def determineCLI(function, options):
+    # GENERATE Piperine COMPATIBLE CRN
+    # print("\nPIPERINE CRN STRING:\n")
+    input_crn = function.generatePiperineString().replace('0.', 'c')
+    # print(input_crn)
+
+    print("\nPython Executable: " + sys.executable)
+
+    # Get the path of the Python executable
+    python_executable_path = sys.executable
+
+    # Extract the directory and filename from the path
+    directory, filename = os.path.split(python_executable_path)
+
+    # Replace "python3" with "nuskell" in the filename
+    piperineModule = filename.replace("python3", "piperine-design")
+
+    # Create the new path by joining the directory and the new filename
+    piperinePath = os.path.join(directory, piperineModule)
+    print("Piperine Path: " + piperinePath + "\n")
+
+    # Get crn file path
+    # Set the directory path
+    current_directory = os.path.abspath(os.path.dirname(__file__))
+
+    # Set the destination folder
+    destination_folder = os.path.join(current_directory, "tests/piperine")
+
+    cmd = [f"{piperinePath}", f"\'{destination_folder}/my.crn\'"] + options.split(" ")
+
+    output_file = f"{destination_folder}/cliLog.txt"
+
+    # print(cmd)
+
+    cliString = " ".join(cmd)
+
+    return cliString, input_crn, output_file
 
 
 def generatePiperine(messagebox, function):
@@ -372,31 +445,8 @@ def generatePiperine(messagebox, function):
                                                             "show when the task finished!")
 
     print("\n\nBeginning Piperine Simulation.")
-    # GENERATE Piperine COMPATIBLE CRN
-    print("\nPIPERINE CRN STRING:\n")
-    input_crn = function.generatePiperineString().replace('0.', 'c')
-    print(input_crn)
 
-    print("\n\n\nPython Executable: " + sys.executable)
-
-    # Get the path of the Python executable
-    python_executable_path = sys.executable
-
-    # Extract the directory and filename from the path
-    directory, filename = os.path.split(python_executable_path)
-
-    # Replace "python3" with "nuskell" in the filename
-    piperineModule = filename.replace("python3", "piperine-design")
-
-    # Create the new path by joining the directory and the new filename
-    piperinePath = os.path.join(directory, piperineModule)
-    print("Piperine Path: " + piperinePath + "\n\n\n")
-
-    cmd = [f"{piperinePath}", "tests/piperine/my.crn"] + pipOptions.split(" ")
-
-    print(cmd)
-
-    cliString = " ".join(cmd)
+    cliString, input_crn, output_file = determineCLI(function, pipOptions)
 
     # Set the directory path
     current_directory = os.path.abspath(os.path.dirname(__file__))
@@ -415,7 +465,7 @@ def generatePiperine(messagebox, function):
     with open("tests/piperine/cli_command.txt", "w+") as file:
         file.write(cliString)
 
-    runPiperine(cliString, messagebox)
+    runPiperine(function, cliString, messagebox, output_file)
 
     # Move generated files to tests/piperine
     # All files that end in .seq,
@@ -462,7 +512,7 @@ def generatePiperine(messagebox, function):
                 messagebox.showerror("Error!",
                                      "Error!\nPiperine encountered an error in it's execution. "
                                      "Please go to the directory './tests/piperine/', open the "
-                                     "terminal, and execute the command prodivede in cli_command.txt. "
+                                     "terminal, and execute the command provided in cli_command.txt. "
                                      "For further assistance, please reach out to us with information "
                                      "provided on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
 
@@ -471,7 +521,7 @@ def generatePiperine(messagebox, function):
         messagebox.showerror("Error!",
                              "Error!\nPiperine encountered an error in it's execution. "
                              "Please go to the directory './tests/piperine/', open the "
-                             "terminal, and execute the command prodivede in cli_command.txt. "
+                             "terminal, and execute the command provided in cli_command.txt. "
                              "For further assistance, please reach out to us with information "
                              "provided on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
 def calculate():
