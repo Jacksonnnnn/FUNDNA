@@ -16,6 +16,7 @@ class Function:
         self.taylorString = None
         self.rearrangeString = None
         self.CRN = None
+        self.GUIReactionTable = None
         self.traceString = None
         self.traceValue = 0.0
         self.rearrangeType = None
@@ -168,7 +169,7 @@ class Function:
 
     def generateReactions(self):
         if self.rearrangeType != RearrangeType.UNKNOWN:
-            self.CRN = make_reactions(self)
+            self.CRN, self.GUIReactionTable = make_reactions(self)
 
     def generateTrace(self):
         if self.rearrangeType == RearrangeType.DOUBLE_NAND:
@@ -207,42 +208,42 @@ class Function:
         else:
             return 0
 
-    def generateNuskellString(self):
-        nuskellCRN = ""
-        for g in self.circuitGates:
-            if GateTypes.isInEnum(g.gateType):
-                gateType = g.gateType
-                inputs = [g.input1, g.input2]
-                gateName = "G" + str(g.index)
-
-                if type(inputs[0]) is not str and inputs[0] is not None:
-                    inputs[0] = str(round(inputs[0], 4))
-
-                if type(inputs[1]) is not str and inputs[1] is not None:
-                    inputs[1] = str(round(inputs[1], 4))
-
-                reaction = make_reaction(gateType, inputs, gateName)
-
-                nuskellCRN += reaction + "; "
-
-        return nuskellCRN.rstrip("; ")  # Remove the trailing semicolon
-
-    def generatePiperineString(self):
-        piperineCRN = ""
-        for g in self.circuitGates:
-            if GateTypes.isInEnum(g.gateType):
-                gateType = g.gateType
-                inputs = [g.input1, g.input2]
-                gateName = "G" + str(g.index)
-
-                if type(inputs[0]) is not str and inputs[0] is not None:
-                    inputs[0] = str(round(inputs[0], 4))
-
-                if type(inputs[1]) is not str and inputs[1] is not None:
-                    inputs[1] = str(round(inputs[1], 4))
-
-                reaction = make_reaction(gateType, inputs, gateName)
-
-                piperineCRN += reaction.replace("; ", "\n") + "\n"
-
-        return piperineCRN.rstrip("\n")  # Remove the trailing semicolon
+    # def generateNuskellString(self):
+    #     nuskellCRN = ""
+    #     for g in self.circuitGates:
+    #         if GateTypes.isInEnum(g.gateType):
+    #             gateType = g.gateType
+    #             inputs = [g.input1, g.input2]
+    #             gateName = "G" + str(g.index)
+    #
+    #             if type(inputs[0]) is not str and inputs[0] is not None:
+    #                 inputs[0] = str(round(inputs[0], 4))
+    #
+    #             if type(inputs[1]) is not str and inputs[1] is not None:
+    #                 inputs[1] = str(round(inputs[1], 4))
+    #
+    #             reaction = make_reaction(gateType, inputs, gateName)
+    #
+    #             nuskellCRN += reaction + "; "
+    #
+    #     return nuskellCRN.rstrip("; ")  # Remove the trailing semicolon
+    #
+    # def generatePiperineString(self):
+    #     piperineCRN = ""
+    #     for g in self.circuitGates:
+    #         if GateTypes.isInEnum(g.gateType):
+    #             gateType = g.gateType
+    #             inputs = [g.input1, g.input2]
+    #             gateName = "G" + str(g.index)
+    #
+    #             if type(inputs[0]) is not str and inputs[0] is not None:
+    #                 inputs[0] = str(round(inputs[0], 4))
+    #
+    #             if type(inputs[1]) is not str and inputs[1] is not None:
+    #                 inputs[1] = str(round(inputs[1], 4))
+    #
+    #             reaction = make_reaction(gateType, inputs, gateName)
+    #
+    #             piperineCRN += reaction.replace("; ", "\n") + "\n"
+    #
+    #     return piperineCRN.rstrip("\n")  # Remove the trailing semicolon

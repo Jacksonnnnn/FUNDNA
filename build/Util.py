@@ -16,6 +16,8 @@ from NotGateTypes import NotGateTypes
 
 from Gate import Gate, PrintGateInfo
 
+from CRN import *
+
 import schemdraw
 from schemdraw import logic
 
@@ -547,6 +549,9 @@ def show_circuit(func):
 
 def make_reactions(func):
     reactionStr = ""
+
+    crn = CRN()
+
     for g in func.circuitGates:
         if GateTypes.isInEnum(g.gateType):
             gateType = g.gateType
@@ -577,9 +582,10 @@ def make_reactions(func):
 
             reactionStr += "\n\nReaction Table:\n"
 
-            reaction = make_reaction(gateType, inputs, gateName).split("; ")
+            gateReactionSet = make_reaction(gateType, inputs, gateName)
 
-            for r in reaction:
+            for r in gateReactionSet:
+                crn.AddReaction(r)
                 print(r)
                 reactionStr += r + "\n"
             print("-" * 100)
@@ -588,7 +594,7 @@ def make_reactions(func):
 
     print("\n\n\n\n\tREACTION STATEMENTS!!\n")
     print(reactionStr)
-    return reactionStr
+    return crn, reactionStr
 
 
 def make_reaction(gateType, inputs, gateName):
@@ -629,4 +635,4 @@ def make_reaction(gateType, inputs, gateName):
         print("GATE ERROR: Given Gate Type ", gateType)
         return -1
 
-    return "; ".join(reaction_list)
+    return reaction_list

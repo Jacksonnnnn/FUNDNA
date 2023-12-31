@@ -49,13 +49,15 @@ lFunc = None
 
 hasNuskell = False
 useNuskell = False
+verify = False
+scheme = "soloveichik2010.ts"
 
 hasPiperine = False
 usePiperine = False
 pipOptions = "--candidates 3 --energy 7.7 --maxspurious 0.4 --deviation 0.5"
 
-verify = False
-scheme = "soloveichik2010.ts"
+crn = None
+
 
 try:
     if usingExe:
@@ -213,8 +215,8 @@ def insertButton(button):
         entry_6.icursor(entry_6.index(INSERT) - 1)  # move cursor back 1
 
 
-def generateNuskell(messagebox, function):
-    global verify, scheme
+def generateNuskell(messagebox, reactions):
+    global verify, scheme, crn
 
     messagebox.showwarning("Beginning Nuskell Simulation", "Please note that the Nuskell simulation is "
                                                            "beginning and may take a few minutes depending "
@@ -226,8 +228,9 @@ def generateNuskell(messagebox, function):
     print("\n\nBeginning Nuskell Simulation.")
     # GENERATE NUSKELL COMPATIBLE CRN
     print("\nNUSKELL CRN STRING:\n")
-    input_crn = function.generateNuskellString().replace('0.', 'c')
-    print(input_crn)
+    crn = reactions
+    inputCRNStr = crn.NuskellString().replace('0.', 'c')
+    print(inputCRNStr)
 
     print("\n\n\nPython Executable: " + sys.executable)
 
@@ -249,7 +252,7 @@ def generateNuskell(messagebox, function):
     #     cmd = ["echo", f'{input_crn}', "|", "nuskell", "--ts", f'{scheme}', "--pilfile", "-vv",
     #            "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
     # else:
-    cmd = ["echo", f'"{input_crn}"', "|", f"{nuskellPath}", "--ts",
+    cmd = ["echo", f'"{inputCRNStr}"', "|", f"{nuskellPath}", "--ts",
            f'{scheme}', "--pilfile", "-vv",
            "--enum-detailed", "--enumerate", "--logfile", "nuskellCLI.txt"]
 
@@ -324,8 +327,52 @@ import sys
 import shlex
 import re
 
+
+def CheckPiperineExecutionStatus(output_file, error_string, success_string, polling_interval=5, max_attempts=10):
+    """
+    Recursively checks the content of an output file for specific strings.
+
+    Parameters:
+        - output_file: The path to the output file.
+        - error_string: The string indicating an error in the output.
+        - success_string: The string indicating successful execution in the output.
+        - polling_interval: The interval (in seconds) between each check.
+        - max_attempts: The maximum number of attempts before giving up.
+
+    Returns:
+        - True if the success string is found.
+        - False if the error string is found or the maximum attempts are reached.
+    """
+    if max_attempts == 0:
+        print("Max attempts reached. Giving up.")
+        return False
+
+    try:
+        with open(output_file, 'r') as file:
+            content = file.read()
+
+            if error_string in content:
+                print("Error string found in the output. Aborting.")
+                return False
+
+            if success_string in content:
+                print("Success string found in the output. Continuing.")
+                return True
+
+    except FileNotFoundError:
+        print(f"Output file not found: {output_file}. Waiting for it to be created.")
+
+    # Wait for the specified interval before the next check
+    import time
+    time.sleep(polling_interval)
+
+    # Recursive call
+    return CheckPiperineExecutionStatus(output_file, error_string, success_string, polling_interval, max_attempts - 1)
+
+
 def runPiperine(function, cliString, messagebox, output_file):
     global pipOptions
+    global crn
 
     # Print the command for debugging purposes
     print("Executing command:", cliString)
@@ -358,46 +405,55 @@ def runPiperine(function, cliString, messagebox, output_file):
         # Activate the Terminal application
         subprocess.run(['osascript', '-e', 'tell app "Terminal" to activate'])
 
-    # Read and print the content of the output file
-    with open(output_file, 'r') as file:
-        output_content = file.read()
-        print("Command output:", output_content)
+    status = CheckPiperineExecutionStatus(output_file,
+                                          "Try target energy",
+                                          "Winning sequence set is",
+                                          max_attempts=1000,
+                                          polling_interval=15)
 
-    match = re.search(r"Try target energy:(\S+), maxspurious:(\S+), deviation:(\S+),", output_content)
+    if not status:
+        # Read and print the content of the output file
+        with open(output_file, 'r') as file:
+            output_content = file.read()
+            print("Command output:", output_content)
 
-    if match:
-        suggested_energy = str(match.group(1))
-        suggested_maxspurious = str(match.group(2))
-        suggested_deviation = str(match.group(3))
+        match = re.search(r"Try target energy:(\S+), maxspurious:(\S+), deviation:(\S+),", output_content)
 
-        print(
-            f"Suggested parameters: energy={suggested_energy}, maxspurious={suggested_maxspurious}, deviation={suggested_deviation}... trying again...\n\n")
+        if match:
+            suggested_energy = str(match.group(1))
+            suggested_maxspurious = str(match.group(2))
+            suggested_deviation = str(match.group(3))
 
-        # Modify the pipOptions string with suggested parameters
-        original_candidates_match = re.search(r"--candidates (\d+)", pipOptions)
-        original_candidates = str(original_candidates_match.group(1)) if original_candidates_match else "3"
+            print(
+                f"Suggested parameters: energy={suggested_energy}, maxspurious={suggested_maxspurious}, deviation={suggested_deviation}... trying again...\n\n")
 
-        pipOptions = f"--candidates {original_candidates} --energy {suggested_energy} --maxspurious {suggested_maxspurious} --deviation {suggested_deviation}"
+            # Modify the pipOptions string with suggested parameters
+            original_candidates_match = re.search(r"--candidates (\d+)", pipOptions)
+            original_candidates = str(original_candidates_match.group(1)) if original_candidates_match else "3"
 
-        cliString, input_crn, output_file = determineCLI(function, pipOptions)
+            pipOptions = f"--candidates {original_candidates} --energy {suggested_energy} --maxspurious {suggested_maxspurious} --deviation {suggested_deviation}"
 
-        # WRITE COMMAND BEING EXECUTED
-        with open("tests/piperine/cli_command.txt", "w+") as file:
-            file.write(cliString)
+            cliString, crn, input_crn, output_file = DeterminePiperineCLI(function, pipOptions)
 
-        # Retry Piperine with suggested parameters
-        runPiperine(function, cliString, messagebox, output_file)
+            # WRITE COMMAND BEING EXECUTED
+            with open("tests/piperine/cli_command.txt", "w+") as file:
+                file.write(cliString)
 
-    else:
-        # Display an error message
-        messagebox.showerror("Error!",
-                             f"Error!\n\nPlease look at the file in {output_file} to see piperine errors.\n\nFor further assistance, please reach out to us on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
+            # Retry Piperine with suggested parameters
+            runPiperine(function, cliString, messagebox, output_file)
+
+        else:
+            # Display an error message
+            messagebox.showerror("Error!",
+                                 f"Error!\n\nPlease look at the file in {output_file} to see piperine errors.\n\nFor further assistance, please reach out to us on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
 
 
-def determineCLI(function, options):
+def DeterminePiperineCLI(reactions, options):
+    global crn
     # GENERATE Piperine COMPATIBLE CRN
     # print("\nPIPERINE CRN STRING:\n")
-    input_crn = function.generatePiperineString().replace('0.', 'c')
+    crn = reactions
+    inputCRNStr = crn.PiperineString().replace('0.', 'c')
     # print(input_crn)
 
     print("\nPython Executable: " + sys.executable)
@@ -430,11 +486,12 @@ def determineCLI(function, options):
 
     cliString = " ".join(cmd)
 
-    return cliString, input_crn, output_file
+    return cliString, crn, inputCRNStr, output_file
 
 
-def generatePiperine(messagebox, function):
+def generatePiperine(messagebox, reactions):
     global pipOptions
+    global crn
 
     messagebox.showwarning("Beginning Piperine Simulation", "Please note that the Piperine simulation is "
                                                             "beginning and may take a few minutes depending "
@@ -446,7 +503,7 @@ def generatePiperine(messagebox, function):
 
     print("\n\nBeginning Piperine Simulation.")
 
-    cliString, input_crn, output_file = determineCLI(function, pipOptions)
+    cliString, crn, input_crn, output_file = DeterminePiperineCLI(reactions, pipOptions)
 
     # Set the directory path
     current_directory = os.path.abspath(os.path.dirname(__file__))
@@ -457,15 +514,16 @@ def generatePiperine(messagebox, function):
     # Create the destination folder if it doesn't exist
     os.makedirs(destination_folder, exist_ok=True)
 
-    with open("tests/piperine/my.crn", "w+") as file:
-        file.write(input_crn)
+    crn.file_reference = open("tests/piperine/my.crn", "w+")
+    crn.file_reference.write(input_crn)
+    crn.CloseFile()
 
     # Execue Piperine
     # WRITE COMMAND BEING EXECUTED
     with open("tests/piperine/cli_command.txt", "w+") as file:
         file.write(cliString)
 
-    runPiperine(function, cliString, messagebox, output_file)
+    runPiperine(reactions, cliString, messagebox, output_file)
 
     # Move generated files to tests/piperine
     # All files that end in .seq,
@@ -491,22 +549,21 @@ def generatePiperine(messagebox, function):
 
     # Find the best candidate from myScores.txt
     # (Best sum-of-metaranks:      0 by [0])
-    if os.path.exists("tests/piperine/myScores.txt"):
-        with open("tests/piperine/myScores.txt", "r") as file:
+    if os.path.exists("tests/piperine/cliLog.txt"):
+        with open("tests/piperine/cliLog.txt", "r") as file:
             data = file.read()
 
             # Use regex to find the relevant information in the string
-            match = re.search(r"Best sum-of-metaranks:\s+(\d+)\s+by\s+\[([^\]]+)\]", data)
+            match = re.search(r"Winning sequence set is index (\S)", data)
 
             if match:
-                best_metarank = int(match.group(1))
-                best_candidates = [int(candidate) for candidate in match.group(2).split(',')]
+                winningCandidate = int(match.group(1))
 
                 # Present best strands to user
                 messagebox.showerror("Success!",
                                      f"Great News!\nPiperine was able to generate DNA strands for this "
-                                     f"CRN! Please look in the ./tests/piperine/ folder and look at strand {best_candidates} "
-                                     f"(which had a sum-of-metaranks score of {best_metarank}).")
+                                     f"CRN! Please look in the ./tests/piperine/ folder and look at "
+                                     f"strand {winningCandidate}.")
             else:
                 #simulation didn't finnish, tere was an error.
                 messagebox.showerror("Error!",
@@ -524,6 +581,8 @@ def generatePiperine(messagebox, function):
                              "terminal, and execute the command provided in cli_command.txt. "
                              "For further assistance, please reach out to us with information "
                              "provided on our GitHub page: https://github.com/CUT-Labs/FUNDNA.")
+
+
 def calculate():
     global image_4
     global lFunc
@@ -622,7 +681,7 @@ def calculate():
 
         # generate crn - set label (entry_10)
         entry_10.delete('1.0', END)
-        entry_10.insert(INSERT, function.CRN)
+        entry_10.insert(INSERT, function.GUIReactionTable)
 
         # Update Circuit Diagram
         baseWidth = 398
@@ -638,7 +697,7 @@ def calculate():
         # Run Nuskell Protocol
         if useNuskell is True:
             if hasNuskell is True:
-                generateNuskell(messagebox=messagebox, function=function)
+                generateNuskell(messagebox=messagebox, reactions=function.CRN)
 
             else:  # NUSKELL NOT INSTALLED
                 messagebox.showerror("Error! Nuskell Not Installed",
@@ -649,7 +708,7 @@ def calculate():
         # Run Piperine Protocol
         if usePiperine is True:
             if hasPiperine is True:
-                generatePiperine(messagebox=messagebox, function=function)
+                generatePiperine(messagebox=messagebox, reactions=function.CRN)
 
             else:  # PIPERINE NOT INSTALLED
                 messagebox.showerror("Error! Piperine Not Installed",
@@ -1792,8 +1851,99 @@ canvas.create_text(
     font=("BitterRoman ExtraBold", 24 * -1)
 )
 
-try:
-    pyi_splash.close()
-finally:
+def MainGUI():
     window.resizable(True, True)
     window.mainloop()
+
+
+def HasCRN():
+    # Function to check if the user has a CRN
+    answer = messagebox.askyesno("CRN Check", "Do you already have a CRN?")
+
+    return answer  # True if they do
+
+
+def CRNPopup():
+    def parseInput(n=False, p=False):
+        crn_text = text_widget.get("1.0", tk.END).strip()  # Get the CRN from the ScrolledText widget
+        if not crn_text:
+            messagebox.showerror("Error", "Please enter a CRN.")
+            return
+
+        crn_lines = crn_text.split("\n")
+        crn_instance = CRN(crn_array=crn_lines)
+
+        if n:
+            generate_nuskell(crn_instance)
+        if p:
+            generate_piperine(crn_instance)
+
+        popup.destroy()
+
+    def generate_nuskell(input_crn):
+        print("Generating Nuskell for CRN:", input_crn.crn_array)
+        generateNuskell(messagebox, input_crn)
+
+    def generate_piperine(input_crn):
+        # Add your logic for generating Piperine here
+        print("Generating Piperine for CRN:", input_crn.crn_array)
+        generatePiperine(messagebox, input_crn)
+
+    def open_github_link(event):
+        import webbrowser
+        webbrowser.open_new("https://github.com/CUTLabs/FUNDNA")
+
+    popup = tk.Toplevel()
+    popup.title("CRN Popup")
+
+    # Centered heading text
+    heading_label = tk.Label(popup, text="Input your Chemical Reaction Network (CRN):", font=("Helvetica", 12, "bold"))
+    heading_label.pack(pady=10)
+
+    # ScrolledText for CRN
+    text_widget = ScrolledText(popup, wrap=tk.WORD, width=60, height=20)
+    text_widget.pack(padx=20, pady=10)
+
+    # Footnote with clickable link
+    footnote_text = (
+        "Please separate reactions by new lines. Forward reactions are indicated with ' -> ' and reversible\n"
+        "reactions are indicated as ' <=> '. If any errors occur, please reach out to us at our GitHub:"
+    )
+
+    footnote_label = tk.Label(popup, text=footnote_text)
+    footnote_label.pack(pady=5, padx=10)
+
+    github_link = tk.Label(
+        popup,
+        text="https://github.com/CUT-Labs/FUNDNA",
+        fg="#1E8AFF",
+        cursor="hand2",
+        font=("Helvetica", 12, "underline")
+    )
+    github_link.pack(pady=5)
+    github_link.bind("<Button-1>", open_github_link)
+
+    # Buttons for generating Nuskell and Piperine (placed horizontally)
+    button_frame = tk.Frame(popup)
+    button_frame.pack(pady=10)
+
+    nuskell_button = tk.Button(button_frame, text="Generate Nuskell", command=lambda: parseInput(n=True))
+    nuskell_button.pack(side=tk.LEFT, padx=5)
+
+    piperine_button = tk.Button(button_frame, text="Generate Piperine", command=lambda: parseInput(p=True))
+    piperine_button.pack(side=tk.LEFT, padx=5)
+
+    # Start the Tkinter event loop for the popup window
+    popup.mainloop()
+
+def StartMenu():
+    try:
+        pyi_splash.close()
+    finally:
+        if HasCRN():
+            CRNPopup()
+        else:
+            MainGUI()
+
+
+StartMenu()
