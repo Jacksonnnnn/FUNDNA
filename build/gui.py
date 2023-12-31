@@ -547,8 +547,7 @@ def generatePiperine(messagebox, reactions):
             # Move the file to the destination folder
             shutil.move(source_path, destination_path)
 
-    # Find the best candidate from myScores.txt
-    # (Best sum-of-metaranks:      0 by [0])
+    # Find the best candidate from cliLog.txt
     if os.path.exists("tests/piperine/cliLog.txt"):
         with open("tests/piperine/cliLog.txt", "r") as file:
             data = file.read()
