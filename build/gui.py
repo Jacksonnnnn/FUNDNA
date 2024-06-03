@@ -232,17 +232,22 @@ def generateNuskell(messagebox, reactions):
     print("\n\n\nPython Executable: " + sys.executable)
 
     # Get the path of the Python executable
-    python_executable_path = sys.executable
+    #python_executable_path = sys.executable
 
     # Extract the directory and filename from the path
-    directory, filename = os.path.split(python_executable_path)
+    #directory, filename = os.path.split(python_executable_path)
 
     # Replace "python3" with "nuskell" in the filename
-    nuskellModule = filename.replace("python3", "nuskell")
+    #nuskellModule = filename.replace("python3", "nuskell")
 
     # Create the new path by joining the directory and the new filename
-    nuskellPath = os.path.join(directory, nuskellModule)
-    print("Nuskell Path: " + nuskellPath + "\n\n\n")
+    #nuskellPath = os.path.join(directory, nuskellModule)
+    #print("Nuskell Path: " + nuskellPath + "\n\n\n")
+
+    cwd = os.getcwd()
+    print(f"Current working directory: {cwd}")
+    nuskellTestPath = os.path.join(cwd, "tests/nuskell")
+    nuskellPath = "nuskell"
 
     # # GENERATE CLI STRING
     # if usingExe:
@@ -260,11 +265,12 @@ def generateNuskell(messagebox, reactions):
     cliString = " ".join(cmd)
 
     # GENERATE TESTS FOLDER IN ~/TESTS
-    if not os.path.exists("tests/nuskell"):
-        os.mkdir("tests/nuskell")
+    if not os.path.exists(nuskellTestPath):
+        print("Tests directory does not exist, making one now...")
+        os.mkdir(nuskellTestPath)
 
     # WRITE COMMAND BEING EXECUTED
-    with open("tests/nuskell/cli_command.txt", "w+") as file:
+    with open(nuskellTestPath + "/cli_command.txt", "w+") as file:
         file.write(cliString)
 
     # OPEN SHELL TERMINAL AND RUN NUSKELL COMMAND
@@ -274,33 +280,33 @@ def generateNuskell(messagebox, reactions):
 
     # ENSURE THE NUSKELL-GENERATED FILES ARE IN TESTS FOLDER
     if os.path.exists("domainlevel_enum.pil"):
-        os.replace("domainlevel_enum.pil", "tests/nuskell/domainlevel_enum.pil")
+        os.replace("domainlevel_enum.pil", nuskellTestPath + "/domainlevel_enum.pil")
 
-        with open("tests/nuskell/domainlevel_enum.pil", "r") as file:
+        with open(nuskellTestPath + "/domainlevel_enum.pil", "r") as file:
             data = file.read()
             data = data.replace("c", "0.")
 
-        with open("tests/nuskell/domainlevel_enum.pil", "w") as file:
+        with open(nuskellTestPath + "/domainlevel_enum.pil", "w") as file:
             file.write(data)
 
     if os.path.exists("domainlevel_sys.pil"):
-        os.replace("domainlevel_sys.pil", "tests/nuskell/domainlevel_sys.pil")
+        os.replace("domainlevel_sys.pil", nuskellTestPath + "/domainlevel_sys.pil")
 
-        with open("tests/nuskell/domainlevel_sys.pil", "r") as file:
+        with open(nuskellTestPath + "/domainlevel_sys.pil", "r") as file:
             data = file.read()
             data = data.replace("c", "0.")
 
-        with open("tests/nuskell/domainlevel_sys.pil", "w") as file:
+        with open(nuskellTestPath + "/domainlevel_sys.pil", "w") as file:
             file.write(data)
 
     if os.path.exists("nuskellCLI.txt"):
-        os.replace("nuskellCLI.txt", "tests/nuskell/nuskellCLI.txt")
+        os.replace("nuskellCLI.txt", nuskellTestPath + "/nuskellCLI.txt")
 
-        with open("tests/nuskell/nuskellCLI.txt", "r") as file:
+        with open(nuskellTestPath + "/nuskellCLI.txt", "r") as file:
             data = file.read()
             data = data.replace("c", "0.")
 
-        with open("tests/nuskell/nuskellCLI.txt", "w") as file:
+        with open(nuskellTestPath + "/nuskellCLI.txt", "w") as file:
             file.write(data)
 
     print("Nuskell Simulation Complete.")
@@ -461,7 +467,7 @@ def DeterminePiperineCLI(reactions, options):
     # Extract the directory and filename from the path
     directory, filename = os.path.split(python_executable_path)
 
-    # Replace "python3" with "nuskell" in the filename
+    # Replace "python3" with "piperine-design" in the filename
     piperineModule = filename.replace("python3", "piperine-design")
 
     # Create the new path by joining the directory and the new filename
@@ -771,7 +777,9 @@ def TranslationSettingsPopup():
     )
     popup_canvas.place(x=0, y=0)
 
-    schemeDropdown = tkinter.ttk.Combobox(
+    from tkinter import ttk
+
+    schemeDropdown = ttk.Combobox(
         popup,
         values=nuskellSchemes
     )
