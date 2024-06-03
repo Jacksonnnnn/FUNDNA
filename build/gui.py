@@ -267,7 +267,7 @@ def generateNuskell(messagebox, reactions):
     # GENERATE TESTS FOLDER IN ~/TESTS
     if not os.path.exists(nuskellTestPath):
         print("Tests directory does not exist, making one now...")
-        os.mkdir(nuskellTestPath)
+        os.makedirs(nuskellTestPath)
 
     # WRITE COMMAND BEING EXECUTED
     with open(nuskellTestPath + "/cli_command.txt", "w+") as file:
