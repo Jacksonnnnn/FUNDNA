@@ -1,8 +1,5 @@
 import shlex
 import sys
-import tkinter
-import tkinter.ttk
-
 usingExe = False
 
 try:
@@ -683,12 +680,40 @@ def calculate():
         entry_10.insert(INSERT, function.GUIReactionTable)
 
         # Update Circuit Diagram
-        baseWidth = 398
+        baseWidth = 908
+        baseHeight = 268
+
+        # from svglib.svglib import svg2rlg
+        # from reportlab.graphics import renderPM
+        # print("Rendering generated circuit diagram...")
+        # drawing = svg2rlg("assets/result.svg")
+        # print("\t...rendered!")
+        # print("Converting to PNG...")
+        #
+        # with open('assets/result.png', 'wb') as f:
+        #     renderPM.drawToFile(drawing, f, fmt="PNG")
+        #
+        # print("\t...converted!")
+
         img = Image.open("assets/result.png")
+
+        # adjust size based on width (for bigger circuits)
         wpercent = (baseWidth / float(img.size[0]))
         hsize = int(float(img.size[1]) * float(wpercent))
-        img = img.resize((baseWidth, hsize), Image.LANCZOS)
+
+        # adjust size based on height (for smaller circuits)
+        hpercent = (baseHeight / float(img.size[1]))
+        wsize = int(float(img.size[0]) * float(hpercent))
+
+        # if the adjusted size is taller than the frame, use size based on height instead
+        if hsize > baseHeight:
+            img = img.resize((baseHeight, wsize), Image.LANCZOS)
+        else:
+            img = img.resize((baseWidth, hsize), Image.LANCZOS)
+
         photo = ImageTk.PhotoImage(img)
+
+        print(f"PNG Rendered Dimensions: {img.size[0]} x {img.size[1]}")
 
         image_4_updater.config(image=photo)
         image_4_updater.image = photo
@@ -903,7 +928,7 @@ useNuskell = BooleanVar()
 favicon = PhotoImage(file=relative_to_assets("UK logo-white.png"))
 
 # Setting icon of master window
-window.iconphoto(True, favicon)
+#window.iconphoto(True, favicon)
 window.title("UK DNA Function Designer")
 
 window.geometry("1400x750")

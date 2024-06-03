@@ -13,7 +13,7 @@ pathlib
 sympy
 pillow
 mpmath
-schemdraw
+schemdraw==0.17
 pyinstaller
 tkdesigner
 dsdobjects
